@@ -18,31 +18,10 @@
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.0)
-project(Template)
+project(Graphics)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH 
     ${CMAKE_SOURCE_DIR}/CMake
 )
 include(Configure)
-
-
-if (Template_ExternalTarget)
-    set(TargetFolders ${Template_TargetFolders})
-    set(TargetName    ${Template_TargetName})
-    set(TargetGroup   ${Template_TargetGroup})
-else()
-    subdirs(CMake)
-    set(TargetFolders FALSE)
-    set(TargetName Template)
-    unset(TargetGroup )
-endif()
-
-option(Template_BUILD_TEST "Build the template test program." OFF)
-
-
-subdirs(Source)
-
-if (Template_BUILD_TEST)
-    subdirs(Test)
-endif()

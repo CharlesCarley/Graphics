@@ -24,6 +24,7 @@ if (MSVC)
     set(FilePatterns
         CMake:*.cmake
         CMake:../CMakeLists.txt
+        CMake\\Extern:../CMakeLists.txt
         Include:*.in
         BatchScript:*.bat
         BatchScript:*.sh
@@ -34,7 +35,6 @@ if (MSVC)
         Json:*.json
         Python:*.py
         CLang:../*.clang-format
-        GitHub:../.github/workflows/*.yml
     )
     set(ProjectFiles )
 
