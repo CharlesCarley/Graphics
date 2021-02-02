@@ -16,3 +16,9 @@
 [submodule "Extern/Data2Array"]
 	path = Extern/Data2Array
 	url = https://github.com/CharlesCarley/Data2Array.git
+[submodule "Extern/Window"]
+	path = Extern/Window
+	url = https://github.com/CharlesCarley/Window.git
+[submodule "Extern/SDL"]
+	path = Extern/SDL
+	url = https://github.com/CharlesCarley/SDL.git

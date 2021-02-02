@@ -24,7 +24,7 @@ if (MSVC)
     set(FilePatterns
         CMake:*.cmake
         CMake:../CMakeLists.txt
-        CMake\\Extern:../CMakeLists.txt
+        CMake\\Extern:../Extern/CMakeLists.txt
         Include:*.in
         BatchScript:*.bat
         BatchScript:*.sh

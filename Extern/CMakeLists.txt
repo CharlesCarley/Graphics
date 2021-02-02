@@ -1,4 +1,5 @@
 # -----------------------------------------------------------------------------
+#
 #   Copyright (c) Charles Carley.
 #
 #   This software is provided 'as-is', without any express or implied
@@ -17,16 +18,15 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.0)
-project(Graphics)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+subdirs(FreeType)
+subdirs(FreeImage)
+subdirs(Utils)
+subdirs(Math)
+subdirs(Image)
 
-set(CMAKE_MODULE_PATH 
-    ${CMAKE_SOURCE_DIR}/CMake
-)
-include(Configure)
-subdirs(CMake)
-subdirs(Extern)
-subdirs(Graphics)
-subdirs(Tests)
 
+if (Graphics_USE_SDL)
+    subdirs(SDL)
+endif()
+subdirs(Window/Window)
+subdirs(Data2Array)
