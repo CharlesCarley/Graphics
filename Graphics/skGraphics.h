@@ -197,7 +197,7 @@ typedef SKenum SKimageFormat;
 
 enum SKContextOptionEnum
 {
-    SK_VERTEX_ITER,
+    SK_VERTICES_PER_SEGMENT,
     SK_POLY_STROKE,
     SK_CLEAR_COLOR,
     SK_CLEAR_RECT,

@@ -69,7 +69,7 @@ void skPath::arcTo(skScalar  x,
     if (!m_ctx)
         return;
 
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTEX_ITER);
+    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
 
     if (vertexCount <= 0)
         vertexCount = 8;
@@ -100,7 +100,7 @@ void skPath::arcTo(skScalar  x,
 
 void skPath::cubicTo(skScalar fx, skScalar fy, skScalar tx, skScalar ty)
 {
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTEX_ITER);
+    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
 
     if (vertexCount <= 0)
         vertexCount = 8;
@@ -197,17 +197,14 @@ void skPath::makeEllipse(skScalar x, skScalar y, skScalar w, skScalar h)
         return;
 
     clear();
-
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTEX_ITER);
+    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT), i;
 
     if (vertexCount <= 0)
         vertexCount = 8;
 
-    const skScalar s360dvc = skRadians((skScalar)360.f / (skScalar)vertexCount);
+    const skScalar iStep = skPi2 / skScalar(vertexCount);
 
     skScalar cx, cy, hw, hh;
-
-    // center in rect
     hw = w * 0.5f;
     hh = h * 0.5f;
     cx = x + hw;
@@ -215,20 +212,15 @@ void skPath::makeEllipse(skScalar x, skScalar y, skScalar w, skScalar h)
 
     m_reserve = vertexCount;
 
-    skScalar a, s, c;
-
-    for (int i = 0; i < vertexCount; i++)
+    skScalar s, c;
+    for (i = 0; i < vertexCount; i++)
     {
-        a = skScalar(i) * s360dvc;
-
-        skMath::sinCos(a, s, c);
-
+        skMath::sinCos(skScalar(i) * iStep, s, c);
         if (i == 0)
-            moveTo(cx + hw * s, cy + hh * c);
+            moveTo(cx + hw * c, cy + hh * s);
         else
-            lineTo(cx + hw * s, cy + hh * c);
+            lineTo(cx + hw * c, cy + hh * s);
     }
-
     close();
 }
 
@@ -239,7 +231,7 @@ void skPath::rectCurveTo(skScalar x,
                          skScalar angle1,
                          skScalar angle2)
 {
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTEX_ITER);
+    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
 
     if (vertexCount <= 0)
         vertexCount = 8;
@@ -279,7 +271,7 @@ void skPath::makeRoundRect(skScalar x,
     if (!m_ctx)
         return;
 
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTEX_ITER);
+    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
 
     if (vertexCount <= 0)
         vertexCount = 8;
@@ -360,7 +352,7 @@ void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q,
         if (i % P == 0)
         {
             // rotate it 90 degrees initially
-            // then (2pi/Q)*skip 
+            // then (2pi/Q)*skip
             c = x + R * skCos(skPiH + I * skScalar(i));
             s = y - R * skSin(skPiH + I * skScalar(i));
 

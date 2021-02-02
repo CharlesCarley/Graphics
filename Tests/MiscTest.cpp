@@ -34,6 +34,8 @@
 #include "skGraphics.h"
 
 const SKuint32 WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
+const int      MaxTest     = 2;
+
 
 
 class Application : public skWindowHandler
@@ -47,6 +49,7 @@ private:
     skVector2 m_size, m_mouseCo;
     int       m_test;
     int       m_projectionMode;
+    int       m_accumulator;
 
 
 private:
@@ -84,6 +87,8 @@ private:
         }
     }
 
+
+
     void handleKey()
     {
         if (m_keyboard->key == KC_1)
@@ -91,11 +96,68 @@ private:
             m_projectionMode = 0;
             m_window->refresh();
         }
-        if (m_keyboard->key == KC_2)
+        else if (m_keyboard->key == KC_2)
         {
             m_projectionMode = 1;
             m_window->refresh();
         }
+        else if (m_keyboard->key == KC_UP)
+        {
+            m_test++;
+            if (m_test > MaxTest - 1)
+                m_test = MaxTest - 1;
+            else
+            {
+                initTest();
+                m_window->refresh();
+            }
+        }
+        else if (m_keyboard->key == KC_DOWN)
+        {
+            m_test--;
+            if (m_test < 0)
+                m_test = 0;
+            else
+            {
+                initTest();
+                m_window->refresh();
+            }
+        }
+        else if (m_keyboard->key == KC_LEFT)
+        {
+            m_accumulator--;
+            m_window->refresh();
+        }
+        else if (m_keyboard->key == KC_RIGHT)
+        {
+            m_accumulator++;
+            m_window->refresh();
+        }
+    }
+
+    void initTest()
+    {
+        if (m_test == 0)
+        {
+            m_accumulator = 0;
+
+            skSetContext1i(SK_VERTICES_PER_SEGMENT, 32);
+            skSetContext1f(SK_OPACITY, 0.6f);
+            skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
+            skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
+            skSetPaint1f(SK_PEN_WIDTH, 1);
+        }
+        else if (m_test == 1)
+        {
+
+            skSetContext1i(SK_VERTICES_PER_SEGMENT, 32);
+            skSetContext1f(SK_OPACITY, 1.f);
+            skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
+            skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
+            skSetPaint1f(SK_PEN_WIDTH, 2);
+            m_accumulator = 32;
+        }
+
     }
 
 public:
@@ -105,7 +167,8 @@ public:
         m_keyboard(nullptr),
         m_mouse(nullptr),
         m_test(0),
-        m_projectionMode(0)
+        m_projectionMode(0),
+        m_accumulator(0)
     {
     }
 
@@ -115,10 +178,23 @@ public:
         delete m_manager;
     }
 
-    void drawTest1()
+    void drawTest2() const
     {
-        const SKscalar size = 100;
-        const SKscalar offs = 50;
+        const SKscalar size = 200;
+        skSetContext1i(SK_VERTICES_PER_SEGMENT, m_accumulator);
+
+        skEllipse(20, 20, size, size/2);
+        skColor4f(1, 0, 0, .7f);
+        skFill();
+        skColor1ui(CS_Grey00);
+        skStroke();
+    }
+
+
+    void drawTest1() const
+    {
+        const SKscalar size = 75;
+        const SKscalar offs = 37.5;
 
         skColor1ui(0x00FF00FF);
 
@@ -129,7 +205,7 @@ public:
 
         skSetPaint1ui(SK_BRUSH_COLOR, 0xFF0000FF);
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_ADD);
-        skRect(offs * 1, offs * 1, size, size);
+        skRect(offs, offs, size, size);
         skFill();
 
 
@@ -137,7 +213,6 @@ public:
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_SUBTRACT);
         skRect(offs * 2, offs * 2, size, size);
         skFill();
-
 
         skSetPaint1ui(SK_BRUSH_COLOR, 0x008000FF);
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_MODULATE);
@@ -158,13 +233,14 @@ public:
 
         switch (m_test)
         {
+        case 1:
+            drawTest2();
+            break;
         case 0:
-        default:;
+        default:
             drawTest1();
             break;
         }
-
-
 
         m_window->flush();
     }
@@ -173,6 +249,8 @@ public:
     void setupGraphics()
     {
         skNewContext();
+
+        initTest();
     }
 
     int run()
@@ -188,8 +266,6 @@ public:
 
 
         setupGraphics();
-
-
         m_manager->broadcastEvent(SK_WIN_SIZE);
         m_manager->process();
         return 0;

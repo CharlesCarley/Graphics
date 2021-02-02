@@ -49,9 +49,9 @@ skContext::skContext(SKint32 backend)
     m_options.polygonStroke        = 0;
     m_options.clearColor           = skColor(0x000000FF);
     m_options.clearRectangle       = skRectangle(0, 0, 1, 1);
-    m_options.contextSize          = skVector2(1, 1);
-    m_options.contextScale         = skVector2(1, 1);
-    m_options.contextBias          = skVector2(1, 1);
+    m_options.contextSize          = skVector2::Unit;
+    m_options.contextScale         = skVector2::Unit;
+    m_options.contextBias          = skVector2::Zero;
     m_options.opacity              = 1.f;
     m_options.metrics              = SK_PIXEL;
     m_options.flipViewport         = false;
@@ -335,7 +335,7 @@ SKint32 skContext::getContextI(SKcontextOptionEnum op) const
 {
     switch (op)
     {
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
         return m_options.verticesPerIteration;
     case SK_POLY_STROKE:
         return m_options.polygonStroke;
@@ -367,8 +367,8 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
 {
     switch (op)
     {
-    case SK_VERTEX_ITER:
-        m_options.verticesPerIteration = skMax<SKint32>(v, 0);
+    case SK_VERTICES_PER_SEGMENT:
+        m_options.verticesPerIteration = skMax<SKint32>(v, 1);
         break;
     case SK_POLY_STROKE:
         m_options.polygonStroke = skClamp<SKint32>(v, 1, 0);
@@ -406,7 +406,7 @@ skScalar skContext::getContextF(SKcontextOptionEnum op) const
 {
     switch (op)
     {
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
         return skScalar(m_options.verticesPerIteration);
     case SK_POLY_STROKE:
         return skScalar(m_options.polygonStroke);
@@ -438,8 +438,8 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
 {
     switch (op)
     {
-    case SK_VERTEX_ITER:
-        m_options.verticesPerIteration = skMax<SKint32>(SKint32(v), 0);
+    case SK_VERTICES_PER_SEGMENT:
+        m_options.verticesPerIteration = skMax<SKint32>(SKint32(v), 1);
         break;
     case SK_POLY_STROKE:
         m_options.polygonStroke = skClamp<SKint32>(SKint32(v), 1, 0);
@@ -480,7 +480,7 @@ skColor skContext::getContextC(SKcontextOptionEnum op) const
     {
     case SK_CLEAR_COLOR:
         return m_options.clearColor;
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
     case SK_POLY_STROKE:
     case SK_CLEAR_RECT:
     case SK_CONTEXT_SIZE:
@@ -506,7 +506,7 @@ void skContext::setContextC(SKcontextOptionEnum op, const skColor& v)
     case SK_CLEAR_COLOR:
         m_options.clearColor = v;
         break;
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
     case SK_POLY_STROKE:
     case SK_CLEAR_RECT:
     case SK_CONTEXT_SIZE:
@@ -534,7 +534,7 @@ skVector2 skContext::getContextV(SKcontextOptionEnum op) const
         return m_options.contextScale;
     case SK_CONTEXT_BIAS:
         return m_options.contextBias;
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
     case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_CLEAR_RECT:
@@ -565,7 +565,7 @@ void skContext::setContextV(SKcontextOptionEnum op, const skVector2& v)
     case SK_CONTEXT_BIAS:
         m_options.contextBias = v;
         break;
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
     case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_CLEAR_RECT:
@@ -590,7 +590,7 @@ skRectangle skContext::getContextR(SKcontextOptionEnum op) const
     case SK_CONTEXT_SIZE:
     case SK_CONTEXT_SCALE:
     case SK_CONTEXT_BIAS:
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
     case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_OPACITY:
@@ -617,7 +617,7 @@ void skContext::setContextR(SKcontextOptionEnum op, const skRectangle& v)
     case SK_CLEAR_RECT:
         m_options.clearRectangle = v;
         break;
-    case SK_VERTEX_ITER:
+    case SK_VERTICES_PER_SEGMENT:
     case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_CONTEXT_SIZE:
