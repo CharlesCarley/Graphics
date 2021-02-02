@@ -379,6 +379,43 @@ SK_API void skSetPaint1f(SKpaintStyle en, SKscalar v)
     ctx->setPaintF(en, v);
 }
 
+SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c)
+{
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+
+    ctx->setPaintC(en, skColor(c));
+}
+
+
+SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v)
+{
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+    SK_CHECK_PARAM(v, SK_RETURN_VOID);
+
+    *v = ctx->getPaintI(en);
+}
+
+SK_API void skGetPaint1f(SKpaintStyle en, SKscalar* v)
+{
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+    SK_CHECK_PARAM(v, SK_RETURN_VOID);
+
+    *v = ctx->getPaintF(en);
+}
+
+SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v)
+{
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+    SK_CHECK_PARAM(v, SK_RETURN_VOID);
+
+    *v = ctx->getPaintC(en).asInt();
+}
+
+
 SK_API SKimage skNewImage()
 {
     skContext* ctx = SK_CURRENT_CTX();

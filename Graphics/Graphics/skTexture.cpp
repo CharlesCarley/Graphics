@@ -123,15 +123,15 @@ void skTexture::makeGradient(SKint32      fx,
     if (!m_image)
         return;
 
-    SKuint32 x, y, s, s2;
+    SKint32  s;
+    SKuint32 x, y, s2;
 
     skVector2 p0, p1, D, H, C;
     p0 = skVector2((skScalar)fx, (skScalar)fy);
     p1 = skVector2((skScalar)tx, (skScalar)ty);
     D  = p1 - p0;
 
-    skScalar dL = D.length2(), G = 0;
-
+    skScalar dL = D.length2(), G;
     if (dL <= 0.f)
         dL = 1.f;
 
@@ -159,13 +159,15 @@ void skTexture::makeGradient(SKint32      fx,
 
             skColor a, b, c(0, 0, 0, 1);
             for (s = 0; s < stopCount; ++s)
+            {
                 if (stops[s].m_offset > G)
                     break;
+            }
 
             s2 = skClamp<SKint32>(s - 1, 0, stopCount - 1);
 
-            skScalar s0 = stops[s2].m_offset;
-            skScalar s1 = stops[s2 + 1].m_offset;
+            const skScalar s0 = stops[s2].m_offset;
+            const skScalar s1 = stops[s2 + 1].m_offset;
 
             if (G <= s0)
                 c = skColor(stops[s2].m_color);
@@ -185,7 +187,7 @@ void skTexture::makeGradient(SKint32      fx,
     notifyImage();
 }
 
-void skTexture::getI(SKimageOptionEnum opt, SKint32* v) const
+void skTexture::getI(const SKimageOptionEnum opt, SKint32* v) const
 {
     switch (opt)
     {
@@ -220,7 +222,7 @@ void skTexture::getI(SKimageOptionEnum opt, SKint32* v) const
             *v = -1;
         break;
     case SK_IMAGE_SIZE_IN_BYTES:
-        if (m_image)// needs unsigned
+        if (m_image)  // needs unsigned
             *v = (SKint32)m_image->getSizeInBytes();
         else
             *v = -1;
@@ -233,8 +235,8 @@ void skTexture::getI(SKimageOptionEnum opt, SKint32* v) const
         break;
     case SK_IMAGE_BYTES:
     default:
-        break;
         *v = -1;
+        break;
     }
 }
 

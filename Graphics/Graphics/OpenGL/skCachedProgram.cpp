@@ -26,6 +26,7 @@ skCachedProgram::skCachedProgram() :
     m_viewProj(SK_MAX32),
     m_mode(SK_MAX32),
     m_surface(SK_MAX32),
+    m_brush(SK_MAX32),
     m_ima(SK_MAX32)
 {
 }
@@ -77,4 +78,13 @@ void skCachedProgram::setSurface(const skScalar* p)
 
     if (m_surface != SK_NPOS32)
         setUniform4F(m_surface, p);
+}
+
+void skCachedProgram::setBrush(const skScalar* p)
+{
+    if (m_brush == SK_MAX32)
+        this->getUniformLoc("brush", &m_brush);
+
+    if (m_brush != SK_NPOS32)
+        setUniform4F(m_brush, p);
 }

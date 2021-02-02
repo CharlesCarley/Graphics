@@ -23,22 +23,20 @@
 #include "OpenGL/skImageOpenGL.h"
 #include "OpenGL/skProgram.h"
 #include "OpenGL/skVertexBuffer.h"
+#include "Pipeline/ColoredFragment.inl"
+#include "Pipeline/ColoredVertex.inl"
+#include "Pipeline/FontFragment.inl"
+#include "Pipeline/TexturedFragment.inl"
+#include "Pipeline/TexturedVertex.inl"
 #include "Utils/skPlatformHeaders.h"
+#include "Window/OpenGL/skOpenGL.h"
 #include "skCachedProgram.h"
+#include "skCachedString.h"
 #include "skContext.h"
 #include "skContour.h"
 #include "skFont.h"
-#include "skCachedString.h"
-#include "Window/OpenGL/skOpenGL.h"
 #include "skPaint.h"
 #include "skPath.h"
-
-
-#include "Pipeline/ColoredFragment.inl"
-#include "Pipeline/ColoredVertex.inl"
-#include "Pipeline/TexturedFragment.inl"
-#include "Pipeline/TexturedVertex.inl"
-#include "Pipeline/FontFragment.inl"
 
 
 const GLint clear_bits = GL_COLOR_BUFFER_BIT;
@@ -192,11 +190,11 @@ void skOpenGLRenderer::doPolyFill(void) const
     if (m_curPaint->m_brushPattern && !lines)
     {
         m_curPath->makeUV();
-        auto* glima = (skImageOpenGL*)m_curPaint->m_brushPattern;
+        skImageOpenGL* ima = (skImageOpenGL*)m_curPaint->m_brushPattern;
 
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, glima->getImage());
+        glBindTexture(GL_TEXTURE_2D, ima->getImage());
         m_curPaint->m_program->setImage(0);
     }
 
@@ -216,6 +214,16 @@ void skOpenGLRenderer::doPolyFill(void) const
     };
 
     m_curPaint->m_program->setSurface(col);
+
+    if (m_curPaint->m_brushMode != SK_BM_REPLACE)
+    {
+        col[0] = m_curPaint->m_brushColor.r;
+        col[1] = m_curPaint->m_brushColor.g;
+        col[2] = m_curPaint->m_brushColor.b;
+        col[3] = m_curPaint->m_brushColor.a * opacity;
+        m_curPaint->m_program->setBrush(col);
+    }
+
     m_curPaint->m_program->setViewProj((m_projection * ctx.getMatrix()).p);
 
     if (m_curPath->getBuffer())
@@ -246,7 +254,12 @@ void skOpenGLRenderer::fill(skPath* pth)
         m_fillOp = GL_POINTS;
     }
 
-    bool blend = ref().getContextF(SK_OPACITY) < 1.f || m_curPaint->m_surfaceColor.a < 1.f || m_curPaint->m_brushPattern;
+    bool blend = ref().getContextF(SK_OPACITY) < 1.f;
+    if (!blend)
+        blend = m_curPaint->m_surfaceColor.a < 1.f || m_curPaint->m_brushPattern;
+    if (!blend)
+        blend = m_curPaint->m_brushMode != SK_BM_REPLACE;
+
 
     if (blend)
         glEnable(GL_BLEND);

@@ -117,7 +117,7 @@ public:
 
     void clear(void)
     {
-        vertices.resize(0);
+        vertices.resizeFast(0);
     }
 
     bool empty(void) const

@@ -33,6 +33,7 @@ protected:
     SKuint32 m_viewProj;
     SKuint32 m_mode;
     SKuint32 m_surface;
+    SKuint32 m_brush;
     SKuint32 m_ima;
 
 public:
@@ -44,6 +45,7 @@ public:
     void setImage(SKuint32 ima);
     void setMode(SKuint32 m);
     void setSurface(const skScalar* p);
+    void setBrush(const skScalar* p);
 };
 
 #endif  //_skCachedProgram_h_

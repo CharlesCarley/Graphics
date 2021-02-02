@@ -22,37 +22,45 @@
 #pragma once
 #include "skGraphicsConfig.h"
 
+// 1, SK_BM_REPLACE,
+// 2, SK_BM_ADD,
+// 3, SK_BM_MODULATE,
+// 4, SK_BM_SUBTRACT,
+// 5, SK_BM_DIVIDE,
+
 SKShader(ColoredFragment,
 
-    uniform vec4 surface;
+    uniform vec4 surface; // skPaint::m_surfaceColor
+    uniform vec4 brush;   // skPaint::m_brushColor
     uniform int  mode;
 
-    vec4 sk_replace(void) {
-        return surface;
-    }
+    void main() 
+    {
+        if (mode == 1)
+            gl_FragColor = surface;
+        else if (mode == 2)  // SK_BM_ADD
+        {
+            vec3 v = brush.xyz + surface.xyz;
 
-    vec4 sk_modulate(void) {
-        return vec4(1) * surface;
-    }
+            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+        }
+        else if (mode == 3)  // SK_BM_MODULATE
+        {
+            vec3 v = brush.xyz * surface.xyz;
 
-    vec4 sk_add(void) {
-        return vec4(0) + surface;
-    } vec4 sk_sub(void) {
-        return vec4(1) - surface;
-    } vec4 sk_div(void) {
-        return vec4(1) + surface - vec4(2) + vec4(1) * surface;
-    }
+            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+        }
+        else if (mode == 4)  // SK_BM_SUBTRACT
+        {
+            vec3 v = surface.xyz - brush.xyz;
 
-    void main(void) {
-        if (mode == 5)
-            gl_FragColor = sk_div();
-        else if (mode == 4)
-            gl_FragColor = sk_sub();
-        else if (mode == 2)
-            gl_FragColor = sk_add();
-        else if (mode == 3)
-            gl_FragColor = sk_modulate();
-        else
-            gl_FragColor = sk_replace();
+            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+        }
+        else // SK_BM_DIVIDE
+        {
+            vec3 v = vec3(1.0) - (surface.xyz * brush.xyz);
+
+            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+        }
     }
 );

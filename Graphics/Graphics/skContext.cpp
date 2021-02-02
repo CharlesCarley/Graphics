@@ -837,7 +837,7 @@ SKcachedString skContext::newString(void)
     if (!m_renderContext)
         return nullptr;
 
-    auto* cstr = new skCachedString();
+    skCachedString* cstr = new skCachedString();
     cstr->setContext(this);
     cstr->getFont()->setContext(this);
     cstr->getPath()->setContext(this);

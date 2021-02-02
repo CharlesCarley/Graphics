@@ -381,8 +381,14 @@ SK_API void skColor4ub(SKubyte r, SKubyte g, SKubyte b, SKubyte a);
 
 SK_API void skSetPaint1i(SKpaintStyle en, SKint32 v);
 SK_API void skSetPaint1f(SKpaintStyle en, SKscalar v);
-SK_API void skGetPaint1i(SKpaintStyle en, SKint32 v);
-SK_API void skGetPaint1f(SKpaintStyle en, SKscalar v);
+SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c);
+
+
+SK_API void skGetPaint1i(SKpaintStyle en, SKint32 *v);
+SK_API void skGetPaint1f(SKpaintStyle en, SKscalar *v);
+SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32 *v);
+
+
 
 /**********************************************************
    Images
