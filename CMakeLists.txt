@@ -23,10 +23,16 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH 
     ${CMAKE_SOURCE_DIR}/CMake
+    ${CMAKE_SOURCE_DIR}/Extern/Data2Array/CMake
 )
 include(Configure)
 subdirs(CMake)
 subdirs(Extern)
+
+
+configure_file(${CMAKE_SOURCE_DIR}/CMake/skGraphicsConfig.h.in  
+               ${CMAKE_SOURCE_DIR}/Graphics/skGraphicsConfig.h)
+
 subdirs(Graphics)
 subdirs(Tests)
 

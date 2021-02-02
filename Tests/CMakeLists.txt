@@ -1,19 +1,44 @@
-# -----------------------------------------------------------------------------
-#   Copyright (c) Charles Carley.
-#
-#   This software is provided 'as-is', without any express or implied
-# warranty. In no event will the authors be held liable for any damages
-# arising from the use of this software.
-#
-#   Permission is granted to anyone to use this software for any purpose,
-# including commercial applications, and to alter it and redistribute it
-# freely, subject to the following restrictions:
-#
-# 1. The origin of this software must not be misrepresented; you must not
-#    claim that you wrote the original software. If you use this software
-#    in a product, an acknowledgment in the product documentation would be
-#    appreciated but is not required.
-# 2. Altered source versions must be plainly marked as such, and must not be
-#    misrepresented as being the original software.
-# 3. This notice may not be removed or altered from any source distribution.
-# ------------------------------------------------------------------------------
+
+
+macro(AddTestExt File Ext)
+   include_directories(. ../Graphics/ 
+        ${Utils_INCLUDE} 
+        ${Math_INCLUDE} 
+        ${Window_INCLUDE} 
+        ${Image_INCLUDE} 
+        ${FreeType_INCLUDE} 
+        ${FreeImage_INCLUDE} 
+        )
+
+   add_executable(${File}  ${File}.${Ext} ${ARGN})
+   target_link_libraries(${File} 
+        Graphics 
+        ${Math_LIBRARY}
+        ${Utils_LIBRARY}
+        ${Window_LIBRARY}
+        ${Image_LIBRARY}
+        ${FreeImage_LIBRARY}
+        )
+   set_target_properties(${File} PROPERTIES FOLDER "Tests")
+
+   file(GLOB Files *.png)
+
+    add_custom_command(TARGET ${File} 
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy ${Files}
+                    "${CMAKE_CURRENT_BINARY_DIR}"
+                    )
+
+endmacro()
+
+
+macro(AddTest File)
+    AddTestExt(${File} "cpp")
+endmacro()
+
+macro(AddCTest File)
+    AddTestExt(${File} "c")
+endmacro()
+
+AddTest(ColorApp)
+AddCTest(CTest)
