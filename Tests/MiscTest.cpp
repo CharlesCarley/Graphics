@@ -34,7 +34,7 @@
 #include "skGraphics.h"
 
 const SKuint32 WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
-const int      MaxTest     = 2;
+const int      MaxTest     = 3;
 
 
 
@@ -91,7 +91,11 @@ private:
 
     void handleKey()
     {
-        if (m_keyboard->key == KC_1)
+        if (m_keyboard->key == KC_ESC)
+        {
+            m_window->close();
+        }
+        else if (m_keyboard->key == KC_1)
         {
             m_projectionMode = 0;
             m_window->refresh();
@@ -149,7 +153,6 @@ private:
         }
         else if (m_test == 1)
         {
-
             skSetContext1i(SK_VERTICES_PER_SEGMENT, 32);
             skSetContext1f(SK_OPACITY, 1.f);
             skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
@@ -157,7 +160,14 @@ private:
             skSetPaint1f(SK_PEN_WIDTH, 2);
             m_accumulator = 32;
         }
-
+        else if (m_test == 2)
+        {
+            skSetContext1i(SK_VERTICES_PER_SEGMENT, 16);
+            skSetContext1f(SK_OPACITY, 1.f);
+            skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
+            skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
+            skSetPaint1f(SK_PEN_WIDTH, 1.01f);
+        }
     }
 
 public:
@@ -178,12 +188,25 @@ public:
         delete m_manager;
     }
 
+    void drawTest3() const
+    {
+        const SKscalar size = 200;
+        const SKscalar ac = skScalar(m_accumulator) * 5;
+
+        skRoundRect(20, 20, size, size, ac, ac, SK_CNR_RT|SK_CNR_RB|SK_CNR_LB);
+        skColor1ui(CS_Color02);
+        skFill();
+        skColor1ui(CS_Color02HL);
+        skStroke();
+    }
+
+
     void drawTest2() const
     {
         const SKscalar size = 200;
         skSetContext1i(SK_VERTICES_PER_SEGMENT, m_accumulator);
 
-        skEllipse(20, 20, size, size/2);
+        skEllipse(20, 20, size, size / 2);
         skColor4f(1, 0, 0, .7f);
         skFill();
         skColor1ui(CS_Grey00);
@@ -233,6 +256,9 @@ public:
 
         switch (m_test)
         {
+        case 2:
+            drawTest3();
+            break;
         case 1:
             drawTest2();
             break;
@@ -249,7 +275,6 @@ public:
     void setupGraphics()
     {
         skNewContext();
-
         initTest();
     }
 

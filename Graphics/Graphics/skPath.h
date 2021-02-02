@@ -22,15 +22,14 @@
 #ifndef _skPath_h_
 #define _skPath_h_
 
+#include "Math/skBoundingBox2D.h"
 #include "skContextObject.h"
 #include "skContour.h"
-#include "Math/skBoundingBox2D.h"
 class skVertexBuffer;
 
 class skPath : public skContextObj
 {
 private:
-
     skVertex        m_cur;
     skVertex        m_mov;
     skBoundingBox2D m_bounds;
@@ -45,6 +44,7 @@ public:
     ~skPath();
 
     void setScale(skScalar x, skScalar y);
+
     void setBias(skScalar x, skScalar y);
 
     void arcTo(skScalar  x,
@@ -66,13 +66,22 @@ public:
                 skScalar ty);
 
     void moveTo(skScalar x, skScalar y);
+
     void lineTo(skScalar x, skScalar y);
-    void close(void);
-    void clear(void);
+
 
     void makeRect(skScalar x, skScalar y, skScalar w, skScalar h);
+
     void makeEllipse(skScalar x, skScalar y, skScalar w, skScalar h);
-    void makeRoundRect(skScalar x, skScalar y, skScalar w, skScalar h, skScalar aw, skScalar ah, int corners);
+
+    void makeRoundRect(skScalar x,
+                       skScalar y,
+                       skScalar w,
+                       skScalar h,
+                       skScalar aw,  // in degrees
+                       skScalar ah,  // in degrees
+                       int      corners);
+
     void makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q, SKint32 P);
 
     void makePolygon(const skScalar* vertices,
@@ -80,10 +89,14 @@ public:
                      bool            close,
                      skScalar        scaleX = 1.f,
                      skScalar        scaleY = 1.f,
-                     skScalar        biasX = 0.0,
-                     skScalar        biasY = 0.0);
+                     skScalar        biasX  = 0.0,
+                     skScalar        biasY  = 0.0);
+    void close(void);
+
+    void clear(void);
 
     void makeUV(void);
+
     void makeUV(skScalar x, skScalar y, skScalar w, skScalar h);
 
     skVertexBuffer* getBuffer(void) const
@@ -116,6 +129,7 @@ protected:
     void rectCurveTo(skScalar x, skScalar y, skScalar w, skScalar h, skScalar angle1, skScalar angle2);
 
     void pushVert(const skVertex& v);
+
     void pushLine(skScalar x, skScalar y);
 };
 

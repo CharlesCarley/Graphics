@@ -291,7 +291,7 @@ void skPath::makeRoundRect(skScalar x,
     if (corners & SK_CNR_RT)
     {
         moveTo(xMax - rx, yMin);
-        rectCurveTo(xMax - rx, yMin + ah, aw, ah, 0, skRadians(90));
+        rectCurveTo(xMax - rx, yMin + ah, aw, ah, 0, skPiH);
         lineTo(xMax, yMax - ry);
     }
     else
@@ -300,7 +300,7 @@ void skPath::makeRoundRect(skScalar x,
     if (corners & SK_CNR_RB)
     {
         lineTo(xMax, yMax - ry);
-        rectCurveTo(xMax - aw, yMax - ry, aw, ah, skRadians(90), skRadians(90));
+        rectCurveTo(xMax - aw, yMax - ry, aw, ah, skPiH, skPiH);
         lineTo(xMin + rx, yMax);
     }
     else
@@ -309,7 +309,7 @@ void skPath::makeRoundRect(skScalar x,
     if (corners & SK_CNR_LB)
     {
         lineTo(xMin + rx, yMax);
-        rectCurveTo(xMin + rx, yMax - ah, aw, ah, skRadians(180), skRadians(90));
+        rectCurveTo(xMin + rx, yMax - ah, aw, ah, skPi, skPiH);
         lineTo(xMin, yMin + ry);
     }
     else
@@ -318,7 +318,7 @@ void skPath::makeRoundRect(skScalar x,
     if (corners & SK_CNR_LT)
     {
         lineTo(xMin, yMin + ry);
-        rectCurveTo(xMin + aw, yMin + ry, aw, ah, skRadians(270), skRadians(90));
+        rectCurveTo(xMin + aw, yMin + ry, aw, ah, skPi+skPiH, skPiH);
         lineTo(xMax - rx, yMin);
     }
     else
