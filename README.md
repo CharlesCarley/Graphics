@@ -11,7 +11,7 @@ This project builds with CMake and has a few external git repositories as depend
 + [Utils](https://github.com/CharlesCarley/Utils)
 + [Math](https://github.com/CharlesCarley/Math)
 + [Image](https://github.com/CharlesCarley/Image)
-+ [Window](https://github.com/CharlesCarley/Math)
++ [Window](https://github.com/CharlesCarley/Window)
 + [SDL](https://github.com/CharlesCarley/SDL)
 
 The files [gitupdate.py](gitupdate.py) or [gitupdate.bat](gitupdate.bat) help automate initial cloning and keeping the modules up to date.
