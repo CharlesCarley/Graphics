@@ -34,7 +34,7 @@
 #include "skGraphics.h"
 
 const SKuint32 WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
-const int      MaxTest     = 3;
+const int      MaxTest     = 4;
 
 
 
@@ -49,7 +49,7 @@ private:
     skVector2 m_size, m_mouseCo;
     int       m_test;
     int       m_projectionMode;
-    int       m_accumulator;
+    int       m_accumulator, m_q, m_p;
 
 
 private:
@@ -127,15 +127,28 @@ private:
                 m_window->refresh();
             }
         }
-        else if (m_keyboard->key == KC_LEFT)
+        else
         {
-            m_accumulator--;
-            m_window->refresh();
-        }
-        else if (m_keyboard->key == KC_RIGHT)
-        {
-            m_accumulator++;
-            m_window->refresh();
+            if (m_keyboard->isKeyDown(KC_LEFT))
+            {
+                if (m_keyboard->isKeyDown(KC_P))
+                    m_p--;
+                else if (m_keyboard->isKeyDown(KC_Q))
+                    m_q--;
+                else
+                    m_accumulator--;
+                m_window->refresh();
+            }
+            else if (m_keyboard->isKeyDown(KC_RIGHT))
+            {
+                if (m_keyboard->isKeyDown(KC_P))
+                    m_p++;
+                else if (m_keyboard->isKeyDown(KC_Q))
+                    m_q++;
+                else
+                    m_accumulator++;
+                m_window->refresh();
+            }
         }
     }
 
@@ -168,6 +181,16 @@ private:
             skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
             skSetPaint1f(SK_PEN_WIDTH, 1.01f);
         }
+        else if (m_test == 3)
+        {
+            m_q = 5;
+            m_p = 2;
+            skSetContext1i(SK_VERTICES_PER_SEGMENT, 16);
+            skSetContext1f(SK_OPACITY, 1.f);
+            skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
+            skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
+            skSetPaint1f(SK_PEN_WIDTH, 1.01f);
+        }
     }
 
 public:
@@ -178,7 +201,9 @@ public:
         m_mouse(nullptr),
         m_test(0),
         m_projectionMode(0),
-        m_accumulator(0)
+        m_accumulator(0),
+        m_q(0),
+        m_p(0)
     {
     }
 
@@ -188,12 +213,36 @@ public:
         delete m_manager;
     }
 
+    void drawTest4() const
+    {
+        skScalar sz[5] = {};
+        skGetContext2f(SK_CONTEXT_SIZE, sz);
+
+        sz[4] = skMin(sz[0], sz[1]);
+
+
+        if (m_projectionMode == 1)
+        {
+            sz[2] = -sz[4] / 2;
+            sz[3] = -sz[4] / 2;
+        }
+        else
+        {
+            sz[2] = (sz[0] - sz[4]) / 2;
+            sz[3] = (sz[1] - sz[4]) / 2;
+        }
+        skStar(sz[2], sz[3], sz[4], sz[4], m_q, m_p);
+        skColor1ui(CS_Color04);
+        skStroke();
+    }
+
+
     void drawTest3() const
     {
         const SKscalar size = 200;
-        const SKscalar ac = skScalar(m_accumulator) * 5;
+        const SKscalar ac   = skScalar(m_accumulator) * 5;
 
-        skRoundRect(20, 20, size, size, ac, ac, SK_CNR_RT|SK_CNR_RB|SK_CNR_LB);
+        skRoundRect(20, 20, size, size, ac, ac, SK_CNR_RT | SK_CNR_RB | SK_CNR_LB);
         skColor1ui(CS_Color02);
         skFill();
         skColor1ui(CS_Color02HL);
@@ -256,6 +305,9 @@ public:
 
         switch (m_test)
         {
+        case 3:
+            drawTest4();
+            break;
         case 2:
             drawTest3();
             break;

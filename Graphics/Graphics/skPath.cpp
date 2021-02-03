@@ -318,7 +318,7 @@ void skPath::makeRoundRect(skScalar x,
     if (corners & SK_CNR_LT)
     {
         lineTo(xMin, yMin + ry);
-        rectCurveTo(xMin + aw, yMin + ry, aw, ah, skPi+skPiH, skPiH);
+        rectCurveTo(xMin + aw, yMin + ry, aw, ah, skPi + skPiH, skPiH);
         lineTo(xMax - rx, yMin);
     }
     else
@@ -330,8 +330,7 @@ void skPath::makeRoundRect(skScalar x,
 void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q, SKint32 P)
 {
     clear();
-    // https://mathworld.wolfram.com/StarPolygon.html
-    // https://www.desmos.com/calculator/lfcuj5un1m
+    //  there is no tessellation so this will not work for fills 
 
     Q = skMax(2, Q);
     if (P > Q)
@@ -353,9 +352,9 @@ void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q,
         {
             // rotate it 90 degrees initially
             // then (2pi/Q)*skip
+
             c = x + R * skCos(skPiH + I * skScalar(i));
             s = y - R * skSin(skPiH + I * skScalar(i));
-
             if (i == 0)
                 moveTo(c, s);
             else
@@ -463,10 +462,10 @@ void skPath::makeUV(skScalar x, skScalar y, skScalar w, skScalar h)
     m_texCoBuilt = true;
 
     skScalar dx, dy;
-    skScalar omaxx, omaxy;
+    skScalar oneOverMaxX, oneOverMaxY;
 
-    omaxx = 1.f / (x + w - x);
-    omaxy = 1.f / (y + h - y);
+    oneOverMaxX = 1.f / (x + w - x);
+    oneOverMaxY = 1.f / (y + h - y);
 
     skContour& cc = *m_contour;
 
@@ -480,8 +479,8 @@ void skPath::makeUV(skScalar x, skScalar y, skScalar w, skScalar h)
 
         dx  = v.x - x;
         dy  = v.y - y;
-        v.u = dx * omaxx;
-        v.v = dy * omaxy;
+        v.u = dx * oneOverMaxX;
+        v.v = dy * oneOverMaxY;
         v.v = 1.f - v.v;
     }
 }
