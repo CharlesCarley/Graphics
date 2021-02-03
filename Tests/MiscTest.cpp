@@ -236,7 +236,6 @@ public:
         skStroke();
     }
 
-
     void drawTest3() const
     {
         const SKscalar size = 200;
@@ -248,7 +247,6 @@ public:
         skColor1ui(CS_Color02HL);
         skStroke();
     }
-
 
     void drawTest2() const
     {
@@ -297,7 +295,7 @@ public:
         skFill();
     }
 
-    void draw(void)
+    void draw(void) const
     {
         skClearColor1i(CS_Grey02);
         skClearContext();
@@ -333,15 +331,14 @@ public:
     int run()
     {
         m_manager  = new skWindowManager(WM_CTX_PLATFORM);
-        m_window   = m_manager->create("MiscTest",
+        m_window  = m_manager->create("MiscTest",
                                      800,
                                      600,
                                      WindowFlags);
+
         m_keyboard = m_window->getKeyboard();
         m_mouse    = m_window->getMouse();
         m_manager->addHandler(this);
-
-
         setupGraphics();
         m_manager->broadcastEvent(SK_WIN_SIZE);
         m_manager->process();

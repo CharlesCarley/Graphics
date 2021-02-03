@@ -55,8 +55,10 @@ typedef struct SKWindowCallbacks
 
 SK_API SKwindowManager skNewWindowManager(SKuint32 type);
 SK_API void            skDelWindowManager(SKwindowManager mgr);
+
 SK_API void            skDispatch(SKwindowManager mgr);
 SK_API void            skBroadcast(SKwindowManager mgr,  SKuint32 evtType);
+SK_API void            skProcess(SKwindowManager mgr);
 
 SK_API SKwindow skNewWindow(
     SKwindowManager    mgr,
@@ -66,8 +68,10 @@ SK_API SKwindow skNewWindow(
     SKuint32           flags,
     SKwindowCallbacks* callbacks);
 
-SK_API void    skShowWindow(SKwindow win, SKint8 state);
-SK_API void    skRedrawWindow(SKwindow win);
+SK_API void    skWindowShow(SKwindow win, SKint8 state);
+SK_API void    skWindowRedraw(SKwindow win);
+SK_API void    skWindowClose(SKwindow win);
+
 SK_API SKuint8 skGetKeyCodeState(SKwindow win, skScanCode sc);
 SK_API SKuint8 skGetMouseState(SKwindow win, skMouseCode sc);
 SK_API void    skGetMouseCo(SKwindow win, SKint32* x, SKint32* y);

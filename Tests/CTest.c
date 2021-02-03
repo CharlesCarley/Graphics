@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "skGraphicsWindow.h"
 
 #ifdef Graphics_BUILD_WINDOW
@@ -9,7 +10,6 @@ typedef struct Program
 {
     SKwindowManager manager;
     SKwindow        window;
-    int             exitRequest;
     SKimage         texture;
     SKint32         texWidth;
     SKint32         texHeight;
@@ -21,7 +21,7 @@ typedef struct Program
 void InitializeContext(SKcontext ctx, Program* program)
 {
     program->texture = skNewImage();
-    skImageLoad(program->texture, "test9.png");
+    skImageLoad(program->texture, "test2.png");
 
     SKint32 bpp, fmt;
     skGetImage1i(program->texture, SK_IMAGE_WIDTH, &program->texWidth);
@@ -29,10 +29,6 @@ void InitializeContext(SKcontext ctx, Program* program)
     skGetImage1i(program->texture, SK_IMAGE_BPP, &bpp);
     skGetImage1i(program->texture, SK_IMAGE_FORMAT, &fmt);
     skSetImage1i(program->texture, SK_IMAGE_FILTER, SK_FILTER_BI_LINEAR);
-
-    skSetContext1i(SK_PROJECT, SK_STD);
-
-    printf("Image : %d, %d\n", program->texWidth, program->texHeight);
 }
 
 void UpdateMouseCo(void* user, SKint32 x, SKint32 y)
@@ -53,15 +49,13 @@ void UpdateMouseCo(void* user, SKint32 x, SKint32 y)
 
 void WindowClosed(SKwindow window, void* user)
 {
-    Program* data = user;
-    if (data != NULL)
-        data->exitRequest = 1;
+    skWindowClose(window);
 }
 
 void WindowResized(SKwindow window, void* user, SKuint32 width, SKuint32 height)
 {
     skSetContext2i(SK_CONTEXT_SIZE, width, height);
-    skRedrawWindow(window);
+    skWindowRedraw(window);
 }
 
 void WindowPaint(SKwindow window, void* user)
@@ -72,7 +66,6 @@ void WindowPaint(SKwindow window, void* user)
 
     skClearColor1i(CS_Grey02);
     skClearContext();
-
     skProjectContext(SK_STD);
 
     SKint32 s[3] = {0, 0, 0};
@@ -87,7 +80,7 @@ void WindowPaint(SKwindow window, void* user)
 
     if (w < h)
         sz = w;
-    else 
+    else
         sz = h;
 
     x = wx - sz / 2.f;
@@ -113,7 +106,7 @@ void WindowMotion(SKwindow window, void* user, SKint32 x, SKint32 y)
     {
         skGetMouseCo(window, &x, &y);
         UpdateMouseCo(user, x, y);
-        skRedrawWindow(window);
+        skWindowRedraw(window);
     }
 }
 
@@ -124,7 +117,7 @@ void WindowButtonPressed(SKwindow    window,
                          SKint32     y)
 {
     ((Program*)user)->leftDown = skGetMouseState(window, MBT_L);
-    skRedrawWindow(window);
+    skWindowRedraw(window);
 }
 
 void WindowButtonReleased(SKwindow    window,
@@ -134,22 +127,21 @@ void WindowButtonReleased(SKwindow    window,
                           SKint32     y)
 {
     ((Program*)user)->leftDown = skGetMouseState(window, MBT_L);
-    skRedrawWindow(window);
+    skWindowRedraw(window);
 }
 
 
 void WindowKeyDown(SKwindow window, void* user, skScanCode code)
 {
     if (code == KC_ESC)
-        ((Program*)user)->exitRequest = 1;
+        skWindowClose(window);
 }
 
 void WindowKeyUp(SKwindow window, void* user, skScanCode code)
 {
     if (code == KC_Q)
-        ((Program*)user)->exitRequest = 1;
+        skWindowClose(window);
 }
-
 
 
 SKwindowCallbacks Events = {
@@ -167,39 +159,36 @@ SKwindowCallbacks Events = {
 int main(int argc, char** argv)
 {
     Program p;
-    p.manager = skNewWindowManager(WM_CTX_PLATFORM);
-    p.m_lco   = -1;
+    memset(&p, 0, sizeof(Program));
 
-    p.m_co        = 0;
-    p.exitRequest = 0;
-    Events.user   = &p;
-
-    p.window = skNewWindow(p.manager,
+    p.manager   = skNewWindowManager(WM_CTX_PLATFORM);
+    p.m_lco     = -1;
+    Events.user = &p;
+    p.window    = skNewWindow(p.manager,
                            "C-API-Test",
                            800,
                            600,
                            WM_WF_CENTER | WM_WF_SHOWN,
                            &Events);
 
-    SKcontext ctx = skNewContext();
+    const SKcontext ctx = skNewContext();
     skBroadcast(p.manager, SK_WIN_SIZE);
 
     InitializeContext(ctx, &p);
 
-    while (!p.exitRequest)
-    {
-        skDispatch(p.manager);
-    }
+    skProcess(p.manager);
+
+    if (p.texture)
+        skDeleteImage(p.texture);
 
     skDeleteContext(ctx);
     skDelWindowManager(p.manager);
     return 0;
 }
-#else
 
+#else
 int main(int argc, char** argv)
 {
     return 0;
 }
-
 #endif

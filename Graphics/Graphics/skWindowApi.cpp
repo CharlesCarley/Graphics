@@ -19,6 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include "Utils/skDisableWarnings.h"
 #include "Window/skKeyboard.h"
 #include "Window/skMouse.h"
 #include "Window/skWindow.h"
@@ -52,6 +53,12 @@ SK_API void skBroadcast(SKwindowManager mgr, SKuint32 evtType)
 {
     SK_CHECK_PARAM(mgr, SK_RETURN_VOID);
     SK_GET_WINDOW_MGR(mgr)->broadcastEvent((skEventType)evtType);
+}
+
+SK_API void skProcess(SKwindowManager mgr)
+{
+    SK_CHECK_PARAM(mgr, SK_RETURN_VOID);
+    SK_GET_WINDOW_MGR(mgr)->process();
 }
 
 class SKWindowHandler : public skWindowHandler
@@ -162,16 +169,22 @@ SK_API SKwindow skNewWindow(SKwindowManager    mgr,
     return (SKwindow)manager->create(title, width, height, flags);
 }
 
-SK_API void skShowWindow(SKwindow window, SKint8 state)
+SK_API void skWindowShow(SKwindow window, SKint8 state)
 {
     SK_CHECK_PARAM(window, SK_RETURN_VOID);
     SK_GET_WINDOW(window)->show(state != 0);
 }
 
-SK_API void skRedrawWindow(SKwindow window)
+SK_API void skWindowRedraw(SKwindow window)
 {
     SK_CHECK_PARAM(window, SK_RETURN_VOID);
     SK_GET_WINDOW(window)->refresh();
+}
+
+SK_API void skWindowClose(SKwindow window)
+{
+    SK_CHECK_PARAM(window, SK_RETURN_VOID);
+    SK_GET_WINDOW(window)->close();
 }
 
 SK_API SKuint8 skGetKeyCodeState(SKwindow win, skScanCode sc)
