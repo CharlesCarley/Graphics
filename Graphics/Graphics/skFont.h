@@ -51,10 +51,10 @@ public:
     skTexture*    m_image;
     SKfontOptions m_opts;
 
-    bool loadTTF(const void* mem, 
-        SKuint32 len, 
-        SKuint32 size, 
-        SKuint32 dpi);
+    bool loadTrueTypeFont(const void* mem,
+                          SKsize      len,
+                          SKuint32    size,
+                          SKuint32    dpi);
 
 public:
     skFont();

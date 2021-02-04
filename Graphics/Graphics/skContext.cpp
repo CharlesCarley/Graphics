@@ -46,15 +46,13 @@ skContext::skContext(SKint32 backend)
     m_matrix.makeIdentity();
 
     m_options.verticesPerIteration = 5;
-    m_options.polygonStroke        = 0;
-    m_options.clearColor           = skColor(0x000000FF);
+    m_options.clearColor           = skColor(0, 0, 0, 1);
     m_options.clearRectangle       = skRectangle(0, 0, 1, 1);
     m_options.contextSize          = skVector2::Unit;
     m_options.contextScale         = skVector2::Unit;
     m_options.contextBias          = skVector2::Zero;
     m_options.opacity              = 1.f;
     m_options.metrics              = SK_PIXEL;
-    m_options.flipViewport         = false;
     m_options.currentViewport      = 0;
     m_options.defaultFont          = SK_DEFAULT;
     m_options.yIsUp                = false;
@@ -337,14 +335,10 @@ SKint32 skContext::getContextI(SKcontextOptionEnum op) const
     {
     case SK_VERTICES_PER_SEGMENT:
         return m_options.verticesPerIteration;
-    case SK_POLY_STROKE:
-        return m_options.polygonStroke;
     case SK_OPACITY:
         return skClamp<SKint32>(SKint32(m_options.opacity * 255.f), 0, 255);
     case SK_METRICS_MODE:
         return (SKint32)m_options.metrics;
-    case SK_FLIP_VIEWPORT:
-        return m_options.flipViewport ? 1 : 0;
     case SK_CURRENT_VIEWPORT:
         return m_options.currentViewport ? 1 : 0;
     case SK_DEFAULT_FONT:
@@ -370,17 +364,11 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
     case SK_VERTICES_PER_SEGMENT:
         m_options.verticesPerIteration = skMax<SKint32>(v, 1);
         break;
-    case SK_POLY_STROKE:
-        m_options.polygonStroke = skClamp<SKint32>(v, 1, 0);
-        break;
     case SK_OPACITY:
         m_options.opacity = (skScalar)skClamp<SKint32>(v, 0, 255) / (skScalar)255.f;
         break;
     case SK_METRICS_MODE:
-        m_options.metrics = (SKmetrics)v;
-        break;
-    case SK_FLIP_VIEWPORT:
-        m_options.flipViewport = v ? true : false;
+        m_options.metrics = (SKmetricsMode)v;
         break;
     case SK_CURRENT_VIEWPORT:
         m_options.currentViewport = v ? true : false;
@@ -408,14 +396,10 @@ skScalar skContext::getContextF(SKcontextOptionEnum op) const
     {
     case SK_VERTICES_PER_SEGMENT:
         return skScalar(m_options.verticesPerIteration);
-    case SK_POLY_STROKE:
-        return skScalar(m_options.polygonStroke);
     case SK_OPACITY:
         return m_options.opacity;
     case SK_METRICS_MODE:
         return (skScalar)m_options.metrics;
-    case SK_FLIP_VIEWPORT:
-        return m_options.flipViewport ? skScalar(1.0) : skScalar(0.0);
     case SK_CURRENT_VIEWPORT:
         return m_options.currentViewport ? skScalar(1.0) : skScalar(0.0);
     case SK_Y_UP:
@@ -441,17 +425,11 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
     case SK_VERTICES_PER_SEGMENT:
         m_options.verticesPerIteration = skMax<SKint32>(SKint32(v), 1);
         break;
-    case SK_POLY_STROKE:
-        m_options.polygonStroke = skClamp<SKint32>(SKint32(v), 1, 0);
-        break;
     case SK_OPACITY:
         m_options.opacity = skClamp<skScalar>(v, 0.f, 1.f);
         break;
     case SK_METRICS_MODE:
-        m_options.metrics = (SKmetrics)(SKint32)v;
-        break;
-    case SK_FLIP_VIEWPORT:
-        m_options.flipViewport = skIsZero(v) ? true : false;
+        m_options.metrics = (SKmetricsMode)(SKint32)v;
         break;
     case SK_CURRENT_VIEWPORT:
         m_options.currentViewport = skIsZero(v) ? true : false;
@@ -481,14 +459,12 @@ skColor skContext::getContextC(SKcontextOptionEnum op) const
     case SK_CLEAR_COLOR:
         return m_options.clearColor;
     case SK_VERTICES_PER_SEGMENT:
-    case SK_POLY_STROKE:
     case SK_CLEAR_RECT:
     case SK_CONTEXT_SIZE:
     case SK_CONTEXT_SCALE:
     case SK_CONTEXT_BIAS:
     case SK_OPACITY:
     case SK_METRICS_MODE:
-    case SK_FLIP_VIEWPORT:
     case SK_CURRENT_VIEWPORT:
     case SK_DEFAULT_FONT:
     case SK_PROJECT:
@@ -507,14 +483,12 @@ void skContext::setContextC(SKcontextOptionEnum op, const skColor& v)
         m_options.clearColor = v;
         break;
     case SK_VERTICES_PER_SEGMENT:
-    case SK_POLY_STROKE:
     case SK_CLEAR_RECT:
     case SK_CONTEXT_SIZE:
     case SK_CONTEXT_SCALE:
     case SK_CONTEXT_BIAS:
     case SK_OPACITY:
     case SK_METRICS_MODE:
-    case SK_FLIP_VIEWPORT:
     case SK_CURRENT_VIEWPORT:
     case SK_DEFAULT_FONT:
     case SK_PROJECT:
@@ -535,12 +509,10 @@ skVector2 skContext::getContextV(SKcontextOptionEnum op) const
     case SK_CONTEXT_BIAS:
         return m_options.contextBias;
     case SK_VERTICES_PER_SEGMENT:
-    case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_CLEAR_RECT:
     case SK_OPACITY:
     case SK_METRICS_MODE:
-    case SK_FLIP_VIEWPORT:
     case SK_CURRENT_VIEWPORT:
     case SK_DEFAULT_FONT:
     case SK_PROJECT:
@@ -566,12 +538,10 @@ void skContext::setContextV(SKcontextOptionEnum op, const skVector2& v)
         m_options.contextBias = v;
         break;
     case SK_VERTICES_PER_SEGMENT:
-    case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_CLEAR_RECT:
     case SK_OPACITY:
     case SK_METRICS_MODE:
-    case SK_FLIP_VIEWPORT:
     case SK_CURRENT_VIEWPORT:
     case SK_DEFAULT_FONT:
     case SK_PROJECT:
@@ -591,11 +561,9 @@ skRectangle skContext::getContextR(SKcontextOptionEnum op) const
     case SK_CONTEXT_SCALE:
     case SK_CONTEXT_BIAS:
     case SK_VERTICES_PER_SEGMENT:
-    case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_OPACITY:
     case SK_METRICS_MODE:
-    case SK_FLIP_VIEWPORT:
     case SK_CURRENT_VIEWPORT:
     case SK_DEFAULT_FONT:
     case SK_PROJECT:
@@ -618,14 +586,12 @@ void skContext::setContextR(SKcontextOptionEnum op, const skRectangle& v)
         m_options.clearRectangle = v;
         break;
     case SK_VERTICES_PER_SEGMENT:
-    case SK_POLY_STROKE:
     case SK_CLEAR_COLOR:
     case SK_CONTEXT_SIZE:
     case SK_CONTEXT_SCALE:
     case SK_CONTEXT_BIAS:
     case SK_OPACITY:
     case SK_METRICS_MODE:
-    case SK_FLIP_VIEWPORT:
     case SK_CURRENT_VIEWPORT:
     case SK_DEFAULT_FONT:
     case SK_Y_UP:

@@ -154,10 +154,6 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
     w = (SKint32)rect.width;
     h = (SKint32)rect.height;
 
-    if (ctx.getContextI(SK_FLIP_VIEWPORT))
-        y = SKint32(ctx.getContextV(SK_CONTEXT_SIZE).y) - h - y;
-
-
     glViewport(x, y, w, h);
     glClearColor(
         (float)clear.r,

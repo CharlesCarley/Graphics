@@ -26,7 +26,6 @@
 #include FT_ERRORS_H
 #include "Utils/skFileStream.h"
 #include "Utils/skLogger.h"
-#include "Utils/skMemoryUtils.h"
 #include "Utils/skPlatformHeaders.h"
 #include "skBuiltinFonts.h"
 #include "skContext.h"
@@ -225,14 +224,14 @@ bool skFont::fromEnum(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
     switch (font)
     {
     case SK_DEFAULT_FIXED:
-        return loadTTF(DEJAVUMONO, sizeof DEJAVUMONO, size, dpi);
+        return loadTrueTypeFont(DEJAVUMONO, sizeof DEJAVUMONO, size, dpi);
     case SK_DEFAULT:
     case SK_CMN_FONT_SPC1:
     case SK_CMN_FONT_SPC2:
     case SK_FONT_UI:
     case SK_FONT_UI_LIGHT:
     case SK_FONT_MAX:
-        return loadTTF(DEJAVU, sizeof DEJAVU, size, dpi);
+        return loadTrueTypeFont(DEJAVU, sizeof DEJAVU, size, dpi);
     default:
         break;
     }
@@ -250,14 +249,14 @@ bool skFont::fromFile(const char* path, SKuint32 size, SKuint32 dpi)
     len           = fs.read(data, len);
     data[len]     = 0;
 
-    const bool res = loadTTF(data, len, size, dpi);
+    const bool res = loadTrueTypeFont(data, len, size, dpi);
     delete[] data;
     return res;
 }
 
 bool skFont::fromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi)
 {
-    return loadTTF(mem, len, size, dpi);
+    return loadTrueTypeFont(mem, len, size, dpi);
 }
 
 void skFont::getI(SKfontOptionEnum opt, SKint32* v) const
@@ -375,7 +374,7 @@ void Font_calculateLimits(FT_Face        face,
     h = skMath::pow2(h);
 }
 
-bool skFont::loadTTF(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi)
+bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint32 dpi)
 {
     FT_Library lib;
     FT_Face    face;

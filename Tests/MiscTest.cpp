@@ -242,7 +242,7 @@ public:
                             text,
                             -1,
                             20,
-                            yPos);
+                            skScalar(yPos));
 
             size -= 8;
             yPos += size + 10;

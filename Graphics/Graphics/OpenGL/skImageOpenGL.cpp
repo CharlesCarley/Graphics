@@ -21,6 +21,7 @@
 */
 #include "OpenGL/skImageOpenGL.h"
 #include "Utils/Config/skConfig.h"
+#include "Utils/skDisableWarnings.h"
 #include "Window/Window/OpenGL/skOpenGL.h"
 #include "skContext.h"
 
@@ -100,37 +101,23 @@ SKuint32 skImageOpenGL::getImage(void)
         glBindTexture(GL_TEXTURE_2D, m_tex);
         glEnable(GL_TEXTURE_2D);
 
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     GL_RGBA,
+                     m_image->getWidth(),
+                     m_image->getHeight(),
+                     0,
+                     format,
+                     GL_UNSIGNED_BYTE,
+                     m_image->getBytes());
+
         if (m_opts.m_mipmap)
-        {
-            glTexImage2D(GL_TEXTURE_2D,
-                         0,
-                         GL_RGBA,
-                         m_image->getWidth(),
-                         m_image->getHeight(),
-                         0,
-                         format,
-                         GL_UNSIGNED_BYTE,
-                         m_image->getBytes());
             glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        else
-        {
-            glTexImage2D(GL_TEXTURE_2D,
-                         0,
-                         GL_RGBA,
-                         m_image->getWidth(),
-                         m_image->getHeight(),
-                         0,
-                         format,
-                         GL_UNSIGNED_BYTE,
-                         m_image->getBytes());
-        }
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-
         glDisable(GL_TEXTURE_2D);
     }
     return m_tex;

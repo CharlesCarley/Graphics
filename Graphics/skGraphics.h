@@ -198,7 +198,6 @@ typedef SKenum SKimageFormat;
 enum SKContextOptionEnum
 {
     SK_VERTICES_PER_SEGMENT,
-    SK_POLY_STROKE,
     SK_CLEAR_COLOR,
     SK_CLEAR_RECT,
     SK_CONTEXT_SIZE,
@@ -206,7 +205,6 @@ enum SKContextOptionEnum
     SK_CONTEXT_BIAS,
     SK_OPACITY,
     SK_METRICS_MODE,
-    SK_FLIP_VIEWPORT,
     SK_CURRENT_VIEWPORT,
     SK_DEFAULT_FONT,
     SK_PROJECT,
@@ -223,12 +221,12 @@ enum SKProjectionType
 
 typedef SKenum SKprojectionType;
 
-enum SKMetrics
+enum SKMetricsMode
 {
     SK_PIXEL,
     SK_RELATIVE,
 };
-typedef SKenum SKmetrics;
+typedef SKenum SKmetricsMode;
 
 enum SKLineType
 {

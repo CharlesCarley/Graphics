@@ -40,6 +40,7 @@ macro(AddCTest File)
     AddTestExt(${File} "c")
 endmacro()
 
+AddTest(RandRect)
 AddTest(MiscTest)
 AddTest(ColorApp)
 AddCTest(CTest)

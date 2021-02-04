@@ -44,52 +44,85 @@ public:
     void makeCurrent(skRenderer* ctx);
 
     void makeRect(const skRectangle& r) const;
+
     void makeRect(const skScalar& x, const skScalar& y, const skScalar& w, const skScalar& h) const;
 
     void projectContext(SKprojectionType pt);
+
     void projectRect(skScalar x, skScalar y, skScalar w, skScalar h) const;
+
     void projectBox(skScalar x1, skScalar y1, skScalar x2, skScalar y2) const;
 
     void clearContext(void) const;
+
     void clear(void) const;
+
     void fill(void) const;
+
     void stroke(void) const;
+
     void flush(void) const;
 
-    SKimage    createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt);
-    SKimage    newImage();
+    SKimage createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt);
+
+    SKimage newImage();
+
     skTexture* createInternalImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt);
-    void       deleteImage(SKimage ima);
-    void       selectImage(SKimage ima);
+
+    void deleteImage(SKimage ima);
+
+    void selectImage(SKimage ima);
 
     SKfont newFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
+
     SKfont newFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
+
     SKfont newFontFromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi);
-    void   deleteFont(SKfont font);
+
+    void deleteFont(SKfont font);
 
     SKcachedString newString(void);
-    void          displayString(skCachedString* str) const;
+
+    void displayString(skCachedString* str) const;
 
     void displayString(SKfont font, const char* str, SKuint32 len, skScalar x, skScalar y);
+
     void selectPath(skPath* pth);
 
-    SKint32        getContextI(SKcontextOptionEnum opt) const;
-    void           setContextI(SKcontextOptionEnum opt, SKint32 v);
-    skScalar       getContextF(SKcontextOptionEnum opt) const;
-    void           setContextF(SKcontextOptionEnum opt, skScalar v);
-    skColor        getContextC(SKcontextOptionEnum opt) const;
-    void           setContextC(SKcontextOptionEnum opt, const skColor& v);
-    skRectangle    getContextR(SKcontextOptionEnum opt) const;
-    void           setContextR(SKcontextOptionEnum opt, const skRectangle& v);
-    skVector2      getContextV(SKcontextOptionEnum opt) const;
-    void           setContextV(SKcontextOptionEnum opt, const skVector2& v);
-    void           setPaintI(SKpaintStyle op, SKint32 v) const;
-    SKint32        getPaintI(SKpaintStyle op) const;
-    void           setPaintF(SKpaintStyle op, SKscalar v) const;
-    SKscalar       getPaintF(SKpaintStyle op) const;
-    void           setPaintP(SKpaintStyle op, skTexture* v) const;
-    skTexture*     getPaintP(SKpaintStyle op) const;
-    void           setPaintC(SKpaintStyle op, const skColor& v) const;
+    SKint32 getContextI(SKcontextOptionEnum opt) const;
+
+    void setContextI(SKcontextOptionEnum opt, SKint32 v);
+
+    skScalar getContextF(SKcontextOptionEnum opt) const;
+
+    void setContextF(SKcontextOptionEnum opt, skScalar v);
+
+    skColor getContextC(SKcontextOptionEnum opt) const;
+
+    void setContextC(SKcontextOptionEnum opt, const skColor& v);
+
+    skRectangle getContextR(SKcontextOptionEnum opt) const;
+
+    void setContextR(SKcontextOptionEnum opt, const skRectangle& v);
+
+    skVector2 getContextV(SKcontextOptionEnum opt) const;
+
+    void setContextV(SKcontextOptionEnum opt, const skVector2& v);
+
+    void setPaintI(SKpaintStyle op, SKint32 v) const;
+
+    SKint32 getPaintI(SKpaintStyle op) const;
+
+    void setPaintF(SKpaintStyle op, SKscalar v) const;
+
+    SKscalar getPaintF(SKpaintStyle op) const;
+
+    void setPaintP(SKpaintStyle op, skTexture* v) const;
+
+    skTexture* getPaintP(SKpaintStyle op) const;
+
+    void setPaintC(SKpaintStyle op, const skColor& v) const;
+
     const skColor& getPaintC(SKpaintStyle op) const;
 
     const SKcontextOptions& getOptions(void) const;
@@ -138,7 +171,6 @@ public:
     {
         return m_renderContext != nullptr;
     }
-
 };
 
 #endif  //_skContext_h_

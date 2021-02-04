@@ -36,20 +36,17 @@ class skFont;
 
 struct SKcontextOptions
 {
-    SKint32     verticesPerIteration;
-    SKint32     polygonStroke;
-    skColor     clearColor;
-    skRectangle clearRectangle;
-    skVector2   contextSize;
-    skVector2   contextScale;
-    skVector2   contextBias;
-    skScalar    opacity;
-    SKmetrics   metrics;
-    skRectangle metricsRect;
-    SKint32     flipViewport;
-    SKint32     currentViewport;
-    SKint32     defaultFont;
-    bool        yIsUp;
+    SKint32       verticesPerIteration;
+    skColor       clearColor;
+    skRectangle   clearRectangle;
+    skVector2     contextSize;
+    skVector2     contextScale;
+    skVector2     contextBias;
+    skScalar      opacity;
+    SKmetricsMode metrics;
+    SKint32       currentViewport;
+    SKint32       defaultFont;
+    bool          yIsUp;
 };
 
 #define SK_TEXTURE(x) reinterpret_cast<skTexture*>((x))
