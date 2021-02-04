@@ -24,8 +24,8 @@
 #include "Math/skMath.h"
 #include "Math/skRectangle.h"
 #include "Math/skVector2.h"
-#include "Utils/skFixedArray.h"
 #include "Utils/skDisableWarnings.h"
+#include "Utils/skFixedArray.h"
 #include "Utils/skRandom.h"
 #include "Window/skMouse.h"
 #include "Window/skWindow.h"
@@ -40,128 +40,127 @@ typedef struct SortRect
     unsigned int m_color;
 } SortRect;
 
-static const SKuint32 COLORS[] =
-    {
-        CS_Grey00,
-        CS_Grey01,
-        CS_Grey02,
-        CS_Grey03,
-        CS_Grey04,
-        CS_Grey05,
-        CS_Grey06,
-        CS_Grey07,
-        CS_Grey08,
-        CS_Grey09,
-        CS_Grey10,
-        CS_Grey04HL,
-        CS_Color01,
-        CS_Color01HL,
-        CS_Color02,
-        CS_Color02HL,
-        CS_Color03,
-        CS_Color03HL,
-        CS_Color04,
-        CS_Color04HL,
-        CS_Color05,
-        CS_Color05HL,
-        CS_Color06,
-        CS_Color06HL,
-        CS_Color07,
-        CS_Color07HL,
-        CS_Color08,
-        CS_Color08HL,
-        CS_Color09,
-        CS_Color09HL,
-        CS_Color10,
-        CS_Color10HL,
-        CS_Color11,
-        CS_Color11HL,
-        CS_Indicator,
-        CS_Green,
-        CS_BaseRed,
-        CS_BaseGreen,
-        CS_BaseRedHL,
-        CS_BaseGreenHL,
-        CS_Color081,
-        CS_Color082,
-        CS_Color083,
-        CS_Color084,
-        CS_Color085,
-        CS_Macab031,
-        CS_Macab032,
-        CS_Macab033,
-        CS_Macab034,
-        CS_Macab035,
-        CS_Macab051,
-        CS_Macab052,
-        CS_Macab053,
-        CS_Macab054,
-        CS_Macab055,
-        CS_LightBackground,
-        CS_LabelText,
-        CS_LabelAccent,
-        CS_LabelEmphasis3,
-        CS_LabelEmphasis2,
-        CS_LabelEmphasis1,
-        CS_LabelEmphasisA3,
-        CS_LabelEmphasisA2,
-        CS_LabelEmphasisA1,
-        CS_ButtonBackground,
-        CS_ButtonText,
-        CS_Tiny01,
-        CS_Tiny02,
-        CS_Tiny03,
-        CS_Tiny04,
-        CS_Tiny05,
-        CS_Macab01,
-        CS_Macab02,
-        CS_Macab03,
-        CS_Macab04,
-        CS_Macab05,
-        CS_Pismo01,
-        CS_Pismo02,
-        CS_Pismo03,
-        CS_Pismo04,
-        CS_Pismo05,
-        CS_OBContrast01,
-        CS_OBContrast02,
-        CS_OBContrast03,
-        CS_OBContrast04,
-        CS_OBContrast05,
-        CS_OffWhite,
-        CS_OffWhiteM,
-        CS_OffWhiteD0,
-        CS_OffWhiteD1,
-        CS_OffWhiteD2,
-        CS_OffWhiteD3,
-        CS_Transparent,
-        CS_Glass,
-        CS_Macab011,
-        CS_Macab012,
-        CS_Macab013,
-        CS_Macab014,
-        CS_Macab015,
-        CS_Macab021,
-        CS_Macab022,
-        CS_Macab023,
-        CS_Macab024,
-        CS_Macab025,
-        CS_Macab041,
-        CS_Macab042,
-        CS_Macab043,
-        CS_Macab044,
-        CS_Macab045,
-        CS_DarkBackground,
-        CS_LabelText,
-        CS_LabelAccent,
-        CS_LabelEmphasis3,
-        CS_LabelEmphasis2,
-        CS_LabelEmphasis1,
-        CS_LabelEmphasisA3,
-        CS_LabelEmphasisA2,
-        CS_LabelEmphasisA1,
-        CS_ButtonBackground,
-        CS_ButtonText,
+static const SKuint32 COLORS[] = {
+    CS_Grey00,
+    CS_Grey01,
+    CS_Grey02,
+    CS_Grey03,
+    CS_Grey04,
+    CS_Grey05,
+    CS_Grey06,
+    CS_Grey07,
+    CS_Grey08,
+    CS_Grey09,
+    CS_Grey10,
+    CS_Grey04HL,
+    CS_Color01,
+    CS_Color01HL,
+    CS_Color02,
+    CS_Color02HL,
+    CS_Color03,
+    CS_Color03HL,
+    CS_Color04,
+    CS_Color04HL,
+    CS_Color05,
+    CS_Color05HL,
+    CS_Color06,
+    CS_Color06HL,
+    CS_Color07,
+    CS_Color07HL,
+    CS_Color08,
+    CS_Color08HL,
+    CS_Color09,
+    CS_Color09HL,
+    CS_Color10,
+    CS_Color10HL,
+    CS_Color11,
+    CS_Color11HL,
+    CS_Indicator,
+    CS_Green,
+    CS_BaseRed,
+    CS_BaseGreen,
+    CS_BaseRedHL,
+    CS_BaseGreenHL,
+    CS_Color081,
+    CS_Color082,
+    CS_Color083,
+    CS_Color084,
+    CS_Color085,
+    CS_Macab031,
+    CS_Macab032,
+    CS_Macab033,
+    CS_Macab034,
+    CS_Macab035,
+    CS_Macab051,
+    CS_Macab052,
+    CS_Macab053,
+    CS_Macab054,
+    CS_Macab055,
+    CS_LightBackground,
+    CS_LabelText,
+    CS_LabelAccent,
+    CS_LabelEmphasis3,
+    CS_LabelEmphasis2,
+    CS_LabelEmphasis1,
+    CS_LabelEmphasisA3,
+    CS_LabelEmphasisA2,
+    CS_LabelEmphasisA1,
+    CS_ButtonBackground,
+    CS_ButtonText,
+    CS_Tiny01,
+    CS_Tiny02,
+    CS_Tiny03,
+    CS_Tiny04,
+    CS_Tiny05,
+    CS_Macab01,
+    CS_Macab02,
+    CS_Macab03,
+    CS_Macab04,
+    CS_Macab05,
+    CS_Pismo01,
+    CS_Pismo02,
+    CS_Pismo03,
+    CS_Pismo04,
+    CS_Pismo05,
+    CS_OBContrast01,
+    CS_OBContrast02,
+    CS_OBContrast03,
+    CS_OBContrast04,
+    CS_OBContrast05,
+    CS_OffWhite,
+    CS_OffWhiteM,
+    CS_OffWhiteD0,
+    CS_OffWhiteD1,
+    CS_OffWhiteD2,
+    CS_OffWhiteD3,
+    CS_Transparent,
+    CS_Glass,
+    CS_Macab011,
+    CS_Macab012,
+    CS_Macab013,
+    CS_Macab014,
+    CS_Macab015,
+    CS_Macab021,
+    CS_Macab022,
+    CS_Macab023,
+    CS_Macab024,
+    CS_Macab025,
+    CS_Macab041,
+    CS_Macab042,
+    CS_Macab043,
+    CS_Macab044,
+    CS_Macab045,
+    CS_DarkBackground,
+    CS_LabelText,
+    CS_LabelAccent,
+    CS_LabelEmphasis3,
+    CS_LabelEmphasis2,
+    CS_LabelEmphasis1,
+    CS_LabelEmphasisA3,
+    CS_LabelEmphasisA2,
+    CS_LabelEmphasisA1,
+    CS_ButtonBackground,
+    CS_ButtonText,
 };
 
 SKuint16 ColorSize = sizeof COLORS / sizeof(SKuint32);
@@ -176,7 +175,6 @@ private:
     skWindow*        m_window;
     skVector2        m_size, m_mouseCo, m_scale;
     SKuint32         m_lastFill{};
-    SKfont           m_font;
     bool             m_done;
 
     RandArray m_rand;
@@ -200,7 +198,7 @@ private:
 
     skVector2 initializeRect(void);
     skVector2 initializeRectSort(void);
-    
+
     void doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigned int color) const;
 
     static skScalar unitRandom(void);
@@ -219,17 +217,13 @@ int main(int argc, char** argv)
 Application::Application() :
     m_manager(nullptr),
     m_window(nullptr),
-    m_font(nullptr),
     m_done(false)
 {
 }
 
 Application::~Application()
 {
-    skDeleteFont(m_font);
-    m_font = nullptr;
     skDeleteContext(skGetCurrentContext());
-
     delete m_manager;
 }
 
@@ -241,7 +235,6 @@ skScalar Application::unitRandom(void)
 void Application::initialize(void)
 {
     skRandInit();
-
     m_manager = new skWindowManager();
     m_window  = m_manager->create("", 800, 600, WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN);
     m_manager->addHandler(this);
@@ -250,7 +243,6 @@ void Application::initialize(void)
     m_manager->broadcastEvent(SK_WIN_SIZE);
 
     m_lastFill = 0x00000000;
-    m_font     = skNewFont(SK_FONT_UI, 48, 128);
 }
 
 skVector2 Application::initializeRect(void)
@@ -262,8 +254,9 @@ skVector2 Application::initializeRect(void)
     {
         m_sort[i].m_used = 0;
         m_sort[i].m_rect = m_rand[i];
-        x                = m_sort[i].m_rect.width;
-        y                = m_sort[i].m_rect.height;
+
+        x = m_sort[i].m_rect.width;
+        y = m_sort[i].m_rect.height;
 
         if (maxRects.x < x)
             maxRects.x = x;
@@ -340,6 +333,8 @@ void Application::handle(const skEventType& evt, skWindow* caller)
     case SK_MOUSE_PRESSED:
     case SK_MOUSE_RELEASED:
     case SK_MOUSE_WHEEL:
+    case SK_WIN_SHOWN:
+    case SK_WIN_HIDDEN:
         break;
     }
 }
@@ -357,8 +352,6 @@ void Application::doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigne
     skColor1ui(CS_Grey00);
     skStroke();
 }
-
-const skScalar PADDING = 0;
 
 void Application::draw(void)
 {
@@ -447,8 +440,7 @@ void Application::draw(void)
 
     for (; shelf < m_size.y && i<ColorSize; shelf += (SKuint16)mx> 0 ? maxRects.y : mx)
     {
-        x = m_size.x / 2 + PADDING;
-
+        x = m_size.x / 2;
         mx = 0;
         while (i < ColorSize && x + m_sort[i].m_rect.width < m_size.x)
         {
@@ -489,7 +481,6 @@ void Application::draw(void)
                 }
             }
             x += m_sort[i].m_rect.width;
-
             // rectSubSort();
             ++i;
         }
@@ -502,10 +493,6 @@ void Application::draw(void)
     skColor1ui(CS_Grey00);
     skLine(m_size.x / 2, 0, m_size.x / 2, m_size.y);
     skStroke();
-
-    skSetFont1f(m_font, SK_FONT_SIZE, 24);
-    skColor1ui(CS_Color04HL);
-    skDisplayString(m_font, "Randomly generated rectangle sizes", -1, m_size.x / 2 + 20, m_size.y - 50);
 
     m_window->flush();
 }
