@@ -38,10 +38,10 @@ enum SKbackend
 #define SK_NO_STATUS (-1)
 
 #define SK_SIZE_HANDLE(x) \
-    typedef struct x##_t       \
+    typedef struct x##_t  \
     {                     \
-        size_t unused;     \
-    }*(x)
+        size_t unused;    \
+    } * (x)
 
 
 SK_SIZE_HANDLE(SKcontext);
@@ -382,9 +382,9 @@ SK_API void skSetPaint1f(SKpaintStyle en, SKscalar v);
 SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c);
 
 
-SK_API void skGetPaint1i(SKpaintStyle en, SKint32 *v);
-SK_API void skGetPaint1f(SKpaintStyle en, SKscalar *v);
-SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32 *v);
+SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v);
+SK_API void skGetPaint1f(SKpaintStyle en, SKscalar* v);
+SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v);
 
 
 
@@ -437,6 +437,7 @@ SK_API void skGetImage1f(SKimage image, SKimageOptionEnum en, SKscalar* v);
 */
 
 SK_API SKfont skNewFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
+SK_API void   skSelectFont(SKfont font);
 SK_API void   skDeleteFont(SKfont font);
 SK_API SKfont skNewFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
 SK_API SKfont skNewFontFromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi);
@@ -500,12 +501,13 @@ SK_API void skStroke(void);
 */
 
 SK_API SKcachedString skNewCachedString(void);
-SK_API void          skDeleteCachedString(SKcachedString str);
-SK_API void          skDisplayCachedString(SKcachedString str);
-SK_API void          skBuildCachedString(SKcachedString str, const char* data, SKuint32 size, SKuint32 dpi);
-SK_API void          skGetCachedString2fv(const SKcachedString str, SKstringOptionEnum en, SKscalar* v);
-SK_API void          skDisplayString(SKfont font, const char* str, SKint32 len, SKscalar x, SKscalar y);
-SK_API void          skDisplayFormattedString(SKfont font, SKscalar x, SKscalar y, const char* str, ...);
+SK_API void           skDeleteCachedString(SKcachedString str);
+SK_API void           skDisplayCachedString(SKcachedString str);
+SK_API void           skRebuildCachedString(SKcachedString str);
+SK_API void           skBuildCachedString(SKcachedString str, const char* data);
+SK_API void           skGetCachedString2fv(const SKcachedString str, SKstringOptionEnum en, SKscalar* v);
+SK_API void           skDisplayString(SKfont font, const char* str, SKint32 len, SKscalar x, SKscalar y);
+SK_API void           skDisplayFormattedString(SKfont font, SKscalar x, SKscalar y, const char* str, ...);
 
 #ifndef SK_NO_PALLETTE
 

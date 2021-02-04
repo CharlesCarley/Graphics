@@ -21,8 +21,9 @@
 */
 #include "skContext.h"
 #include <cstdio>
-#include "Utils/skDisableWarnings.h"
 #include "OpenGL/skImageOpenGL.h"
+#include "Utils/skDisableWarnings.h"
+#include "Utils/skLogger.h"
 #include "Window/OpenGL/skOpenGL.h"
 #include "skCachedString.h"
 #include "skFont.h"
@@ -43,20 +44,21 @@ skContext::skContext(SKint32 backend)
     m_tempPath = new skPath();
     m_tempPath->setContext(this);
     m_workPath = m_tempPath;
+    m_workFont = nullptr;
 
     m_matrix.makeIdentity();
 
     m_options.verticesPerSegment = 5;
-    m_options.clearColor           = skColor(0, 0, 0, 1);
-    m_options.clearRectangle       = skRectangle(0, 0, 1, 1);
-    m_options.contextSize          = skVector2::Unit;
-    m_options.contextScale         = skVector2::Unit;
-    m_options.contextBias          = skVector2::Zero;
-    m_options.opacity              = 1.f;
-    m_options.metrics              = SK_PIXEL;
-    m_options.currentViewport      = 0;
-    m_options.defaultFont          = SK_DEFAULT;
-    m_options.yIsUp                = false;
+    m_options.clearColor         = skColor(0, 0, 0, 1);
+    m_options.clearRectangle     = skRectangle(0, 0, 1, 1);
+    m_options.contextSize        = skVector2::Unit;
+    m_options.contextScale       = skVector2::Unit;
+    m_options.contextBias        = skVector2::Zero;
+    m_options.opacity            = 1.f;
+    m_options.metrics            = SK_PIXEL;
+    m_options.currentViewport    = 0;
+    m_options.defaultFont        = SK_DEFAULT;
+    m_options.yIsUp              = false;
 
     if (m_backend == SK_BE_OpenGL)
         makeCurrent(new skOpenGLRenderer());
@@ -162,6 +164,13 @@ SKfont skContext::newFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
     }
 
     return SK_FONT_HANDLE(fnt);
+}
+
+void skContext::selectFont(SKfont font)
+{
+    m_workFont = SK_FONT(font);
+    if (m_workFont)
+        m_workFont->setContext(this);
 }
 
 SKfont skContext::newFontFromFile(const char* path, SKuint32 size, SKuint32 dpi)
@@ -300,7 +309,7 @@ void skContext::selectPath(skPath* pth)
         if (m_tempPath)
             m_workPath = m_tempPath;
         else
-            printf("Attempt to select a null working path\n");
+            skLogd(LD_WARN, "Attempt to select a null working path\n");
     }
 }
 
@@ -806,7 +815,6 @@ SKcachedString skContext::newString(void)
 
     skCachedString* cstr = new skCachedString();
     cstr->setContext(this);
-    cstr->getFont()->setContext(this);
     cstr->getPath()->setContext(this);
 
     return (SKcachedString)cstr;

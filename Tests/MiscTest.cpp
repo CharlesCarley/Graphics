@@ -50,7 +50,7 @@ private:
     int              m_projectionMode;
     int              m_accumulator, m_q, m_p;
     SKfont           m_font;
-
+    SKcachedString   m_cstring;
 
 private:
     void handle(const skEventType& evt, skWindow* caller) override
@@ -97,13 +97,25 @@ private:
         }
         else if (m_keyboard->key == KC_1)
         {
-            m_projectionMode = 0;
-            m_window->refresh();
+            if (m_projectionMode != 0)
+            {
+                skSetFont1f(m_font, SK_FONT_SIZE, 32);
+                skSetContext1i(SK_Y_UP, 0);
+                skRebuildCachedString(m_cstring);
+                m_projectionMode = 0;
+                m_window->refresh();
+            }
         }
         else if (m_keyboard->key == KC_2)
         {
-            m_projectionMode = 1;
-            m_window->refresh();
+            if (m_projectionMode != 1)
+            {
+                skSetFont1f(m_font, SK_FONT_SIZE, 32);
+                skSetContext1i(SK_Y_UP, 1);
+                skRebuildCachedString(m_cstring);
+                m_projectionMode = 1;
+                m_window->refresh();
+            }
         }
         else if (m_keyboard->key == KC_UP)
         {
@@ -154,7 +166,11 @@ private:
 
     void initTest()
     {
+        skLoadIdentity();
         skSetContext1f(SK_OPACITY, 1.f);
+        skSetContext2f(SK_CONTEXT_SCALE, 1.f, 1.f);
+        skSetContext2f(SK_CONTEXT_BIAS,  0.f, 0.f);
+
         skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
         skSetPaint1f(SK_PEN_WIDTH, 1.01f);
@@ -204,7 +220,8 @@ public:
         m_accumulator(0),
         m_q(0),
         m_p(0),
-        m_font(nullptr)
+        m_font(nullptr),
+        m_cstring(nullptr)
     {
     }
 
@@ -244,6 +261,11 @@ public:
             size -= 8;
             yPos += size + 10;
         }
+
+        skLoadIdentity();
+        skTranslate(20, yPos);
+        skDisplayCachedString(m_cstring);
+        skLoadIdentity();
     }
 
 
@@ -363,10 +385,14 @@ public:
     {
         skNewContext();
 
+        m_font = skNewFont(SK_DEFAULT, 72, 128);
         skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
         skSetFont1i(m_font, SK_FONT_MIPMAP, 1);
+        skSelectFont(m_font);
 
-        m_font = skNewFont(SK_DEFAULT, 72, 128);
+        skSetFont1f(m_font, SK_FONT_SIZE, 32);
+        m_cstring = skNewCachedString();
+        skBuildCachedString(m_cstring, "The Quick Brown Fox Jumped Over The Lazy Dog");
         initTest();
     }
 

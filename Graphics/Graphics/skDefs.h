@@ -52,6 +52,7 @@ struct SKcontextOptions
 #define SK_TEXTURE(x) reinterpret_cast<skTexture*>((x))
 #define SK_FONT(x) reinterpret_cast<skFont*>((x))
 #define SK_CONTEXT(x) reinterpret_cast<skContext*>((x))
+#define SK_CSTRING(x) reinterpret_cast<skCachedString*>((x))
 #define SK_TO_HANDLE(x, h) reinterpret_cast<h>((x))
 #define SK_IMAGE_HANDLE(x) SK_TO_HANDLE(x, SKimage)
 #define SK_FONT_HANDLE(x) SK_TO_HANDLE(x, SKfont)

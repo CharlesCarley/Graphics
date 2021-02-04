@@ -29,6 +29,7 @@
 #include "Utils/skPlatformHeaders.h"
 #include "skBuiltinFonts.h"
 #include "skContext.h"
+#include "skPath.h"
 #include "skTexture.h"
 
 // TODO clean and check all of this...
@@ -257,6 +258,132 @@ bool skFont::fromFile(const char* path, SKuint32 size, SKuint32 dpi)
 bool skFont::fromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi)
 {
     return loadTrueTypeFont(mem, len, size, dpi);
+}
+
+void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y)
+{
+    SK_CHECK_PARAM(path, SK_RETURN_VOID);
+    SK_CHECK_PARAM(str, SK_RETURN_VOID);
+
+    const skContext& ctx   = ref();
+    const skVector2& scale = ctx.getContextV(SK_CONTEXT_SCALE);
+    const skVector2& bias  = ctx.getContextV(SK_CONTEXT_BIAS);
+
+    const bool yIsUp   = ctx.getContextI(SK_Y_UP) == 1;
+    const bool doScale = scale != skVector2::Unit;
+    const bool doBias  = bias != skVector2::Zero;
+
+    const skScalar fntScale = getRelativeScale();
+    if (skIsZero(fntScale))
+        return;
+
+    path->setContext(this->getContext());
+    path->clear();
+
+    const skScalar tx = 1.f / skScalar(m_image->getWidth());
+    const skScalar ty = 1.f / skScalar(m_image->getHeight());
+
+    skScalar xOffs = x;
+    skScalar yOffs = y;
+
+    const skScalar baseHeight = m_opts.yMax * fntScale;
+    const skScalar baseWidth  = m_opts.xMax * fntScale;
+
+    for (size_t i = 0; i < len; i++)
+    {
+        const char  cCh = str[i];
+        const Char& ch  = getChar(cCh);
+
+        if (cCh == ' ')
+        {
+            xOffs += baseWidth * fntScale;
+            continue;
+        }
+
+        if (cCh == '\t')
+        {
+            xOffs += baseWidth * m_opts.tabSize * fntScale;
+            continue;
+        }
+
+        if (cCh == '\n')
+        {
+            if (yIsUp)
+                yOffs -= baseHeight;
+            else
+                yOffs += baseHeight;
+
+            xOffs = x;
+            continue;
+        }
+
+        // unknown char
+        if (skIsZero(ch.w) || skIsZero(ch.h))
+            continue;
+
+        skScalar txMin, txMax, tyMin, tyMax;
+        skScalar vxMin, vxMax, vyMin, vyMax;
+
+        const skScalar charWidth  = ch.w * fntScale;
+        const skScalar charHeight = ch.h * fntScale;
+        const skScalar charOffs   = ch.o * fntScale;
+
+
+        vxMin = xOffs;
+        vxMax = xOffs + charWidth;
+
+        if (yIsUp)
+        {
+            vyMin = yOffs - charOffs;
+            vyMax = yOffs + charHeight - charOffs;
+        }
+        else
+        {
+            vyMax = yOffs + charOffs;
+            vyMin = yOffs + charHeight + charOffs;
+        }
+
+        if (doScale)
+        {
+            vxMin *= scale.x;
+            vxMax *= scale.x;
+            vyMin *= scale.y;
+            vyMax *= scale.y;
+        }
+        if (doBias)
+        {
+            vxMin += bias.x;
+            vxMax += bias.x;
+            vyMin += bias.y;
+            vyMax += bias.y;
+        }
+
+        xOffs += charWidth;
+        txMin = ch.x;
+        tyMax = ch.y;
+        txMax = ch.x + ch.w;
+        tyMin = ch.y + ch.h;
+
+        txMin *= tx;
+        txMax *= tx;
+        tyMin *= ty;
+        tyMax *= ty;
+
+        tyMin = skScalar(1.f) - tyMin;
+        tyMax = skScalar(1.f) - tyMax;
+
+        skVertex lt(vxMin, vyMin, txMin, tyMin);
+        skVertex rb(vxMax, vyMax, txMax, tyMax);
+        skVertex rt(vxMax, vyMin, txMax, tyMin);
+        skVertex lb(vxMin, vyMax, txMin, tyMax);
+
+        path->addVert(lt);
+        path->addVert(rt);
+        path->addVert(rb);
+        path->addVert(rb);
+        path->addVert(lb);
+        path->addVert(lt);
+    }
 }
 
 void skFont::getI(SKfontOptionEnum opt, SKint32* v) const

@@ -562,6 +562,14 @@ SK_API SKfont skNewFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
     return ctx->newFont(font, size, dpi);
 }
 
+SK_API void skSelectFont(SKfont font)
+{
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+
+    ctx->selectFont(font);
+}
+
 SK_API SKfont skNewFontFromFile(const char* path, SKuint32 size, SKuint32 dpi)
 {
     skContext* ctx = SK_CURRENT_CTX();
@@ -917,38 +925,43 @@ SK_API SKcachedString skNewCachedString(void)
     return ctx->newString();
 }
 
-SK_API void skDeleteCachedString(const SKcachedString str)
+SK_API void skDeleteCachedString(SKcachedString str)
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
 
-    delete (skCachedString*)str;
+    delete SK_CSTRING(str);
 }
 
-SK_API void skBuildCachedString(const SKcachedString str, const char* data, SKuint32 size, SKuint32 dpi)
+SK_API void skRebuildCachedString(SKcachedString str)
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+    SK_CHECK_PARAM(str, SK_RETURN_VOID);
 
-    SK_CHECK_PARAM(str && data, SK_RETURN_VOID);
+    SK_CSTRING(str)->rebuild();
+}
 
-    skFont* fnt = ((skCachedString*)str)->getFont();
+SK_API void skBuildCachedString(const SKcachedString str, const char* data)
+{
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+    SK_CHECK_PARAM(str, SK_RETURN_VOID);
+    SK_CHECK_PARAM(data, SK_RETURN_VOID);
 
-    fnt->fromEnum((SKbuiltinFont)ctx->getOptions().defaultFont, size, dpi);
+    skFont* fnt = ctx->getWorkFont();
+    SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
 
-    fnt->setI(SK_FONT_FILTER, SK_FILTER_LINEAR_NONE);
-    fnt->setI(SK_FONT_MIPMAP, 1);
-    fnt->setI(SK_FONT_SIZE, size);
-
-    ((skCachedString*)str)->buildString(data, (SKuint32)strlen(data), 0, 0);
+    SK_CSTRING(str)->buildString(data);
 }
 
 SK_API void skDisplayCachedString(const SKcachedString str)
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
+    SK_CHECK_PARAM(str, SK_RETURN_VOID);
 
-    return ctx->displayString((skCachedString*)str);
+    return ctx->displayString(SK_CSTRING(str));
 }
 
 SK_API void skGetCachedString2fv(const SKcachedString str, SKstringOptionEnum en, SKscalar* v)
@@ -958,8 +971,7 @@ SK_API void skGetCachedString2fv(const SKcachedString str, SKstringOptionEnum en
     SK_CHECK_PARAM(str, SK_RETURN_VOID);
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
 
-    const skVector2 vec = ((skCachedString*)str)->getV(en);
-
+    const skVector2 vec = SK_CSTRING(str)->getV(en);
     v[0] = vec.x;
     v[1] = vec.y;
 }

@@ -90,6 +90,9 @@ public:
                     SKuint32    size,
                     SKuint32    dpi);
 
+    void buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y);
+
+
     const Char& getChar(char ch) const;
 
     skScalar getScale(void) const

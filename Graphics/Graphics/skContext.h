@@ -32,6 +32,7 @@ private:
     SKint32          m_id;
     skPaint*         m_workPaint;
     skPath*          m_workPath;
+    skFont*          m_workFont;
     skPath*          m_tempPath;
     SKint32          m_backend;
     skMatrix4        m_matrix;
@@ -74,6 +75,8 @@ public:
     void selectImage(SKimage ima);
 
     SKfont newFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
+
+    void selectFont(SKfont font);
 
     SKfont newFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
 
@@ -134,22 +137,33 @@ public:
 
     const skPaint& getWorkPaint(void) const
     {
+        SK_ASSERT(m_workPaint);
         return *m_workPaint;
     }
 
     const skPath& getWorkPath(void) const
     {
+        SK_ASSERT(m_workPath);
         return *m_workPath;
     }
 
+
     skPaint& getWorkPaint(void)
     {
+        SK_ASSERT(m_workPaint);
         return *m_workPaint;
     }
 
     skPath& getWorkPath(void)
     {
+        SK_ASSERT(m_workPath);
         return *m_workPath;
+    }
+
+    skFont* getWorkFont(void) const
+    {
+        // must check, this is allowed to be null
+        return m_workFont;
     }
 
     skMatrix4& getMatrix(void)

@@ -301,123 +301,8 @@ void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len
     if (!font || !len || !m_curPaint)
         return;
 
-    const skContext& ctx   = ref();
-    const skVector2  scale = ctx.getContextV(SK_CONTEXT_SCALE);
-
-    const bool yIsUp = ctx.getContextI(SK_Y_UP) == 1;
-
-    const skScalar fntScale = font->getRelativeScale();
-    if (skIsZero(fntScale))
-        return;
-
-    skImageOpenGL* img = (skImageOpenGL*)font->getImage();
-    if (!img)
-        return;
-
-    m_fontPath->setContext(this->getContext());
-    m_fontPath->clear();
-
-    const skScalar tx = 1.f / skScalar(img->getWidth());
-    const skScalar ty = 1.f / skScalar(img->getHeight());
-
-    skScalar xOffs = x;
-    skScalar yOffs = y;
-
-    const skScalar baseHeight = font->getChar('0').h * fntScale;
-    const skScalar baseWidth  = font->getChar('0').w * fntScale;
-
-    skScalar tab = 4;
-    font->getF(SK_FONT_TAB_SIZE, &tab);
-
-    for (size_t i = 0; i < len; i++)
-    {
-        const char          cCh = str[i];
-        const skFont::Char& ch  = font->getChar(cCh);
-
-        if (cCh == ' ')
-        {
-            xOffs += baseWidth * fntScale;
-            continue;
-        }
-
-        if (cCh == '\t')
-        {
-            xOffs += baseWidth * tab * fntScale;
-            continue;
-        }
-
-        if (cCh == '\n')
-        {
-            if (yIsUp)
-                yOffs -= baseHeight;
-            else
-                yOffs += baseHeight;
-
-            xOffs = x;
-            continue;
-        }
-
-        // unknown char
-        if (skIsZero(ch.w) || skIsZero(ch.h))
-            continue;
-
-        skScalar txMin, txMax, tyMin, tyMax;
-        skScalar vxMin, vxMax, vyMin, vyMax;
-
-        const skScalar charWidth  = ch.w * fntScale;
-        const skScalar charHeight = ch.h * fntScale;
-        const skScalar charOffs   = ch.o * fntScale;
-
-
-        vxMin = xOffs;
-        vxMax = xOffs + charWidth;
-
-        if (yIsUp)
-        {
-            vyMin = yOffs - charOffs;
-            vyMax = yOffs + charHeight - charOffs;
-        }
-        else
-        {
-            vyMax = yOffs + charOffs;
-            vyMin = yOffs + charHeight + charOffs;
-        }
-
-        vxMin *= scale.x;
-        vxMax *= scale.x;
-        vyMin *= scale.x;
-        vyMax *= scale.x;
-
-        xOffs += charWidth;
-
-        txMin = ch.x;
-        tyMax = ch.y;
-        txMax = ch.x + ch.w;
-        tyMin = ch.y + ch.h;
-
-        txMin *= tx;
-        txMax *= tx;
-        tyMin *= ty;
-        tyMax *= ty;
-
-        // inverted y
-        tyMin = skScalar(1.f) - tyMin;
-        tyMax = skScalar(1.f) - tyMax;
-
-        skVertex lt(vxMin, vyMin, txMin, tyMin);
-        skVertex rb(vxMax, vyMax, txMax, tyMax);
-        skVertex rt(vxMax, vyMin, txMax, tyMin);
-        skVertex lb(vxMin, vyMax, txMin, tyMax);
-
-        m_fontPath->addVert(lt);
-        m_fontPath->addVert(rt);
-        m_fontPath->addVert(rb);
-        m_fontPath->addVert(rb);
-        m_fontPath->addVert(lb);
-        m_fontPath->addVert(lt);
-    }
-
-    m_curPaint->m_brushPattern = img;
+    font->buildPath(m_fontPath, str, len, x, y);
+    m_curPaint->m_brushPattern = font->getImage();
 
     m_fillOp              = GL_TRIANGLES;
     m_curPaint->m_program = m_fntShader;
@@ -427,11 +312,15 @@ void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len
     m_curPaint->m_program      = nullptr;
 }
 
-
-
 void skOpenGLRenderer::displayString(skCachedString* str)
 {
-    skImageOpenGL* img = (skImageOpenGL*)str->getFont()->getImage();
+    SK_CHECK_PARAM(str, SK_RETURN_VOID);
+    const skContext& ctx = ref();
+
+    skFont* fnt = ctx.getWorkFont();
+    SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
+
+    skImageOpenGL* img = (skImageOpenGL*)fnt->getImage();
 
     m_curPaint->m_brushPattern = img;
     m_fillOp                   = GL_TRIANGLES;

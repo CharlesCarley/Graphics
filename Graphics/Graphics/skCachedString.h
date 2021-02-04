@@ -22,6 +22,7 @@
 #ifndef _skCachedString_h_
 #define _skCachedString_h_
 
+#include "Utils/skString.h"
 #include "skPath.h"
 
 
@@ -29,24 +30,19 @@ class skCachedString : public skContextObj
 {
 private:
     skVector2 m_size;
-    skFont*   m_font;
     skPath*   m_path;
+    skString  m_cache;
 
 public:
     skCachedString();
     virtual ~skCachedString();
 
-    void buildString(const char* str, SKuint32 len, skScalar x, skScalar y);
-    void displayString(const char* str, SKuint32 len, skScalar x, skScalar y);
+    void rebuild();
+    void buildString(const char* str);
 
     skPath* getPath() const
     {
         return m_path;
-    }
-
-    skFont* getFont() const
-    {
-        return m_font;
     }
 
     bool isBuilt() const
