@@ -34,7 +34,7 @@
 #include "skGraphics.h"
 
 const SKuint32 WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
-const int      MaxTest     = 4;
+const int      MaxTest     = 5;
 
 
 
@@ -45,11 +45,11 @@ private:
     skWindow*        m_window;
     skKeyboard*      m_keyboard;
     skMouse*         m_mouse;
-
-    skVector2 m_size, m_mouseCo;
-    int       m_test;
-    int       m_projectionMode;
-    int       m_accumulator, m_q, m_p;
+    skVector2        m_size, m_mouseCo;
+    int              m_test;
+    int              m_projectionMode;
+    int              m_accumulator, m_q, m_p;
+    SKfont           m_font;
 
 
 private:
@@ -154,10 +154,14 @@ private:
 
     void initTest()
     {
+        skSetContext1f(SK_OPACITY, 1.f);
+        skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
+        skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
+        skSetPaint1f(SK_PEN_WIDTH, 1.01f);
+
         if (m_test == 0)
         {
             m_accumulator = 0;
-
             skSetContext1i(SK_VERTICES_PER_SEGMENT, 32);
             skSetContext1f(SK_OPACITY, 0.6f);
             skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
@@ -167,19 +171,12 @@ private:
         else if (m_test == 1)
         {
             skSetContext1i(SK_VERTICES_PER_SEGMENT, 32);
-            skSetContext1f(SK_OPACITY, 1.f);
-            skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
-            skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
             skSetPaint1f(SK_PEN_WIDTH, 2);
             m_accumulator = 32;
         }
         else if (m_test == 2)
         {
             skSetContext1i(SK_VERTICES_PER_SEGMENT, 16);
-            skSetContext1f(SK_OPACITY, 1.f);
-            skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
-            skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
-            skSetPaint1f(SK_PEN_WIDTH, 1.01f);
         }
         else if (m_test == 3)
         {
@@ -190,6 +187,9 @@ private:
             skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
             skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
             skSetPaint1f(SK_PEN_WIDTH, 1.01f);
+        }
+        else if (m_test == 4)
+        {
         }
     }
 
@@ -203,15 +203,52 @@ public:
         m_projectionMode(0),
         m_accumulator(0),
         m_q(0),
-        m_p(0)
+        m_p(0),
+        m_font(nullptr)
     {
     }
 
     ~Application() override
     {
+        skDeleteFont(m_font);
         skDeleteContext(skGetCurrentContext());
         delete m_manager;
     }
+
+    void drawTest5() const
+    {
+        skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
+        skSetFont1i(m_font, SK_FONT_MIPMAP, 0);
+
+        const char* text = "The Quick Brown Fox Jumped Over The Lazy Dog";
+
+
+        SKuint32 colors[5] = {
+            CS_LabelEmphasis1,
+            CS_LabelEmphasis2,
+            CS_LabelEmphasis3,
+            CS_LabelEmphasis1,
+            CS_LabelEmphasis2,
+        };
+
+
+        SKint32 size = 48, yPos = 20;
+        for (unsigned int color : colors)
+        {
+            skSetFont1i(m_font, SK_FONT_SIZE, size);
+
+            skColor1ui(color);
+            skDisplayString(m_font,
+                            text,
+                            -1,
+                            20,
+                            yPos);
+
+            size -= 8;
+            yPos += size + 10;
+        }
+    }
+
 
     void drawTest4() const
     {
@@ -303,6 +340,9 @@ public:
 
         switch (m_test)
         {
+        case 4:
+            drawTest5();
+            break;
         case 3:
             drawTest4();
             break;
@@ -325,12 +365,13 @@ public:
     void setupGraphics()
     {
         skNewContext();
+        m_font = skNewFont(SK_DEFAULT, 72, 128);
         initTest();
     }
 
     int run()
     {
-        m_manager  = new skWindowManager(WM_CTX_PLATFORM);
+        m_manager = new skWindowManager(WM_CTX_PLATFORM);
         m_window  = m_manager->create("MiscTest",
                                      800,
                                      600,

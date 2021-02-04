@@ -308,25 +308,24 @@ void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len
     const skContext& ctx   = ref();
     const skVector2  scale = ctx.getContextV(SK_CONTEXT_SCALE);
 
-    const bool yIsUp = ctx.getContextF(SK_Y_UP) == 1;
+    const bool yIsUp = ctx.getContextI(SK_Y_UP) == 1;
 
     const skScalar fntScale = font->getRelativeScale();
     if (skIsZero(fntScale))
         return;
 
-    auto* img = (skImageOpenGL*)font->getImage();
+    skImageOpenGL* img = (skImageOpenGL*)font->getImage();
     if (!img)
         return;
-
 
     m_fontPath->setContext(this->getContext());
     m_fontPath->clear();
 
-    const skScalar tXspace = 1.f / skScalar(img->getWidth());
-    const skScalar tYspace = 1.f / skScalar(img->getHeight());
+    const skScalar tx = 1.f / skScalar(img->getWidth());
+    const skScalar ty = 1.f / skScalar(img->getHeight());
 
-    skScalar xoffs = x;
-    skScalar yoffs = y;
+    skScalar xOffs = x;
+    skScalar yOffs = y;
 
     const skScalar baseHeight = font->getChar('0').h * fntScale;
     const skScalar baseWidth  = font->getChar('0').w * fntScale;
@@ -334,34 +333,31 @@ void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len
     skScalar tab = 4;
     font->getF(SK_FONT_TAB_SIZE, &tab);
 
-    const char* poin = str;
-
     for (size_t i = 0; i < len; i++)
     {
-        const char          cCh = poin[i];
+        const char          cCh = str[i];
         const skFont::Char& ch  = font->getChar(cCh);
-
 
         if (cCh == ' ')
         {
-            xoffs += baseWidth * fntScale;
+            xOffs += baseWidth * fntScale;
             continue;
         }
 
         if (cCh == '\t')
         {
-            xoffs += baseWidth * tab * fntScale;
+            xOffs += baseWidth * tab * fntScale;
             continue;
         }
 
         if (cCh == '\n')
         {
             if (yIsUp)
-                yoffs -= baseHeight;
+                yOffs -= baseHeight;
             else
-                yoffs += baseHeight;
+                yOffs += baseHeight;
 
-            xoffs = x;
+            xOffs = x;
             continue;
         }
 
@@ -369,62 +365,66 @@ void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len
         if (skIsZero(ch.w) || skIsZero(ch.h))
             continue;
 
-        skScalar tXmin, tXmax, tYmin, tYmax;
-        skScalar vXmin, vXmax, vYmin, vYmax;
+        skScalar txMin, txMax, tyMin, tyMax;
+        skScalar vxMin, vxMax, vyMin, vyMax;
 
-        // vert coords
-        vXmin = xoffs;
-        vXmax = xoffs + ch.w * fntScale;
+        const skScalar charWidth  = ch.w * fntScale;
+        const skScalar charHeight = ch.h * fntScale;
+        const skScalar charOffs   = ch.o * fntScale;
+
+
+        vxMin = xOffs;
+        vxMax = xOffs + charWidth;
 
         if (yIsUp)
         {
-            vYmin = yoffs + ch.o * fntScale;
-            vYmax = yoffs + ch.h * fntScale + ch.o * fntScale;
+            vyMin = yOffs - charOffs;
+            vyMax = yOffs + charHeight - charOffs;
         }
         else
         {
-            vYmax = yoffs + ch.o * fntScale;
-            vYmin = yoffs + ch.h * fntScale + ch.o * fntScale;
+            vyMax = yOffs + charOffs;
+            vyMin = yOffs + charHeight + charOffs;
         }
 
-        vXmin *= scale.x;
-        vXmax *= scale.x;
-        vYmin *= scale.x;
-        vYmax *= scale.x;
+        vxMin *= scale.x;
+        vxMax *= scale.x;
+        vyMin *= scale.x;
+        vyMax *= scale.x;
 
-        xoffs += ch.w * fntScale;
+        xOffs += charWidth;
 
-        tXmin = ch.x;
-        tYmax = ch.y;
-        tXmax = ch.x + ch.w;
-        tYmin = ch.y + ch.h;
+        txMin = ch.x;
+        tyMax = ch.y;
+        txMax = ch.x + ch.w;
+        tyMin = ch.y + ch.h;
 
-        tXmin *= tXspace;
-        tXmax *= tXspace;
-        tYmin *= tYspace;
-        tYmax *= tYspace;
+        txMin *= tx;
+        txMax *= tx;
+        tyMin *= ty;
+        tyMax *= ty;
 
         // inverted y
-        tYmin = skScalar(1.f) - tYmin;
-        tYmax = skScalar(1.f) - tYmax;
+        tyMin = skScalar(1.f) - tyMin;
+        tyMax = skScalar(1.f) - tyMax;
 
-        skVertex lt(vXmin, vYmin, tXmin, tYmin);
-        skVertex rb(vXmax, vYmax, tXmax, tYmax);
-        skVertex rt(vXmax, vYmin, tXmax, tYmin);
-        skVertex lb(vXmin, vYmax, tXmin, tYmax);
+        skVertex lt(vxMin, vyMin, txMin, tyMin);
+        skVertex rb(vxMax, vyMax, txMax, tyMax);
+        skVertex rt(vxMax, vyMin, txMax, tyMin);
+        skVertex lb(vxMin, vyMax, txMin, tyMax);
 
         m_fontPath->addVert(lt);
         m_fontPath->addVert(rt);
         m_fontPath->addVert(rb);
-
         m_fontPath->addVert(rb);
         m_fontPath->addVert(lb);
         m_fontPath->addVert(lt);
     }
 
     m_curPaint->m_brushPattern = img;
-    m_fillOp                   = GL_TRIANGLES;
-    m_curPaint->m_program      = m_fntShader;
+
+    m_fillOp              = GL_TRIANGLES;
+    m_curPaint->m_program = m_fntShader;
     fill(m_fontPath);
 
     m_curPaint->m_brushPattern = nullptr;

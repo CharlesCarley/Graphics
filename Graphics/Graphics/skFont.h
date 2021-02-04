@@ -33,6 +33,8 @@ typedef struct SKfontOptions
     SKint32  dpi;
     SKint32  tabSize;
     SKint32  average;
+    SKint32  xMax;
+    SKint32  yMax;
 } SKfontOptions;
 
 class skFont : public skContextObj
@@ -44,35 +46,49 @@ public:
         skScalar w, h, o;
     };
 
-    Char*    m_chars;
-    SKint32  m_size;
-    SKint32  m_dpi;
-    SKint32  m_width;
-    SKint32  m_height;
-    SKint32  m_pitch;
-    SKint32  m_xMax;
-    SKint32  m_xAvr;
-    SKint32  m_yMax;
-    skScalar m_pointScale;
-
+    Char*         m_chars;
+    skScalar      m_pointScale;
     skTexture*    m_image;
     SKfontOptions m_opts;
 
-    bool loadTTF(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi);
+    bool loadTTF(const void* mem, 
+        SKuint32 len, 
+        SKuint32 size, 
+        SKuint32 dpi);
 
 public:
     skFont();
     ~skFont();
 
-    void    getCharExtents(char c, SKtextExtent* te) const;
-    void    getCharExtents(char c, SKint32* w, SKint32* h) const;
-    void    getTextExtents(const char* str, SKint32 len, SKint32* w, SKint32* h) const;
-    void    getTextExtentsExt(const char* str, SKint32 idx, SKint32 len, SKint32* w, SKint32* h) const;
+    void getCharExtents(char c, SKtextExtent* te) const;
+
+    void getCharExtents(char c, SKint32* w, SKint32* h) const;
+
+    void getTextExtents(const char* str,
+                        SKint32     len,
+                        SKint32*    w,
+                        SKint32*    h) const;
+
+    void getTextExtentsExt(const char* str,
+                           SKint32     idx,
+                           SKint32     len,
+                           SKint32*    w,
+                           SKint32*    h) const;
+
     SKint32 getAverageWidth(void);
 
-    bool fromEnum(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
-    bool fromFile(const char* path, SKuint32 size, SKuint32 dpi);
-    bool fromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi);
+    bool fromEnum(SKbuiltinFont font,
+                  SKuint32      size,
+                  SKuint32      dpi);
+
+    bool fromFile(const char* path,
+                  SKuint32    size,
+                  SKuint32    dpi);
+
+    bool fromMemory(const void* mem,
+                    SKuint32    len,
+                    SKuint32    size,
+                    SKuint32    dpi);
 
     const Char& getChar(char ch) const;
 
@@ -102,9 +118,11 @@ public:
     }
 
     void getI(SKfontOptionEnum opt, SKint32* v) const;
+
     void setI(SKfontOptionEnum opt, SKint32 v);
 
     void getF(SKfontOptionEnum opt, skScalar* v) const;
+
     void setF(SKfontOptionEnum opt, skScalar v);
 };
 
