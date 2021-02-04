@@ -217,9 +217,6 @@ public:
 
     void drawTest5() const
     {
-        skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
-        skSetFont1i(m_font, SK_FONT_MIPMAP, 0);
-
         const char* text = "The Quick Brown Fox Jumped Over The Lazy Dog";
 
 
@@ -365,6 +362,10 @@ public:
     void setupGraphics()
     {
         skNewContext();
+
+        skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
+        skSetFont1i(m_font, SK_FONT_MIPMAP, 1);
+
         m_font = skNewFont(SK_DEFAULT, 72, 128);
         initTest();
     }

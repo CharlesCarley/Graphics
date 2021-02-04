@@ -449,7 +449,7 @@ SK_API void skImageRadialGradient(SKimage      ima,
                                   SKcolorStop* stops,
                                   SKint32      stopCount)
 {
-    auto* img = SKcheckType<skTexture, SKimage, skContext>(ima, SK_CURRENT_CTX());
+    skTexture* img = SKcheckType<skTexture, SKimage, skContext>(ima, SK_CURRENT_CTX());
     SK_CHECK_PARAM(img, SK_RETURN_VOID);
     SK_CHECK_PARAM(stops, SK_RETURN_VOID);
 

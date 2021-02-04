@@ -61,7 +61,7 @@ void skCachedString::buildString(const char* str, SKuint32 len, skScalar x, skSc
     if (skIsZero(fntScale))
         return;
 
-    auto* img = (skImageOpenGL*)m_font->getImage();
+    skImageOpenGL* img = (skImageOpenGL*)m_font->getImage();
     if (!img)
         return;
 

@@ -36,7 +36,7 @@ class skFont;
 
 struct SKcontextOptions
 {
-    SKint32       verticesPerIteration;
+    SKint32       verticesPerSegment;
     skColor       clearColor;
     skRectangle   clearRectangle;
     skVector2     contextSize;

@@ -431,7 +431,7 @@ void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len
 
 void skOpenGLRenderer::displayString(skCachedString* str)
 {
-    auto* img = (skImageOpenGL*)str->getFont()->getImage();
+    skImageOpenGL* img = (skImageOpenGL*)str->getFont()->getImage();
 
     m_curPaint->m_brushPattern = img;
     m_fillOp                   = GL_TRIANGLES;

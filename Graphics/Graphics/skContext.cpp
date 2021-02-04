@@ -21,6 +21,7 @@
 */
 #include "skContext.h"
 #include <cstdio>
+#include "Utils/skDisableWarnings.h"
 #include "OpenGL/skImageOpenGL.h"
 #include "Window/OpenGL/skOpenGL.h"
 #include "skCachedString.h"
@@ -45,7 +46,7 @@ skContext::skContext(SKint32 backend)
 
     m_matrix.makeIdentity();
 
-    m_options.verticesPerIteration = 5;
+    m_options.verticesPerSegment = 5;
     m_options.clearColor           = skColor(0, 0, 0, 1);
     m_options.clearRectangle       = skRectangle(0, 0, 1, 1);
     m_options.contextSize          = skVector2::Unit;
@@ -125,7 +126,7 @@ skTexture* skContext::createInternalImage(SKuint32 w, SKuint32 h, SKpixelFormat 
 
 void skContext::deleteImage(SKimage ima)
 {
-    auto* img = SK_TEXTURE(ima);
+    skTexture* img = SK_TEXTURE(ima);
 
     if (!img || img->getContext() != this)
         return;
@@ -137,7 +138,7 @@ void skContext::selectImage(SKimage ima)
 {
     if (m_workPaint)
     {
-        auto* img = SK_TEXTURE(ima);
+        skTexture* img = SK_TEXTURE(ima);
 
         if (img && img->getContext() != this)
             return;
@@ -215,7 +216,7 @@ void skContext::displayString(SKfont font, const char* str, SKuint32 len, skScal
 {
     if (m_renderContext)
     {
-        auto* fnt = SK_FONT(font);
+        skFont* fnt = SK_FONT(font);
         if (!fnt || fnt->getContext() != this)
             return;
 
@@ -334,7 +335,7 @@ SKint32 skContext::getContextI(SKcontextOptionEnum op) const
     switch (op)
     {
     case SK_VERTICES_PER_SEGMENT:
-        return m_options.verticesPerIteration;
+        return m_options.verticesPerSegment;
     case SK_OPACITY:
         return skClamp<SKint32>(SKint32(m_options.opacity * 255.f), 0, 255);
     case SK_METRICS_MODE:
@@ -362,7 +363,7 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
     switch (op)
     {
     case SK_VERTICES_PER_SEGMENT:
-        m_options.verticesPerIteration = skMax<SKint32>(v, 1);
+        m_options.verticesPerSegment = skMax<SKint32>(v, 1);
         break;
     case SK_OPACITY:
         m_options.opacity = (skScalar)skClamp<SKint32>(v, 0, 255) / (skScalar)255.f;
@@ -395,7 +396,7 @@ skScalar skContext::getContextF(SKcontextOptionEnum op) const
     switch (op)
     {
     case SK_VERTICES_PER_SEGMENT:
-        return skScalar(m_options.verticesPerIteration);
+        return skScalar(m_options.verticesPerSegment);
     case SK_OPACITY:
         return m_options.opacity;
     case SK_METRICS_MODE:
@@ -423,7 +424,7 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
     switch (op)
     {
     case SK_VERTICES_PER_SEGMENT:
-        m_options.verticesPerIteration = skMax<SKint32>(SKint32(v), 1);
+        m_options.verticesPerSegment = skMax<SKint32>(SKint32(v), 1);
         break;
     case SK_OPACITY:
         m_options.opacity = skClamp<skScalar>(v, 0.f, 1.f);

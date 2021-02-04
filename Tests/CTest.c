@@ -49,7 +49,6 @@ void UpdateMouseCo(void* user, SKint32 x, SKint32 y)
 
 void WindowClosed(SKwindow window, void* user)
 {
-    skWindowClose(window);
 }
 
 void WindowResized(SKwindow window, void* user, SKuint32 width, SKuint32 height)
