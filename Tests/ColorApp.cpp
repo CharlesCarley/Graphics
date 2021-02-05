@@ -287,7 +287,7 @@ public:
         m_manager->broadcastEvent(SK_WIN_SIZE);
 
         m_lastFill = 0x00000000;
-        m_font     = skNewFont(SK_DEFAULT, 48, 96);
+        m_font     = skNewFont(SK_FONT_DEFAULT, 48, 96);
         m_grad     = skCreateImage(512, 512, SK_RGBA);
 
         SKcolorStop colorStops[] = {

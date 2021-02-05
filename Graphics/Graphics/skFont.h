@@ -22,7 +22,9 @@
 #ifndef _skFont_h_
 #define _skFont_h_
 
+#include "Utils/skArray.h"
 #include "skContextObject.h"
+class skImage;
 
 typedef struct SKfontOptions
 {
@@ -37,19 +39,70 @@ typedef struct SKfontOptions
     SKint32  yMax;
 } SKfontOptions;
 
+
+typedef struct SKChar
+{
+    skScalar x, y;
+    skScalar w, h;
+    skScalar xOffs;
+    skScalar yOffs;
+} SKchar;
+
+typedef struct SKGlyphMetrics
+{
+    SKint32 yBearing, height;
+    SKint32 width, advance;
+    SKint32 i;
+} SKglyphMetrics;
+
+class skGlyph
+{
+private:
+    SKuint8* m_data;
+    SKuint32 m_width, m_height;
+
+    SKglyphMetrics m_metrics;
+    
+public:
+    skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h);
+    ~skGlyph();
+
+    void merge(skFont *font, skImage* dest, SKuint32 x, SKuint32 y);
+    void setMetrics(const SKglyphMetrics& metrics);
+
+    SKuint32 getWidth() const
+    {
+        return m_width;
+    }
+
+    SKuint32 getHeight() const
+    {
+        return m_height;
+    }
+
+    const SKglyphMetrics& getMertics() const
+    {
+        return m_metrics;
+    }
+
+};
+
+
+
 class skFont : public skContextObj
 {
 public:
-    struct Char
-    {
-        skScalar x, y;
-        skScalar w, h, o;
-    };
+    typedef SKChar Char;
 
+public:
     Char*         m_chars;
     skScalar      m_pointScale;
     skTexture*    m_image;
     SKfontOptions m_opts;
+
+    skArray<skGlyph*> m_glyphs;
+
+    void loadGylphs(struct FT_FaceRec_* face);
 
     bool loadTrueTypeFont(const void* mem,
                           SKsize      len,
@@ -65,15 +118,15 @@ public:
     void getCharExtent(char c, SKint32* w, SKint32* h) const;
 
     void getTextExtent(const char* str,
-                        SKint32     len,
-                        SKint32*    w,
-                        SKint32*    h) const;
+                       SKint32     len,
+                       SKint32*    w,
+                       SKint32*    h) const;
 
     void getTextExtentExt(const char* str,
-                           SKint32     idx,
-                           SKint32     len,
-                           SKint32*    w,
-                           SKint32*    h) const;
+                          SKint32     idx,
+                          SKint32     len,
+                          SKint32*    w,
+                          SKint32*    h) const;
 
     SKint32 getAverageWidth(void);
 

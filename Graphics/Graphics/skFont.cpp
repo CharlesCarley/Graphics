@@ -24,8 +24,10 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #include FT_ERRORS_H
+#include "Image/skPalette.h"
 #include "Utils/skFileStream.h"
 #include "Utils/skLogger.h"
+#include "Utils/skMemoryUtils.h"
 #include "Utils/skPlatformHeaders.h"
 #include "skBuiltinFonts.h"
 #include "skContext.h"
@@ -41,8 +43,50 @@
 const SKint32      CharStart = 32;
 const SKint32      CharEnd   = 127;
 const SKint32      CharTotal = CharEnd - CharStart;
-const SKint32      Spacer    = 3;
-const skFont::Char NullChar  = {0.f, 0.f, 0.f, 0.f, 0.f};
+const SKint32      Spacer    = 2;
+const skFont::Char NullChar  = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+
+
+skGlyph::skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h) :
+    m_width(w),
+    m_height(h)
+{
+    SKsize lim = (SKsize)w * (SKsize)h;
+    m_data     = new SKuint8[lim];
+    skMemcpy(m_data, ptr, lim);
+    skMemset(&m_metrics, 0, sizeof(SKglyphMetrics));
+}
+
+skGlyph::~skGlyph()
+{
+    delete[] m_data;
+}
+
+void skGlyph::setMetrics(const SKglyphMetrics& metrics)
+{
+    skMemcpy(&m_metrics, &metrics, sizeof(SKglyphMetrics));
+}
+
+
+void skGlyph::merge(skFont* font, skImage* dest, SKuint32 x, SKuint32 y)
+{
+    if (!m_data)
+        return;
+
+    SKuint8* ptr = m_data;
+    SKuint32 ix, iy;
+
+    for (iy = 0; iy < m_height; ++iy)
+    {
+        const SKint32 ny = y + iy;
+        for (ix = 0; ix < m_width; ix++)
+        {
+            const SKint32 nx = x + ix;
+            const SKuint8 ch = *ptr++;
+            dest->setPixel(nx, ny, skPixel(ch, ch, ch, ch));
+        }
+    }
+}
 
 
 skFont::skFont() :
@@ -149,10 +193,10 @@ void skFont::getTextExtent(const char* str, SKint32 len, SKint32* w, SKint32* h)
 }
 
 void skFont::getTextExtentExt(const char*   str,
-                               const SKint32 idx,
-                               SKint32       len,
-                               SKint32*      w,
-                               SKint32*      h) const
+                              const SKint32 idx,
+                              SKint32       len,
+                              SKint32*      w,
+                              SKint32*      h) const
 {
     if (!str || !m_chars || !w && !h)
         return;
@@ -225,19 +269,19 @@ bool skFont::fromEnum(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
     switch (font)
     {
 #ifdef Graphics_EXTRA_BUILTIN_FONTS
-    case SK_CMN_FONT_SPC1:
+    case SK_FONT_SPC1:
         return loadTrueTypeFont(ROCKSALT_REGULAR, sizeof ROCKSALT_REGULAR, size, dpi);
-    case SK_CMN_FONT_SPC2:
+    case SK_FONT_SPC2:
         return loadTrueTypeFont(CAVEAT_VARIABLEFONT_WGHT, sizeof CAVEAT_VARIABLEFONT_WGHT, size, dpi);
     case SK_FONT_UI:
         return loadTrueTypeFont(ROBOTO_REGULAR, sizeof ROBOTO_REGULAR, size, dpi);
     case SK_FONT_UI_LIGHT:
         return loadTrueTypeFont(ROBOTO_LIGHT, sizeof ROBOTO_LIGHT, size, dpi);
 #endif
-    case SK_DEFAULT_FIXED:
+    case SK_FONT_DEFAULT_FIXED:
         return loadTrueTypeFont(DEJAVUMONO, sizeof DEJAVUMONO, size, dpi);
     case SK_FONT_MAX:
-    case SK_DEFAULT:
+    case SK_FONT_DEFAULT:
         return loadTrueTypeFont(DEJAVU, sizeof DEJAVU, size, dpi);
     default:
         break;
@@ -275,7 +319,7 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
     const skVector2& scale = ctx.getContextV(SK_CONTEXT_SCALE);
     const skVector2& bias  = ctx.getContextV(SK_CONTEXT_BIAS);
 
-    const bool yIsUp   = ctx.getContextI(SK_Y_UP) == 1;
+    const bool yIsUp = ctx.getContextI(SK_Y_UP) == 1;
 
     const bool doScale = scale != skVector2::Unit;
     const bool doBias  = bias != skVector2::Zero;
@@ -324,7 +368,6 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
             continue;
         }
 
-        // unknown char
         if (skIsZero(ch.w) || skIsZero(ch.h))
             continue;
 
@@ -333,7 +376,7 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
 
         const skScalar charWidth  = ch.w * fntScale;
         const skScalar charHeight = ch.h * fntScale;
-        const skScalar charOffs   = ch.o * fntScale;
+        const skScalar charOffs   = ch.yOffs * fntScale;
 
 
         vxMin = xOffs;
@@ -341,8 +384,8 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
 
         if (yIsUp)
         {
-            vyMin = yOffs - charOffs;
-            vyMax = yOffs + charHeight - charOffs;
+            vyMin = yOffs + charOffs;
+            vyMax = yOffs + charHeight + charOffs;
         }
         else
         {
@@ -365,7 +408,8 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
             vyMax += bias.y;
         }
 
-        xOffs += charWidth;
+        xOffs += charWidth + ch.xOffs * fntScale;
+
         txMin = ch.x;
         tyMax = ch.y;
         txMax = ch.x + ch.w;
@@ -452,60 +496,74 @@ void skFont::setF(SKfontOptionEnum opt, skScalar v)
         m_opts.scale = v;
 }
 
-void Font_calculateLimits(FT_Face        face,
-                          const SKint32& space,
-                          SKint32&       w,
-                          SKint32&       h,
-                          SKint32&       xMax,
-                          SKint32&       yMax,
-                          SKint32&       xAvr)
+void skFont::loadGylphs(struct FT_FaceRec_* face)
 {
-    xMax = 0;
-    yMax = 0;
-    xAvr = 0;
+    m_glyphs.reserve(CharTotal);
+    SKglyphMetrics metrics = {};
 
-    SKint32 i;
-    for (i = CharStart; i < CharEnd; ++i)
+    m_opts.xMax    = 0;
+    m_opts.yMax    = 0;
+    m_opts.average = 0;
+
+    SKint32 i, j = 0;
+    for (i = 0; i < CharTotal; ++i)
     {
-        if (FT_Load_Char(face, i, FT_LOAD_DEFAULT))
+        if (FT_Load_Char(face, i + CharStart, FT_LOAD_COMPUTE_METRICS | FT_LOAD_RENDER))
             continue;
 
         FT_GlyphSlot slot = face->glyph;
         if (!slot)
             continue;
+        FT_Render_Glyph(slot, FT_RENDER_MODE_LCD);
 
-        const SKint32 cx = slot->metrics.horiBearingX + slot->metrics.width;
-        const SKint32 cy = slot->metrics.height;
+        SKuint8* imgBuf = face->glyph->bitmap.buffer;
+        if (!imgBuf)
+            continue;
 
-        if (yMax < cy)
-            yMax = cy;
-        if (xMax < cx)
-            xMax = cx;
+        skGlyph* gylph = new skGlyph(imgBuf, slot->bitmap.width, slot->bitmap.rows);
+        m_glyphs.push_back(gylph);
 
-        xAvr += cx;
+
+        j++;
+        metrics.i        = i;
+        metrics.advance  = FTINT(slot->metrics.horiAdvance);
+        metrics.yBearing = FTINT(slot->metrics.horiBearingY);
+        metrics.width    = FTINT(slot->metrics.width);
+
+        gylph->setMetrics(metrics);
+
+        const SKint32 cx = gylph->getWidth();
+        const SKint32 cy = gylph->getHeight();
+
+        if (m_opts.xMax < cx)
+            m_opts.xMax = cx;
+        if (m_opts.yMax < cy)
+            m_opts.yMax = cy;
+
+        m_opts.average += cx;
     }
 
-    xMax = FTINT(xMax);
-    yMax = FTINT(yMax);
-    xAvr = FTINT(xAvr);
-    xAvr /= CharTotal;
+
+    if (j > 0)
+        m_opts.average /= j;
 
     skScalar sx, sy, sr;
-    sr = skSqrt(skScalar(CharTotal));
+    sr = skSqrt(skScalar(j));
 
-    sx = skScalar((xMax + space) * CharTotal);
+    sx = skScalar(m_opts.xMax * j);
     sx /= sr;
-    sx += skScalar(xMax);
+    sx += skScalar(m_opts.xMax);
 
-    sy = skScalar((yMax + space) * CharTotal);
+    sy = skScalar(m_opts.yMax * j);
     sy /= sr;
-    sy += skScalar(yMax);
+    sy += skScalar(m_opts.yMax);
 
-    w = (SKint32)sx;
-    h = (SKint32)sy;
+    delete m_image;
 
-    w = skMath::pow2(w);
-    h = skMath::pow2(h);
+    m_image = m_ctx->createInternalImage(
+        (SKint32)sx,
+        (SKint32)sy,
+        SK_ALPHA);
 }
 
 bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint32 dpi)
@@ -523,7 +581,7 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
 
     if (FT_New_Memory_Face(lib, (const FT_Byte*)mem, (FT_Long)len, 0, &face))
     {
-        skLogd(LD_INFO, "Failed to load .\n");
+        skLogd(LD_ERROR, "Failed to load font face.\n");
         return false;
     }
 
@@ -535,83 +593,74 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     if (FT_Set_Char_Size(face, FTI64(size), FTI64(size), dpi, dpi))
         return false;
 
-    SKuint32 ix, iy;
-    SKint32  x, y, w, h;
-    SKint32  i;
+    // load the glyphs
+    // computes the metrics
+    // creates the image
+    loadGylphs(face);
 
-    Font_calculateLimits(face,
-                         Spacer,
-                         w,
-                         h,
-                         m_opts.xMax,
-                         m_opts.yMax,
-                         m_opts.average);
 
-    delete m_image;
-
-    m_image      = m_ctx->createInternalImage(w, h, SK_ALPHA);
     skImage* ima = m_image->getInternalImage();
+    if (!ima)
+    {
+        skLogd(LD_ERROR, "Failed to get the image for the font.\n");
+        return false;
+    }
 
     m_chars = new Char[CharTotal];
+    skMemset(m_chars, 0, sizeof(Char) * CharTotal);
 
-    x = Spacer;
-    y = Spacer;
-    for (i = CharStart; i < CharEnd; ++i)
+    // merge it to the map
+
+    SKint32 x      = 0,
+            y      = 0,
+            rowMax = 0;
+
+    SKuint32 i;
+    for (i = 0; i < m_glyphs.size(); ++i)
     {
-        if (FT_Load_Char(face, i, FT_LOAD_RENDER))
+        skGlyph* glyph = m_glyphs[i];
+
+        glyph->merge(this, ima, x, y);
+
+        const SKglyphMetrics& metrics = glyph->getMertics();
+        SK_ASSERT(metrics.i < CharTotal);
+
+        if (i >= CharTotal)
             continue;
 
-        if (!face->glyph)
-            continue;
-
-        SKuint8* imgBuf = face->glyph->bitmap.buffer;
-        if (!imgBuf)
-            continue;
-
-        FT_GlyphSlot slot = face->glyph;
-        if (!slot)
-            continue;
-
-        FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
-
-        const SKint32  yBearing = FTINT(slot->metrics.horiBearingY);
-        const SKint32  xBearing = FTINT(slot->metrics.horiBearingX);
-        const SKint32  advance  = FTINT(slot->advance.x);
-        const SKint32  yOffs    = m_opts.yMax - yBearing;
-        const SKuint32 iHeight  = slot->bitmap.rows;
-
-        for (iy = 0; iy < iHeight && imgBuf; ++iy)
-        {
-            const SKint32 ny = y + iy;
-
-            for (ix = 0; ix < slot->bitmap.width; ix++)
-            {
-                const SKint32 nx = x + ix + xBearing;
-                const SKuint8 ch = *imgBuf++;
-                ima->setPixel(nx, ny, skPixel(ch, ch, ch, ch));
-            }
-        }
-
-        Char& ch = m_chars[i - CharStart];
+        Char& ch = m_chars[metrics.i];
         ch.x     = (SKscalar)x;
         ch.y     = (SKscalar)y;
-        ch.w     = (SKscalar)advance;
-        ch.h     = (SKscalar)m_opts.yMax;
-        ch.o     = (SKscalar)yOffs;
+        ch.w     = (SKscalar)glyph->getWidth();
+        ch.h     = (SKscalar)glyph->getHeight();
+        ch.xOffs = (SKscalar)(metrics.advance - metrics.width);
+        ch.yOffs = (SKscalar)(m_opts.yMax - metrics.yBearing);
 
-        const SKint32 nx = m_opts.xMax + Spacer;
-        x += nx;
-        if (x + nx > w)
+        rowMax = skMax<SKuint32>(rowMax, glyph->getHeight());
+
+        //ima->strokeRect(ch.x, ch.y, ch.w, ch.h, skPalette::White);
+
+        // compute the next offset in the map
+
+
+        SKuint32 nx = glyph->getWidth() + Spacer;
+        if (x + nx + m_opts.xMax >= ima->getWidth())
         {
             x = Spacer;
-            y += m_opts.yMax + Spacer;
+            y += rowMax + Spacer;
+            rowMax = 0;
         }
+        else
+            x += nx;
+
+        delete glyph;
     }
 
     FT_Done_Face(face);
     FT_Done_FreeType(lib);
     getAverageWidth();
 
-    //m_image->save("FontTest.png");
+    m_glyphs.clear();
+    m_image->save("FontTest.png");
     return true;
 }

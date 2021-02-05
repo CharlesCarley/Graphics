@@ -282,16 +282,16 @@ typedef SKenum SKfontOptionEnum;
 
 enum SKBuiltinFont
 {
-    SK_DEFAULT,
-    SK_DEFAULT_FIXED,
+    SK_FONT_DEFAULT,
+    SK_FONT_DEFAULT_FIXED,
 #ifdef Graphics_EXTRA_BUILTIN_FONTS
     // https://fonts.google.com/
     // Rock_Salt
-    SK_CMN_FONT_SPC1,
+    SK_FONT_SPC1,
 
     // https://fonts.google.com/
     // Caveat
-    SK_CMN_FONT_SPC2,
+    SK_FONT_SPC2,
 
     // https://fonts.google.com/
     // Roboto

@@ -233,7 +233,7 @@ public:
 
     void drawTest5() const
     {
-        const char* text = "The Quick Brown Fox Jumped Over The Lazy Dog";
+        const char* text = "The quick brown fox jumped over the lazy dog";
 
 
         SKuint32 colors[5] = {
@@ -384,7 +384,7 @@ public:
     {
         skNewContext();
 
-        m_font = skNewFont(SK_DEFAULT, 72, 128);
+        m_font = skNewFont(SK_FONT_DEFAULT, 72, 128);
         skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
         skSetFont1i(m_font, SK_FONT_MIPMAP, 1);
         skSelectFont(m_font);

@@ -57,7 +57,7 @@ skContext::skContext(SKint32 backend)
     m_options.opacity            = 1.f;
     m_options.metrics            = SK_PIXEL;
     m_options.currentViewport    = 0;
-    m_options.defaultFont        = SK_DEFAULT;
+    m_options.defaultFont        = SK_FONT_DEFAULT;
     m_options.yIsUp              = false;
 
     if (m_backend == SK_BE_OpenGL)
@@ -384,7 +384,7 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
         m_options.currentViewport = v ? true : false;
         break;
     case SK_DEFAULT_FONT:
-        m_options.defaultFont = v >= SK_DEFAULT && v < SK_FONT_MAX ? v : SK_DEFAULT;
+        m_options.defaultFont = v >= SK_FONT_DEFAULT && v < SK_FONT_MAX ? v : SK_FONT_DEFAULT;
         break;
     case SK_Y_UP:
         m_options.yIsUp = v != 0;
