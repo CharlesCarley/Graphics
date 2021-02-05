@@ -60,16 +60,16 @@ public:
     skFont();
     ~skFont();
 
-    void getCharExtents(char c, SKtextExtent* te) const;
+    void getCharExtent(char c, SKtextExtent* te) const;
 
-    void getCharExtents(char c, SKint32* w, SKint32* h) const;
+    void getCharExtent(char c, SKint32* w, SKint32* h) const;
 
-    void getTextExtents(const char* str,
+    void getTextExtent(const char* str,
                         SKint32     len,
                         SKint32*    w,
                         SKint32*    h) const;
 
-    void getTextExtentsExt(const char* str,
+    void getTextExtentExt(const char* str,
                            SKint32     idx,
                            SKint32     len,
                            SKint32*    w,

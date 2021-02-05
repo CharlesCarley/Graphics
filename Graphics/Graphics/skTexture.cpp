@@ -160,23 +160,23 @@ void skTexture::makeGradient(SKint32      fx,
             skColor a, b, c(0, 0, 0, 1);
             for (s = 0; s < stopCount; ++s)
             {
-                if (stops[s].m_offset > G)
+                if (stops[s].offset > G)
                     break;
             }
 
             s2 = skClamp<SKint32>(s - 1, 0, stopCount - 1);
 
-            const skScalar s0 = stops[s2].m_offset;
-            const skScalar s1 = stops[s2 + 1].m_offset;
+            const skScalar s0 = stops[s2].offset;
+            const skScalar s1 = stops[s2 + 1].offset;
 
             if (G <= s0)
-                c = skColor(stops[s2].m_color);
+                c = skColor(stops[s2].color);
             else if (G >= s1)
-                c = skColor(stops[s2 + 1].m_color);
+                c = skColor(stops[s2 + 1].color);
             else
             {
-                a = skColor(stops[s2].m_color);
-                b = skColor(stops[s2 + 1].m_color);
+                a = skColor(stops[s2].color);
+                b = skColor(stops[s2 + 1].color);
                 c = (a * (s1 - G) + b * (G - s0)) / (s1 - s0);
             }
             c.limit();

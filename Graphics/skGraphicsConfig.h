@@ -23,6 +23,9 @@
 #define _skGraphicsConfig_h_
 
 #define Graphics_BUILD_WINDOW
+/* #undef Graphics_NO_PALETTE */
+/* #undef Graphics_OP_CHECKS */
+
 
 #define SK_CAST(x, T) reinterpret_cast<T>(x)
 #define SK_CAST_CTX(x) SK_CAST(x, skContext*)
@@ -33,7 +36,7 @@
 #define SK_RETURN_VOID
 #define SKcolorf(x) (skScalar(x) * skColorUtils::i255)
 
-#ifdef SidFramework_OP_CHECKS
+#ifndef Graphics_OP_CHECKS
 
 #define SK_CHECK_PARAM(x, r)
 #define SK_CHECK_CTX(x, r)
@@ -42,7 +45,7 @@
 
 #define SK_CHECK_PARAM(x, r) \
     if (!(x))                \
-    return r
+        return r
 
 #define SK_CHECK_CTX(x, r) SK_CHECK_PARAM(((x) && (x)->isValid()), r)
 

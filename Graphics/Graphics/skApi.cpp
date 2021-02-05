@@ -55,7 +55,7 @@ SK_API void skDeleteContext(SKcontext ctx)
     delete context;
 }
 
-SK_API SKcontext skGetCurrentContext(void)
+SK_API SKcontext skGetCurrentContext()
 {
     return g_currentContext;
 }
@@ -83,7 +83,7 @@ SK_API void skFlush()
     ctx->flush();
 }
 
-SK_API void skClearContext(void)
+SK_API void skClearContext()
 {
     skContext* ctx = SK_CURRENT_CTX();
     if (!ctx)
@@ -195,7 +195,7 @@ SK_API void skSetContext4f(SKcontextOptionEnum en,
     ctx->setContextR(en, skRectangle(f0, f1, f2, f3));
 }
 
-SK_API SKpaint skGetWorkingPaint(void)
+SK_API SKpaint skGetWorkingPaint()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, nullptr);
@@ -203,7 +203,7 @@ SK_API SKpaint skGetWorkingPaint(void)
     return (SKpaint)&ctx->getWorkPaint();
 }
 
-SK_API SKpath skGetWorkingPath(void)
+SK_API SKpath skGetWorkingPath()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, nullptr);
@@ -211,7 +211,7 @@ SK_API SKpath skGetWorkingPath(void)
     return (SKpath)&ctx->getWorkPath();
 }
 
-SK_API void skLoadIdentity(void)
+SK_API void skLoadIdentity()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
@@ -606,7 +606,7 @@ SK_API void skGetFontTextExtentEx(SKfont font, const char* text, SKint32 chidx, 
     SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
     SK_CHECK_PARAM(text, SK_RETURN_VOID);
 
-    fnt->getTextExtentsExt(text, chidx, len, w, h);
+    fnt->getTextExtentExt(text, chidx, len, w, h);
 }
 
 SK_API void skGetFontTextExtent(SKfont font, const char* text, SKint32 len, SKint32* w, SKint32* h)
@@ -615,7 +615,7 @@ SK_API void skGetFontTextExtent(SKfont font, const char* text, SKint32 len, SKin
     SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
     SK_CHECK_PARAM(text, SK_RETURN_VOID);
 
-    fnt->getTextExtents(text, len, w, h);
+    fnt->getTextExtent(text, len, w, h);
 }
 
 SK_API void skGetFontCharExtent(SKfont font, char ch, SKint32* w, SKint32* h)
@@ -623,7 +623,7 @@ SK_API void skGetFontCharExtent(SKfont font, char ch, SKint32* w, SKint32* h)
     skFont* fnt = SKcheckType<skFont, SKfont, skContext>(font, SK_CURRENT_CTX());
     SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
 
-    fnt->getCharExtents(ch, w, h);
+    fnt->getCharExtent(ch, w, h);
 }
 
 SK_API void skGetFontCharExtentEx(SKfont font, char ch, SKtextExtent* te)
@@ -631,7 +631,7 @@ SK_API void skGetFontCharExtentEx(SKfont font, char ch, SKtextExtent* te)
     skFont* fnt = SKcheckType<skFont, SKfont, skContext>(font, SK_CURRENT_CTX());
     SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
 
-    fnt->getCharExtents(ch, te);
+    fnt->getCharExtent(ch, te);
 }
 
 SK_API void skDisplayString(SKfont font, const char* str, SKint32 len, skScalar x, skScalar y)
@@ -723,8 +723,8 @@ SK_API void skPathSetScale(skScalar sx, skScalar sy)
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
 
-    ctx->getWorkPath()
-        .setScale(sx, sy);
+    ctx->getWorkPath().setScale(sx, sy);
+
     ctx->setContextV(SK_CONTEXT_SCALE, skVector2(sx, sy));
 }
 
@@ -827,7 +827,7 @@ SK_API void skArc(skScalar x, skScalar y, skScalar radius, skScalar angle1, skSc
         .arcTo(x1, y1, x2, y2, angle1, angle2, winding);
 }
 
-SK_API void skClosePath(void)
+SK_API void skClosePath()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
@@ -836,7 +836,7 @@ SK_API void skClosePath(void)
         .close();
 }
 
-SK_API void skClearPath(void)
+SK_API void skClearPath()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
@@ -901,7 +901,7 @@ SK_API void skPolygon(skScalar* vertices, SKuint32 count, SKuint32 close)
     pth.makePolygon(vertices, count, close != 0);
 }
 
-SK_API void skFill(void)
+SK_API void skFill()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
@@ -909,7 +909,7 @@ SK_API void skFill(void)
     ctx->fill();
 }
 
-SK_API void skStroke(void)
+SK_API void skStroke()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
@@ -917,7 +917,7 @@ SK_API void skStroke(void)
     ctx->stroke();
 }
 
-SK_API SKcachedString skNewCachedString(void)
+SK_API SKcachedString skNewCachedString()
 {
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, nullptr);

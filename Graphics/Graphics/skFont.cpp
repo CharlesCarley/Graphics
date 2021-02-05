@@ -68,7 +68,7 @@ skFont::~skFont()
     m_image = nullptr;
 }
 
-void skFont::getCharExtents(const char c, SKtextExtent* te) const
+void skFont::getCharExtent(const char c, SKtextExtent* te) const
 {
     if (!te || !m_chars)
         return;
@@ -83,7 +83,7 @@ void skFont::getCharExtents(const char c, SKtextExtent* te) const
     te->externalLeading = ch.w * scale;
 }
 
-void skFont::getCharExtents(const char c, SKint32* w, SKint32* h) const
+void skFont::getCharExtent(const char c, SKint32* w, SKint32* h) const
 {
     if (!m_chars)
         return;
@@ -105,7 +105,7 @@ void skFont::getCharExtents(const char c, SKint32* w, SKint32* h) const
         *h = (SKint32)(getChar(c).h * scale);
 }
 
-void skFont::getTextExtents(const char* str, SKint32 len, SKint32* w, SKint32* h) const
+void skFont::getTextExtent(const char* str, SKint32 len, SKint32* w, SKint32* h) const
 {
     if (!str || !m_chars || !w && !h)
         return;
@@ -148,7 +148,7 @@ void skFont::getTextExtents(const char* str, SKint32 len, SKint32* w, SKint32* h
         *h = (SKint32)(bh * scale);
 }
 
-void skFont::getTextExtentsExt(const char*   str,
+void skFont::getTextExtentExt(const char*   str,
                                const SKint32 idx,
                                SKint32       len,
                                SKint32*      w,
@@ -270,6 +270,7 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
     const skVector2& bias  = ctx.getContextV(SK_CONTEXT_BIAS);
 
     const bool yIsUp   = ctx.getContextI(SK_Y_UP) == 1;
+
     const bool doScale = scale != skVector2::Unit;
     const bool doBias  = bias != skVector2::Zero;
 

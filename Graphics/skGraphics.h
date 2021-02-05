@@ -96,8 +96,8 @@ typedef SKuint32 SKcolori;
 
 typedef struct SKcolorStop
 {
-    SKscalar m_offset;
-    SKcolori m_color;
+    SKscalar offset;
+    SKcolori color;
 } SKcolorStop;
 
 typedef SKint32 SKenum;
@@ -309,25 +309,18 @@ typedef SKenum SKimageOptionEnum;
 enum SKStringOptionEnum
 {
     SK_STRING_SIZE,
-    SK_STRING_EXTENTS,
+    SK_STRING_EXTENT,
 };
 typedef SKenum SKstringOptionEnum;
 
-/**********************************************************
-    Startup / Shutdown
-*/
+SK_API SKcontext skNewContext();
+SK_API void skDeleteContext(SKcontext ctx);
+SK_API void skSetCurrentContext(SKcontext ctx);
+SK_API SKcontext skGetCurrentContext();
 
-SK_API SKcontext skNewContext(void);
-SK_API void      skDeleteContext(SKcontext ctx);
-SK_API void      skSetCurrentContext(SKcontext ctx);
-SK_API SKcontext skGetCurrentContext(void);
 
-/**********************************************************
-   Context / Clearing
-*/
-
-SK_API void skClearContext(void);
-SK_API void skFlush(void);
+SK_API void skClearContext();
+SK_API void skFlush();
 
 SK_API void skSetContext1i(SKcontextOptionEnum en, SKint32 v);
 SK_API void skSetContext1f(SKcontextOptionEnum en, SKscalar v);
@@ -344,13 +337,13 @@ SK_API void skSetContext2f(SKcontextOptionEnum en, SKscalar f0, SKscalar f1);
 SK_API void skSetContext4i(SKcontextOptionEnum en, SKint32 i0, SKint32 i1, SKint32 i2, SKint32 i3);
 SK_API void skSetContext4f(SKcontextOptionEnum en, SKscalar f0, SKscalar f1, SKscalar f2, SKscalar f3);
 
-SK_API SKpaint skGetWorkingPaint(void);
-SK_API SKpath  skGetWorkingPath(void);
+SK_API SKpaint skGetWorkingPaint();
+SK_API SKpath  skGetWorkingPath();
 
 /**********************************************************
     Transforms
 */
-SK_API void skLoadIdentity(void);
+SK_API void skLoadIdentity();
 SK_API void skTranslate(SKscalar x, SKscalar y);
 SK_API void skScale(SKscalar x, SKscalar y);
 SK_API void skRotate(SKscalar r);
@@ -367,9 +360,6 @@ SK_API void skProjectContext(SKprojectionType pt);
 SK_API void skProjectRect(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 SK_API void skProjectBox(SKscalar x1, SKscalar y1, SKscalar x2, SKscalar y2);
 
-/**********************************************************
-   Surface painting
-*/
 
 SK_API void skColor1ui(SKuint32 c);
 SK_API void skColor3f(SKscalar r, SKscalar g, SKscalar b);
@@ -463,6 +453,7 @@ SK_API void   skSelectPath(SKpath pth);
 
 SK_API void skPathSetScale(SKscalar sx, SKscalar sy);
 SK_API void skPathSetBias(SKscalar tx, SKscalar ty);
+
 SK_API void skPathTransform(SKscalar* matrix);
 SK_API void skGetPathBoundingBox(SKaabbf* bb);
 
@@ -475,8 +466,8 @@ SK_API void skRectTo(SKscalar fx, SKscalar fy, SKscalar tx, SKscalar ty);
 
 SK_API void skArcTo(SKscalar x1, SKscalar y1, SKscalar x2, SKscalar y2, SKscalar angle1, SKscalar angle2, SKwinding winding);
 SK_API void skArc(SKscalar x, SKscalar y, SKscalar radius, SKscalar angle1, SKscalar angle2, SKwinding winding);
-SK_API void skClosePath(void);
-SK_API void skClearPath(void);
+SK_API void skClosePath();
+SK_API void skClearPath();
 
 /**********************************************************
    Common Polygons
@@ -493,14 +484,14 @@ SK_API void skPolygon(SKscalar* vertices, SKuint32 count, SKuint32 close_);
    Fills
 */
 
-SK_API void skFill(void);
-SK_API void skStroke(void);
+SK_API void skFill();
+SK_API void skStroke();
 
 /**********************************************************
    Strings
 */
 
-SK_API SKcachedString skNewCachedString(void);
+SK_API SKcachedString skNewCachedString();
 SK_API void           skDeleteCachedString(SKcachedString str);
 SK_API void           skDisplayCachedString(SKcachedString str);
 SK_API void           skRebuildCachedString(SKcachedString str);
@@ -509,7 +500,7 @@ SK_API void           skGetCachedString2fv(const SKcachedString str, SKstringOpt
 SK_API void           skDisplayString(SKfont font, const char* str, SKint32 len, SKscalar x, SKscalar y);
 SK_API void           skDisplayFormattedString(SKfont font, SKscalar x, SKscalar y, const char* str, ...);
 
-#ifndef SK_NO_PALLETTE
+#ifndef Graphics_NO_PALETTE
 
 const SKuint32 CS_Grey00           = 0x000000FF;
 const SKuint32 CS_Grey01           = 0x191919FF;

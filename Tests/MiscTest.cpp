@@ -37,7 +37,6 @@ const SKuint32 WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
 const int      MaxTest     = 5;
 
 
-
 class Application : public skWindowHandler
 {
 private:
@@ -263,7 +262,7 @@ public:
         }
 
         skLoadIdentity();
-        skTranslate(20, yPos);
+        skTranslate(20, skScalar(yPos));
         skDisplayCachedString(m_cstring);
         skLoadIdentity();
     }
@@ -392,7 +391,7 @@ public:
 
         skSetFont1f(m_font, SK_FONT_SIZE, 32);
         m_cstring = skNewCachedString();
-        skBuildCachedString(m_cstring, "The Quick Brown Fox Jumped Over The Lazy Dog");
+        skBuildCachedString(m_cstring, "0123456789\nabcdefghijklmnopqrstuvwxyz\n!@#$%^&*()_+");
         initTest();
     }
 

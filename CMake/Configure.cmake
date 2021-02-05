@@ -23,6 +23,8 @@ set_static_runtime()
 
 option(Graphics_BUILD_WINDOW      "Compile standalone window system" ON)
 option(Graphics_USE_SDL           "Build with SDL" OFF)
+option(Graphics_NO_PALETTE        "Disable builtin palette" OFF)
+option(Graphics_OP_CHECKS         "Check function parameters" ON)
 
 if (NOT Graphics_BUILD_WINDOW)
     set(Graphics_USE_SDL OFF CACHE BOOL "Build with SDL" FORCE)

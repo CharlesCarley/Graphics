@@ -59,10 +59,10 @@ void skCachedString::rebuild()
     m_path->setContext(this->getContext());
     m_path->clear();
 
-    fnt->buildPath(m_path, m_cache.c_str(), m_cache.size(), 0, 0);
+    fnt->buildPath(m_path, m_cache.c_str(), (SKuint32)m_cache.size(), 0, 0);
 
     SKint32 w, h;
-    fnt->getTextExtents(m_cache.c_str(), m_cache.size(), &w, &h);
+    fnt->getTextExtent(m_cache.c_str(), (SKuint32)m_cache.size(), &w, &h);
     m_size.x = (skScalar)w;
     m_size.y = (skScalar)h;
 }
@@ -86,10 +86,10 @@ void skCachedString::buildString(const char* str)
     m_path->setContext(this->getContext());
     m_path->clear();
 
-    fnt->buildPath(m_path, m_cache.c_str(), m_cache.size(), 0, 0);
+    fnt->buildPath(m_path, m_cache.c_str(), (SKuint32)m_cache.size(), 0, 0);
 
     SKint32 w, h;
-    fnt->getTextExtents(m_cache.c_str(), m_cache.size(), &w, &h);
+    fnt->getTextExtent(m_cache.c_str(), (SKuint32)m_cache.size(), &w, &h);
     m_size.x = (skScalar)w;
     m_size.y = (skScalar)h;
 }
@@ -99,7 +99,7 @@ skVector2 skCachedString::getV(SKstringOptionEnum op) const
     switch (op)
     {
     case SK_STRING_SIZE:
-    case SK_STRING_EXTENTS:
+    case SK_STRING_EXTENT:
         return m_size;
     }
     return skVector2(SK_NO_STATUS, SK_NO_STATUS);
