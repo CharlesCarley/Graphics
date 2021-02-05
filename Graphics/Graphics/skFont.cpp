@@ -661,6 +661,6 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     getAverageWidth();
 
     m_glyphs.clear();
-    m_image->save("FontTest.png");
+    //m_image->save("FontTest.png");
     return true;
 }
