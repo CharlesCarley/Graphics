@@ -31,57 +31,57 @@ else()
 endif()
 
 if (NOT Utils_INCLUDE)
-	message(SEND_ERROR "Utils_INCLUDE is not defined")
+    message(SEND_ERROR "Utils_INCLUDE is not defined")
 endif()
 
 
 if (Graphics_BUILD_WINDOW)
-	if (NOT Window_INCLUDE)
-		message(SEND_ERROR "Window_INCLUDE is not defined")
-	endif()
+    if (NOT Window_INCLUDE)
+        message(SEND_ERROR "Window_INCLUDE is not defined")
+    endif()
 endif()
-	
+    
 set(Graphics_SRC
-	skApi.cpp
-	skContext.cpp
-	skContextObject.cpp
-	skFont.cpp
-	skCachedString.cpp
-	skTexture.cpp
-	skPaint.cpp
-	skPath.cpp
-	
-	OpenGL/skOpenGLRenderer.cpp
-	OpenGL/skCachedProgram.cpp
-	OpenGL/skProgram.cpp
-	OpenGL/skVertexBuffer.cpp
-	OpenGL/skImageOpenGL.cpp
+    skApi.cpp
+    skContext.cpp
+    skContextObject.cpp
+    skFont.cpp
+    skCachedString.cpp
+    skTexture.cpp
+    skPaint.cpp
+    skPath.cpp
+    
+    OpenGL/skOpenGLRenderer.cpp
+    OpenGL/skCachedProgram.cpp
+    OpenGL/skProgram.cpp
+    OpenGL/skVertexBuffer.cpp
+    OpenGL/skImageOpenGL.cpp
 
-	../skGraphics.h
-	
-	../skGraphicsConfig.h
-	skDefs.h
-	skContext.h
-	skContextObject.h
-	skContour.h
-	skFont.h
-	skCachedString.h
-	skTexture.h
-	skPaint.h
-	skPath.h
-	skRender.h
-	OpenGL/skProgram.h
-	OpenGL/skVertexBuffer.h
-	OpenGL/skOpenGLRenderer.h
-	OpenGL/skCachedProgram.h
-	OpenGL/skImageOpenGL.h
-	README.md
+    ../skGraphics.h
+    
+    ../skGraphicsConfig.h
+    skDefs.h
+    skContext.h
+    skContextObject.h
+    skContour.h
+    skFont.h
+    skCachedString.h
+    skTexture.h
+    skPaint.h
+    skPath.h
+    skRender.h
+    OpenGL/skProgram.h
+    OpenGL/skVertexBuffer.h
+    OpenGL/skOpenGLRenderer.h
+    OpenGL/skCachedProgram.h
+    OpenGL/skImageOpenGL.h
+    README.md
 )
 
 if (Graphics_BUILD_WINDOW)
-	list(APPEND Graphics_SRC 
-		skWindowApi.cpp 
-		../skGraphicsWindow.h)
+    list(APPEND Graphics_SRC 
+        skWindowApi.cpp 
+        ../skGraphicsWindow.h)
 endif()
 
 set(Shaders
@@ -95,15 +95,15 @@ set(Shaders
 
 
 set(FONTS 
-	Builtin/DejaVuMono.ttf  
-	Builtin/DejaVu.ttf
-	)
+    Builtin/DejaVuMono.ttf  
+    Builtin/DejaVu.ttf
+    )
 
 if (Graphics_EXTRA_BUILTIN_FONTS)
-	list(APPEND FONTS Builtin/Caveat/Caveat-VariableFont_wght.ttf)
-	list(APPEND FONTS Builtin/Rock_Salt/RockSalt-Regular.ttf)
-	list(APPEND FONTS Builtin/Roboto/Roboto-Regular.ttf)
-	list(APPEND FONTS Builtin/Roboto/Roboto-Light.ttf)
+    list(APPEND FONTS Builtin/Caveat/Caveat-VariableFont_wght.ttf)
+    list(APPEND FONTS Builtin/Rock_Salt/RockSalt-Regular.ttf)
+    list(APPEND FONTS Builtin/Roboto/Roboto-Regular.ttf)
+    list(APPEND FONTS Builtin/Roboto/Roboto-Light.ttf)
 endif()
 
 add_templates_ex(skBuiltinFonts ${FONTS})
@@ -113,9 +113,9 @@ include_directories(
     ../
     OpenGL
     ${Utils_INCLUDE}
-	${Window_INCLUDE}
-	${Image_INCLUDE}
-	${FreeType_INCLUDE}
+    ${Window_INCLUDE}
+    ${Image_INCLUDE}
+    ${FreeType_INCLUDE}
     )
 
 
@@ -126,18 +126,18 @@ source_group(Resource\\Generated FILES ${skBuiltinFonts})
 add_library(
     ${TargetName} 
     ${Graphics_SRC}
-	${Shaders}      
-	${FONTS}
-	${skBuiltinFonts}
+    ${Shaders}      
+    ${FONTS}
+    ${skBuiltinFonts}
 )
 
 target_link_libraries(${TargetName} 
-		${OpenGL_LIB} 
-		${Utils_LIBRARY}
-		${Math_LIBRARY}
-		${Image_LIBRARY}
-		${Window_LIBRARY}
-		${FreeType_LIBRARY})
+        ${OpenGL_LIB} 
+        ${Utils_LIBRARY}
+        ${Math_LIBRARY}
+        ${Image_LIBRARY}
+        ${Window_LIBRARY}
+        ${FreeType_LIBRARY})
 
 set_target_properties(${TargetName} PROPERTIES FOLDER "${TargetGroup}")
 
