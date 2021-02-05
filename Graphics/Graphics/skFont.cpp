@@ -224,14 +224,20 @@ bool skFont::fromEnum(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
 {
     switch (font)
     {
+#ifdef Graphics_EXTRA_BUILTIN_FONTS
+    case SK_CMN_FONT_SPC1:
+        return loadTrueTypeFont(ROCKSALT_REGULAR, sizeof ROCKSALT_REGULAR, size, dpi);
+    case SK_CMN_FONT_SPC2:
+        return loadTrueTypeFont(CAVEAT_VARIABLEFONT_WGHT, sizeof CAVEAT_VARIABLEFONT_WGHT, size, dpi);
+    case SK_FONT_UI:
+        return loadTrueTypeFont(ROBOTO_REGULAR, sizeof ROBOTO_REGULAR, size, dpi);
+    case SK_FONT_UI_LIGHT:
+        return loadTrueTypeFont(ROBOTO_LIGHT, sizeof ROBOTO_LIGHT, size, dpi);
+#endif
     case SK_DEFAULT_FIXED:
         return loadTrueTypeFont(DEJAVUMONO, sizeof DEJAVUMONO, size, dpi);
-    case SK_DEFAULT:
-    case SK_CMN_FONT_SPC1:
-    case SK_CMN_FONT_SPC2:
-    case SK_FONT_UI:
-    case SK_FONT_UI_LIGHT:
     case SK_FONT_MAX:
+    case SK_DEFAULT:
         return loadTrueTypeFont(DEJAVU, sizeof DEJAVU, size, dpi);
     default:
         break;

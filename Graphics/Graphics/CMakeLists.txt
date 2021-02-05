@@ -94,7 +94,18 @@ set(Shaders
 
 
 
-set(FONTS Builtin/DejaVuMono.ttf  Builtin/DejaVu.ttf)
+set(FONTS 
+	Builtin/DejaVuMono.ttf  
+	Builtin/DejaVu.ttf
+	)
+
+if (Graphics_EXTRA_BUILTIN_FONTS)
+	list(APPEND FONTS Builtin/Caveat/Caveat-VariableFont_wght.ttf)
+	list(APPEND FONTS Builtin/Rock_Salt/RockSalt-Regular.ttf)
+	list(APPEND FONTS Builtin/Roboto/Roboto-Regular.ttf)
+	list(APPEND FONTS Builtin/Roboto/Roboto-Light.ttf)
+endif()
+
 add_templates_ex(skBuiltinFonts ${FONTS})
 
 include_directories(

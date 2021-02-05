@@ -284,10 +284,20 @@ enum SKBuiltinFont
 {
     SK_DEFAULT,
     SK_DEFAULT_FIXED,
+#ifdef Graphics_EXTRA_BUILTIN_FONTS
+    // https://fonts.google.com/
+    // Rock_Salt
     SK_CMN_FONT_SPC1,
+
+    // https://fonts.google.com/
+    // Caveat
     SK_CMN_FONT_SPC2,
+
+    // https://fonts.google.com/
+    // Roboto
     SK_FONT_UI,
     SK_FONT_UI_LIGHT,
+#endif
     SK_FONT_MAX,
 };
 typedef SKenum SKbuiltinFont;

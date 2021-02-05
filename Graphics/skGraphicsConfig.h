@@ -25,6 +25,7 @@
 #define Graphics_BUILD_WINDOW
 /* #undef Graphics_NO_PALETTE */
 /* #undef Graphics_OP_CHECKS */
+/* #undef Graphics_EXTRA_BUILTIN_FONTS */
 
 
 #define SK_CAST(x, T) reinterpret_cast<T>(x)
