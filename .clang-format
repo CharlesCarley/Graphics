@@ -15,7 +15,7 @@ AlignConsecutiveAssignments:         true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortFunctionsOnASingleLine:    false
 
-MaxEmptyLinesToKeep:                 2
+MaxEmptyLinesToKeep:                 1
 KeepEmptyLinesAtTheStartOfBlocks:   false
 
 

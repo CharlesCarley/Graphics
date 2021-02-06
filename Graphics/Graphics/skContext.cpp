@@ -355,12 +355,12 @@ SKint32 skContext::getContextI(SKcontextOptionEnum op) const
         return m_options.defaultFont;
     case SK_Y_UP:
         return m_options.yIsUp ? 1 : 0;
-    case SK_PROJECT:
-    case SK_CLEAR_COLOR:
-    case SK_CLEAR_RECT:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
+    //case SK_PROJECT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CLEAR_RECT:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
     default:
         break;
     }
@@ -389,12 +389,12 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
     case SK_Y_UP:
         m_options.yIsUp = v != 0;
         break;
-    case SK_CLEAR_COLOR:
-    case SK_CLEAR_RECT:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
-    case SK_PROJECT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CLEAR_RECT:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_PROJECT:
     default:
         break;
     }
@@ -414,13 +414,13 @@ skScalar skContext::getContextF(SKcontextOptionEnum op) const
         return m_options.currentViewport ? skScalar(1.0) : skScalar(0.0);
     case SK_Y_UP:
         return m_options.yIsUp ? skScalar(1.0) : skScalar(0.0);
-    case SK_CLEAR_COLOR:
-    case SK_CLEAR_RECT:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CLEAR_RECT:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
     default:
         break;
     }
@@ -451,12 +451,12 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
     case SK_Y_UP:
         m_options.yIsUp = skIsZero(v) ? true : false;
         break;
-    case SK_CLEAR_COLOR:
-    case SK_CLEAR_RECT:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_BIAS:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CLEAR_RECT:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
     default:
         break;
     }
@@ -468,17 +468,17 @@ skColor skContext::getContextC(SKcontextOptionEnum op) const
     {
     case SK_CLEAR_COLOR:
         return m_options.clearColor;
-    case SK_VERTICES_PER_SEGMENT:
-    case SK_CLEAR_RECT:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
-    case SK_OPACITY:
-    case SK_METRICS_MODE:
-    case SK_CURRENT_VIEWPORT:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
-    case SK_Y_UP:
+    //case SK_VERTICES_PER_SEGMENT:
+    //case SK_CLEAR_RECT:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_OPACITY:
+    //case SK_METRICS_MODE:
+    //case SK_CURRENT_VIEWPORT:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
+    //case SK_Y_UP:
     default:
         break;
     }
@@ -492,17 +492,17 @@ void skContext::setContextC(SKcontextOptionEnum op, const skColor& v)
     case SK_CLEAR_COLOR:
         m_options.clearColor = v;
         break;
-    case SK_VERTICES_PER_SEGMENT:
-    case SK_CLEAR_RECT:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
-    case SK_OPACITY:
-    case SK_METRICS_MODE:
-    case SK_CURRENT_VIEWPORT:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
-    case SK_Y_UP:
+    //case SK_VERTICES_PER_SEGMENT:
+    //case SK_CLEAR_RECT:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_OPACITY:
+    //case SK_METRICS_MODE:
+    //case SK_CURRENT_VIEWPORT:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
+    //case SK_Y_UP:
     default:
         break;
     }
@@ -518,15 +518,15 @@ skVector2 skContext::getContextV(SKcontextOptionEnum op) const
         return m_options.contextScale;
     case SK_CONTEXT_BIAS:
         return m_options.contextBias;
-    case SK_VERTICES_PER_SEGMENT:
-    case SK_CLEAR_COLOR:
-    case SK_CLEAR_RECT:
-    case SK_OPACITY:
-    case SK_METRICS_MODE:
-    case SK_CURRENT_VIEWPORT:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
-    case SK_Y_UP:
+    //case SK_VERTICES_PER_SEGMENT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CLEAR_RECT:
+    //case SK_OPACITY:
+    //case SK_METRICS_MODE:
+    //case SK_CURRENT_VIEWPORT:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
+    //case SK_Y_UP:
     default:
         break;
     }
@@ -547,15 +547,15 @@ void skContext::setContextV(SKcontextOptionEnum op, const skVector2& v)
     case SK_CONTEXT_BIAS:
         m_options.contextBias = v;
         break;
-    case SK_VERTICES_PER_SEGMENT:
-    case SK_CLEAR_COLOR:
-    case SK_CLEAR_RECT:
-    case SK_OPACITY:
-    case SK_METRICS_MODE:
-    case SK_CURRENT_VIEWPORT:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
-    case SK_Y_UP:
+    //case SK_VERTICES_PER_SEGMENT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CLEAR_RECT:
+    //case SK_OPACITY:
+    //case SK_METRICS_MODE:
+    //case SK_CURRENT_VIEWPORT:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
+    //case SK_Y_UP:
     default:
         break;
     }
@@ -567,17 +567,17 @@ skRectangle skContext::getContextR(SKcontextOptionEnum op) const
     {
     case SK_CLEAR_RECT:
         return m_options.clearRectangle;
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
-    case SK_VERTICES_PER_SEGMENT:
-    case SK_CLEAR_COLOR:
-    case SK_OPACITY:
-    case SK_METRICS_MODE:
-    case SK_CURRENT_VIEWPORT:
-    case SK_DEFAULT_FONT:
-    case SK_PROJECT:
-    case SK_Y_UP:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_VERTICES_PER_SEGMENT:
+    //case SK_CLEAR_COLOR:
+    //case SK_OPACITY:
+    //case SK_METRICS_MODE:
+    //case SK_CURRENT_VIEWPORT:
+    //case SK_DEFAULT_FONT:
+    //case SK_PROJECT:
+    //case SK_Y_UP:
     default:
         break;
     }
@@ -595,16 +595,16 @@ void skContext::setContextR(SKcontextOptionEnum op, const skRectangle& v)
     case SK_CLEAR_RECT:
         m_options.clearRectangle = v;
         break;
-    case SK_VERTICES_PER_SEGMENT:
-    case SK_CLEAR_COLOR:
-    case SK_CONTEXT_SIZE:
-    case SK_CONTEXT_SCALE:
-    case SK_CONTEXT_BIAS:
-    case SK_OPACITY:
-    case SK_METRICS_MODE:
-    case SK_CURRENT_VIEWPORT:
-    case SK_DEFAULT_FONT:
-    case SK_Y_UP:
+    //case SK_VERTICES_PER_SEGMENT:
+    //case SK_CLEAR_COLOR:
+    //case SK_CONTEXT_SIZE:
+    //case SK_CONTEXT_SCALE:
+    //case SK_CONTEXT_BIAS:
+    //case SK_OPACITY:
+    //case SK_METRICS_MODE:
+    //case SK_CURRENT_VIEWPORT:
+    //case SK_DEFAULT_FONT:
+    //case SK_Y_UP:
     default:
         break;
     }
@@ -656,11 +656,12 @@ SKint32 skContext::getPaintI(SKpaintStyle op) const
             return (SKint32)m_workPaint->m_penWidth;
         case SK_LINE_TYPE:
             return (SKint32)m_workPaint->m_lineType;
-        case SK_BRUSH_COLOR:
-        case SK_PEN_COLOR:
-        case SK_SURFACE_COLOR:
-        case SK_BRUSH_PATTERN:
         case SK_AUTO_CLEAR:
+            return (SKint32)m_workPaint->m_autoClear;
+        //case SK_BRUSH_COLOR:
+        //case SK_PEN_COLOR:
+        //case SK_SURFACE_COLOR:
+        //case SK_BRUSH_PATTERN:
         default:
             break;
         }
@@ -690,11 +691,13 @@ void skContext::setPaintF(SKpaintStyle op, SKscalar v) const
         case SK_LINE_TYPE:
             m_workPaint->m_lineType = (SKlineType)(int)v;
             break;
-        case SK_BRUSH_COLOR:
-        case SK_PEN_COLOR:
-        case SK_SURFACE_COLOR:
-        case SK_BRUSH_PATTERN:
         case SK_AUTO_CLEAR:
+            m_workPaint->m_autoClear = (SKuint8)((int)v ? 1 : 0);
+            break;
+        //case SK_BRUSH_COLOR:
+        //case SK_PEN_COLOR:
+        //case SK_SURFACE_COLOR:
+        //case SK_BRUSH_PATTERN:
         default:
             break;
         }
@@ -715,12 +718,14 @@ SKscalar skContext::getPaintF(SKpaintStyle op) const
             return (SKscalar)m_workPaint->m_brushMode;
         case SK_PEN_WIDTH:
             return m_workPaint->m_penWidth;
-        case SK_BRUSH_COLOR:
-        case SK_PEN_COLOR:
-        case SK_SURFACE_COLOR:
-        case SK_BRUSH_PATTERN:
-        case SK_LINE_TYPE:
         case SK_AUTO_CLEAR:
+            return (SKscalar)m_workPaint->m_autoClear;
+        case SK_LINE_TYPE:
+            return (SKscalar)m_workPaint->m_lineType;
+        //case SK_BRUSH_COLOR:
+        //case SK_PEN_COLOR:
+        //case SK_SURFACE_COLOR:
+        //case SK_BRUSH_PATTERN:
         default:
             break;
         }
@@ -744,13 +749,13 @@ void skContext::setPaintC(SKpaintStyle op, const skColor& v) const
         case SK_SURFACE_COLOR:
             m_workPaint->m_surfaceColor = v;
             break;
-        case SK_PEN_STYLE:
-        case SK_BRUSH_STYLE:
-        case SK_BRUSH_MODE:
-        case SK_PEN_WIDTH:
-        case SK_BRUSH_PATTERN:
-        case SK_LINE_TYPE:
-        case SK_AUTO_CLEAR:
+        //case SK_PEN_STYLE:
+        //case SK_BRUSH_STYLE:
+        //case SK_BRUSH_MODE:
+        //case SK_PEN_WIDTH:
+        //case SK_BRUSH_PATTERN:
+        //case SK_LINE_TYPE:
+        //case SK_AUTO_CLEAR:
         default:
             break;
         }
@@ -769,13 +774,13 @@ const skColor& skContext::getPaintC(SKpaintStyle op) const
             return m_workPaint->m_penColor;
         case SK_SURFACE_COLOR:
             return m_workPaint->m_surfaceColor;
-        case SK_PEN_STYLE:
-        case SK_BRUSH_STYLE:
-        case SK_BRUSH_MODE:
-        case SK_PEN_WIDTH:
-        case SK_BRUSH_PATTERN:
-        case SK_LINE_TYPE:
-        case SK_AUTO_CLEAR:
+        //case SK_PEN_STYLE:
+        //case SK_BRUSH_STYLE:
+        //case SK_BRUSH_MODE:
+        //case SK_PEN_WIDTH:
+        //case SK_BRUSH_PATTERN:
+        //case SK_LINE_TYPE:
+        //case SK_AUTO_CLEAR:
         default:
             break;
         }

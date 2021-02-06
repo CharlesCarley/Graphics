@@ -36,7 +36,6 @@
 
 // TODO clean and check all of this...
 
-
 #define FTINT(x) ((x) >> 6)
 #define FTI64(x) ((x) << 6)
 
@@ -46,13 +45,13 @@ const SKint32      CharTotal = CharEnd - CharStart;
 const SKint32      Spacer    = 2;
 const skFont::Char NullChar  = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
 
-
 skGlyph::skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h) :
     m_width(w),
     m_height(h)
 {
     SKsize lim = (SKsize)w * (SKsize)h;
     m_data     = new SKuint8[lim];
+
     skMemcpy(m_data, ptr, lim);
     skMemset(&m_metrics, 0, sizeof(SKglyphMetrics));
 }
@@ -66,7 +65,6 @@ void skGlyph::setMetrics(const SKglyphMetrics& metrics)
 {
     skMemcpy(&m_metrics, &metrics, sizeof(SKglyphMetrics));
 }
-
 
 void skGlyph::merge(skFont* font, skImage* dest, SKuint32 x, SKuint32 y)
 {
@@ -87,7 +85,6 @@ void skGlyph::merge(skFont* font, skImage* dest, SKuint32 x, SKuint32 y)
         }
     }
 }
-
 
 skFont::skFont() :
     skContextObj(),
@@ -314,25 +311,23 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
 {
     SK_CHECK_PARAM(path, SK_RETURN_VOID);
     SK_CHECK_PARAM(str, SK_RETURN_VOID);
+    const skScalar fntScale = getRelativeScale();
+    if (skIsZero(fntScale))
+        return;
 
     const skContext& ctx   = ref();
     const skVector2& scale = ctx.getContextV(SK_CONTEXT_SCALE);
     const skVector2& bias  = ctx.getContextV(SK_CONTEXT_BIAS);
 
-    const bool yIsUp = ctx.getContextI(SK_Y_UP) == 1;
-
+    const bool yIsUp   = ctx.getContextI(SK_Y_UP) == 1;
     const bool doScale = scale != skVector2::Unit;
     const bool doBias  = bias != skVector2::Zero;
-
-    const skScalar fntScale = getRelativeScale();
-    if (skIsZero(fntScale))
-        return;
 
     path->setContext(this->getContext());
     path->clear();
 
-    const skScalar tx = 1.f / skScalar(m_image->getWidth());
-    const skScalar ty = 1.f / skScalar(m_image->getHeight());
+    const skScalar tx = skScalar(1.0) / skScalar(m_image->getWidth());
+    const skScalar ty = skScalar(1.0) / skScalar(m_image->getHeight());
 
     skScalar xOffs = x;
     skScalar yOffs = y;
@@ -340,7 +335,7 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
     const skScalar baseHeight = m_opts.yMax * fntScale;
     const skScalar baseWidth  = m_opts.xMax * fntScale;
 
-    for (size_t i = 0; i < len; i++)
+    for (SKuint32 i = 0; i < len; i++)
     {
         const char  cCh = str[i];
         const Char& ch  = getChar(cCh);
@@ -348,16 +343,12 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
         if (cCh == ' ')
         {
             xOffs += baseWidth * fntScale;
-            continue;
         }
-
-        if (cCh == '\t')
+        else if (cCh == '\t')
         {
             xOffs += baseWidth * m_opts.tabSize * fntScale;
-            continue;
         }
-
-        if (cCh == '\n')
+        else if (cCh == '\n')
         {
             if (yIsUp)
                 yOffs -= baseHeight;
@@ -365,75 +356,76 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
                 yOffs += baseHeight;
 
             xOffs = x;
-            continue;
-        }
-
-        if (skIsZero(ch.w) || skIsZero(ch.h))
-            continue;
-
-        skScalar txMin, txMax, tyMin, tyMax;
-        skScalar vxMin, vxMax, vyMin, vyMax;
-
-        const skScalar charWidth  = ch.w * fntScale;
-        const skScalar charHeight = ch.h * fntScale;
-        const skScalar charOffs   = ch.yOffs * fntScale;
-
-
-        vxMin = xOffs;
-        vxMax = xOffs + charWidth;
-
-        if (yIsUp)
-        {
-            vyMin = yOffs + charOffs;
-            vyMax = yOffs + charHeight + charOffs;
         }
         else
         {
-            vyMax = yOffs + charOffs;
-            vyMin = yOffs + charHeight + charOffs;
+            if (!skIsZero(ch.w) && !skIsZero(ch.h))
+            {
+                skScalar txMin, txMax, tyMin, tyMax;
+                skScalar vxMin, vxMax, vyMin, vyMax;
+
+                const skScalar charWidth  = ch.w * fntScale;
+                const skScalar charHeight = ch.h * fntScale;
+                const skScalar charOffs   = ch.yOffs * fntScale;
+
+                vxMin = xOffs;
+                vxMax = xOffs + charWidth;
+
+                if (yIsUp)
+                {
+                    vyMax = yOffs - charOffs;
+                    vyMin = yOffs - (charHeight + charOffs);
+                }
+                else
+                {
+                    vyMax = yOffs + charOffs;
+                    vyMin = yOffs + charHeight + charOffs;
+                }
+
+                if (doScale)
+                {
+                    vxMin *= scale.x;
+                    vxMax *= scale.x;
+                    vyMin *= scale.y;
+                    vyMax *= scale.y;
+                }
+
+                if (doBias)
+                {
+                    vxMin += bias.x;
+                    vxMax += bias.x;
+                    vyMin += bias.y;
+                    vyMax += bias.y;
+                }
+
+                xOffs += charWidth + ch.xOffs * fntScale;
+
+                txMin = ch.x;
+                tyMax = ch.y;
+                txMax = ch.x + ch.w;
+                tyMin = ch.y + ch.h;
+
+                txMin *= tx;
+                txMax *= tx;
+                tyMin *= ty;
+                tyMax *= ty;
+
+                tyMin = skScalar(1.0) - tyMin;
+                tyMax = skScalar(1.0) - tyMax;
+
+                skVertex lt(vxMin, vyMin, txMin, tyMin);
+                skVertex rb(vxMax, vyMax, txMax, tyMax);
+                skVertex rt(vxMax, vyMin, txMax, tyMin);
+                skVertex lb(vxMin, vyMax, txMin, tyMax);
+
+                path->addVert(lt);
+                path->addVert(rt);
+                path->addVert(rb);
+                path->addVert(rb);
+                path->addVert(lb);
+                path->addVert(lt);
+            }
         }
-
-        if (doScale)
-        {
-            vxMin *= scale.x;
-            vxMax *= scale.x;
-            vyMin *= scale.y;
-            vyMax *= scale.y;
-        }
-        if (doBias)
-        {
-            vxMin += bias.x;
-            vxMax += bias.x;
-            vyMin += bias.y;
-            vyMax += bias.y;
-        }
-
-        xOffs += charWidth + ch.xOffs * fntScale;
-
-        txMin = ch.x;
-        tyMax = ch.y;
-        txMax = ch.x + ch.w;
-        tyMin = ch.y + ch.h;
-
-        txMin *= tx;
-        txMax *= tx;
-        tyMin *= ty;
-        tyMax *= ty;
-
-        tyMin = skScalar(1.f) - tyMin;
-        tyMax = skScalar(1.f) - tyMax;
-
-        skVertex lt(vxMin, vyMin, txMin, tyMin);
-        skVertex rb(vxMax, vyMax, txMax, tyMax);
-        skVertex rt(vxMax, vyMin, txMax, tyMin);
-        skVertex lb(vxMin, vyMax, txMin, tyMax);
-
-        path->addVert(lt);
-        path->addVert(rt);
-        path->addVert(rb);
-        path->addVert(rb);
-        path->addVert(lb);
-        path->addVert(lt);
     }
 }
 
@@ -483,9 +475,7 @@ void skFont::getF(SKfontOptionEnum opt, skScalar* v) const
         *v = (skScalar)t;
     }
     else
-    {
         *v = m_opts.scale;
-    }
 }
 
 void skFont::setF(SKfontOptionEnum opt, skScalar v)
@@ -496,7 +486,7 @@ void skFont::setF(SKfontOptionEnum opt, skScalar v)
         m_opts.scale = v;
 }
 
-void skFont::loadGylphs(struct FT_FaceRec_* face)
+void skFont::loadGlyphs(struct FT_FaceRec_* face)
 {
     m_glyphs.reserve(CharTotal);
     SKglyphMetrics metrics = {};
@@ -523,7 +513,6 @@ void skFont::loadGylphs(struct FT_FaceRec_* face)
         skGlyph* gylph = new skGlyph(imgBuf, slot->bitmap.width, slot->bitmap.rows);
         m_glyphs.push_back(gylph);
 
-
         j++;
         metrics.i        = i;
         metrics.advance  = FTINT(slot->metrics.horiAdvance);
@@ -542,7 +531,6 @@ void skFont::loadGylphs(struct FT_FaceRec_* face)
 
         m_opts.average += cx;
     }
-
 
     if (j > 0)
         m_opts.average /= j;
@@ -593,11 +581,10 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     if (FT_Set_Char_Size(face, FTI64(size), FTI64(size), dpi, dpi))
         return false;
 
-    // load the glyphs
+    // loads the glyphs
     // computes the metrics
     // creates the image
-    loadGylphs(face);
-
+    loadGlyphs(face);
 
     skImage* ima = m_image->getInternalImage();
     if (!ima)
@@ -609,7 +596,6 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     m_chars = new Char[CharTotal];
     skMemset(m_chars, 0, sizeof(Char) * CharTotal);
 
-    // merge it to the map
 
     SKint32 x      = 0,
             y      = 0,
@@ -623,8 +609,6 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
         glyph->merge(this, ima, x, y);
 
         const SKglyphMetrics& metrics = glyph->getMertics();
-        SK_ASSERT(metrics.i < CharTotal);
-
         if (i >= CharTotal)
             continue;
 
@@ -636,23 +620,17 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
         ch.xOffs = (SKscalar)(metrics.advance - metrics.width);
         ch.yOffs = (SKscalar)(m_opts.yMax - metrics.yBearing);
 
-        rowMax = skMax<SKuint32>(rowMax, glyph->getHeight());
-
-        //ima->strokeRect(ch.x, ch.y, ch.w, ch.h, skPalette::White);
-
-        // compute the next offset in the map
-
-
         SKuint32 nx = glyph->getWidth() + Spacer;
         if (x + nx + m_opts.xMax >= ima->getWidth())
         {
             x = Spacer;
-            y += rowMax + Spacer;
+            y += m_opts.yMax + Spacer;
             rowMax = 0;
         }
         else
             x += nx;
 
+        // clean up the temporary object
         delete glyph;
     }
 

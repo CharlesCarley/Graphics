@@ -384,14 +384,14 @@ public:
     {
         skNewContext();
 
-        m_font = skNewFont(SK_FONT_DEFAULT, 72, 128);
+        m_font = skNewFont(SK_FONT_SPC2, 72, 128);
         skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
         skSetFont1i(m_font, SK_FONT_MIPMAP, 1);
         skSelectFont(m_font);
 
         skSetFont1f(m_font, SK_FONT_SIZE, 32);
         m_cstring = skNewCachedString();
-        skBuildCachedString(m_cstring, "0123456789\nabcdefghijklmnopqrstuvwxyz\n!@#$%^&*()_+");
+        skBuildCachedString(m_cstring, "0123456789!@#$%^&*()_+");
         initTest();
     }
 
@@ -402,16 +402,18 @@ public:
                                      800,
                                      600,
                                      WindowFlags);
-
         m_keyboard = m_window->getKeyboard();
         m_mouse    = m_window->getMouse();
         m_manager->addHandler(this);
+
         setupGraphics();
+
         m_manager->broadcastEvent(SK_WIN_SIZE);
         m_manager->process();
         return 0;
     }
 };
+
 
 int main(int, char**)
 {

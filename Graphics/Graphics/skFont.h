@@ -102,7 +102,7 @@ public:
 
     skArray<skGlyph*> m_glyphs;
 
-    void loadGylphs(struct FT_FaceRec_* face);
+    void loadGlyphs(struct FT_FaceRec_* face);
 
     bool loadTrueTypeFont(const void* mem,
                           SKsize      len,
