@@ -42,15 +42,14 @@ const GLint clear_bits = GL_COLOR_BUFFER_BIT;
 
 skOpenGLRenderer::skOpenGLRenderer() :
     m_projection(skMatrix4::Identity),
-    m_defShader(new skCachedProgram()),
-    m_fntShader(new skCachedProgram()),
-    m_bnkShader(new skCachedProgram()),
+    m_defaultShader(new skCachedProgram()),
+    m_fontShader(new skCachedProgram()),
+    m_blankShader(new skCachedProgram()),
     m_viewport(0, 0, 0, 0),
     m_fontPath(new skPath()),
     m_curPath(nullptr),
     m_curPaint(nullptr),
-    m_fillOp(GL_TRIANGLE_STRIP),
-    m_checkScissor(-1)
+    m_fillOp(GL_TRIANGLE_STRIP)
 {
     skImage::initialize();
     compileBuiltin();
@@ -59,29 +58,29 @@ skOpenGLRenderer::skOpenGLRenderer() :
 skOpenGLRenderer::~skOpenGLRenderer()
 {
     delete m_fontPath;
-    delete m_defShader;
-    delete m_fntShader;
-    delete m_bnkShader;
+    delete m_defaultShader;
+    delete m_fontShader;
+    delete m_blankShader;
     skImage::finalize();
 }
 
 void skOpenGLRenderer::compileBuiltin(void) const
 {
-    m_defShader->compile(TexturedVertex,
-                         TexturedFragment);
-    m_defShader->bindAttribute("position", SK_ATTR_POSITION);
-    m_defShader->bindAttribute("textureCoords", SK_ATTR_TEXTURE0);
+    m_defaultShader->compile(TexturedVertex,
+                             TexturedFragment);
+    m_defaultShader->bindAttribute("position", SK_ATTR_POSITION);
+    m_defaultShader->bindAttribute("textureCoords", SK_ATTR_TEXTURE0);
 
-    m_fntShader->compile(TexturedVertex,
-                         FontFragment);
+    m_fontShader->compile(TexturedVertex,
+                          FontFragment);
 
-    m_fntShader->bindAttribute("position", SK_ATTR_POSITION);
-    m_fntShader->bindAttribute("textureCoords", SK_ATTR_TEXTURE0);
+    m_fontShader->bindAttribute("position", SK_ATTR_POSITION);
+    m_fontShader->bindAttribute("textureCoords", SK_ATTR_TEXTURE0);
 
-    m_bnkShader->compile(ColoredVertex,
-                         ColoredFragment);
-    m_bnkShader->bindAttribute("position", SK_ATTR_POSITION);
-    m_bnkShader->bindAttribute("textureCoords", SK_ATTR_TEXTURE0);
+    m_blankShader->compile(ColoredVertex,
+                           ColoredFragment);
+    m_blankShader->bindAttribute("position", SK_ATTR_POSITION);
+    m_blankShader->bindAttribute("textureCoords", SK_ATTR_TEXTURE0);
 }
 
 void skOpenGLRenderer::projectBox(skScalar x1, skScalar y1, skScalar x2, skScalar y2)
@@ -131,14 +130,6 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
         return;
     }
 
-    if (m_checkScissor == -1)
-    {
-        // hack to check this, I believe this is unused...
-        m_checkScissor = glIsEnabled(GL_SCISSOR_TEST) ? 1 : 0;
-        if (m_checkScissor == 1)
-            glDisable(GL_SCISSOR_TEST);
-    }
-
     SKint32 x, y, w, h;
 
     x = (SKint32)rect.x;
@@ -153,10 +144,6 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
         (float)clear.b,
         (float)clear.a);
     glClear(clear_bits);
-
-    if (m_checkScissor == 1)
-        glEnable(GL_SCISSOR_TEST);
-
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
@@ -176,11 +163,13 @@ void skOpenGLRenderer::doPolyFill(void) const
     if (m_curPaint->m_brushPattern && !lines)
     {
         m_curPath->makeUV();
+
         skOpenGLTexture* ima = (skOpenGLTexture*)m_curPaint->m_brushPattern;
 
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ima->getImage());
+
         m_curPaint->m_program->setImage(0);
     }
 
@@ -227,6 +216,16 @@ void skOpenGLRenderer::doPolyFill(void) const
     }
 }
 
+bool skOpenGLRenderer::shouldBlend() const
+{
+    bool blend = m_ctx->getContextF(SK_OPACITY) < 1.f;
+    if (!blend)
+        blend = m_curPaint->m_surfaceColor.a < 1.f || m_curPaint->m_brushPattern;
+    if (!blend)
+        blend = m_curPaint->m_brushMode != SK_BM_REPLACE;
+    return blend;
+}
+
 void skOpenGLRenderer::fill(skPath* pth)
 {
     m_curPath = pth;
@@ -235,16 +234,11 @@ void skOpenGLRenderer::fill(skPath* pth)
         m_fillOp = GL_TRIANGLE_FAN;
     else if (m_curPaint->m_lineType == SK_POINTS)
     {
-        ::glPointSize(m_curPaint->m_penWidth);
+        glPointSize(m_curPaint->m_penWidth);
         m_fillOp = GL_POINTS;
     }
 
-    bool blend = ref().getContextF(SK_OPACITY) < 1.f;
-    if (!blend)
-        blend = m_curPaint->m_surfaceColor.a < 1.f || m_curPaint->m_brushPattern;
-    if (!blend)
-        blend = m_curPaint->m_brushMode != SK_BM_REPLACE;
-
+    bool blend = shouldBlend();
     if (blend)
         glEnable(GL_BLEND);
 
@@ -265,11 +259,11 @@ void skOpenGLRenderer::stroke(skPath* pth)
         m_fillOp = GL_LINES;
     else if (m_curPaint->m_lineType == SK_POINTS)
     {
-        ::glPointSize(m_curPaint->m_penWidth);
+        glPointSize(m_curPaint->m_penWidth);
         m_fillOp = GL_POINTS;
     }
 
-    bool blend = ref().getContextF(SK_OPACITY) < 1.f || m_curPaint->m_surfaceColor.a < 1.f || m_curPaint->m_brushPattern || m_curPaint->m_penWidth > 1;
+    bool blend = shouldBlend();
     if (blend)
         glEnable(GL_BLEND);
 
@@ -277,7 +271,6 @@ void skOpenGLRenderer::stroke(skPath* pth)
 
     if (blend)
         glDisable(GL_BLEND);
-
     m_fillOp = 0;
 }
 
@@ -292,10 +285,11 @@ void skOpenGLRenderer::displayString(skFont*     font,
     SK_CHECK_PARAM(m_curPaint, SK_RETURN_VOID);
 
     font->buildPath(m_fontPath, str, len, x, y);
-    m_curPaint->m_brushPattern = font->getImage();
 
-    m_fillOp              = GL_TRIANGLES;
-    m_curPaint->m_program = m_fntShader;
+    m_curPaint->m_brushPattern = font->getImage();
+    m_curPaint->m_program      = m_fontShader;
+
+    m_fillOp = GL_TRIANGLES;
     fill(m_fontPath);
 
     m_curPaint->m_brushPattern = nullptr;
@@ -305,16 +299,18 @@ void skOpenGLRenderer::displayString(skFont*     font,
 void skOpenGLRenderer::displayString(skCachedString* str)
 {
     SK_CHECK_PARAM(str, SK_RETURN_VOID);
-    const skContext& ctx = ref();
+    SK_CHECK_PARAM(m_ctx, SK_RETURN_VOID);
 
-    skFont* fnt = ctx.getWorkFont();
+    skFont* fnt = m_ctx->getWorkFont();
+
     SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
-
     skOpenGLTexture* img = (skOpenGLTexture*)fnt->getImage();
+    SK_CHECK_PARAM(img, SK_RETURN_VOID);
 
     m_curPaint->m_brushPattern = img;
-    m_fillOp                   = GL_TRIANGLES;
-    m_curPaint->m_program      = m_fntShader;
+    m_curPaint->m_program      = m_fontShader;
+
+    m_fillOp = GL_TRIANGLES;
     fill(str->getPath());
 
     m_curPaint->m_brushPattern = nullptr;
@@ -327,9 +323,9 @@ void skOpenGLRenderer::selectPaint(skPaint* paint)
 
     if (m_curPaint)
     {
-        m_curPaint->m_program = m_defShader;
+        m_curPaint->m_program = m_defaultShader;
 
         if (!m_curPaint->m_brushPattern)
-            m_curPaint->m_program = m_bnkShader;
+            m_curPaint->m_program = m_blankShader;
     }
 }

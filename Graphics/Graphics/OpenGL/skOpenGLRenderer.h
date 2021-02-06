@@ -32,15 +32,14 @@ class skOpenGLRenderer : public skRenderer
 {
 private:
     skMatrix4        m_projection;
-    skCachedProgram* m_defShader;
-    skCachedProgram* m_fntShader;
-    skCachedProgram* m_bnkShader;
+    skCachedProgram* m_defaultShader;
+    skCachedProgram* m_fontShader;
+    skCachedProgram* m_blankShader;
     skRectangle      m_viewport;
     skPath*          m_fontPath;
     skPath*          m_curPath;
     skPaint*         m_curPaint;
     SKint32          m_fillOp;
-    SKint32          m_checkScissor;
 
 public:
     skOpenGLRenderer();
@@ -68,6 +67,8 @@ private:
     void loadRect(const skRectangle& rect);
 
     void compileBuiltin(void) const;
+
+    bool shouldBlend() const;
 };
 
 #endif  //_skOpenGLRenderer_h_

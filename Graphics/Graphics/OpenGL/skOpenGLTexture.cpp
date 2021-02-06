@@ -46,8 +46,6 @@ void skGetFormat(int fmt, GLenum& glfmt)
 
 void skGetMinMag(const SKuint32& filter, GLint& min, GLint& mag, bool mipmap)
 {
-    //mipmap = false;
-
     switch (filter)
     {
     default:
