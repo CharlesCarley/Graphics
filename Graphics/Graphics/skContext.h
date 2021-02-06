@@ -145,7 +145,6 @@ public:
         return *m_workPath;
     }
 
-
     skPaint* getWorkPaint(void)
     {
         return m_workPaint;
@@ -180,7 +179,7 @@ public:
 
     bool isValid(void) const
     {
-        return m_renderContext != nullptr;
+        return m_backend == SK_BE_None || m_renderContext != nullptr;
     }
 };
 

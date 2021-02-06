@@ -117,7 +117,7 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
     const skContext& ctx   = ref();
     const skColor&   clear = ctx.getContextC(SK_CLEAR_COLOR);
 
-    if (ctx.getContextI(SK_CURRENT_VIEWPORT))
+    if (ctx.getContextI(SK_USE_CURRENT_VIEWPORT))
     {
         glClearColor(
             (float)clear.r,
@@ -223,6 +223,8 @@ bool skOpenGLRenderer::shouldBlend() const
         blend = m_curPaint->m_surfaceColor.a < 1.f || m_curPaint->m_brushPattern;
     if (!blend)
         blend = m_curPaint->m_brushMode != SK_BM_REPLACE;
+    if (!blend)
+        blend = m_curPaint->m_penWidth > 1.f;
     return blend;
 }
 

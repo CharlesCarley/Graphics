@@ -26,14 +26,6 @@
 #include "skGraphicsConfig.h"
 SK_ST_C;
 
-/*********************************************************
-    Render engines
- */
-enum SKbackend
-{
-    SK_BE_OpenGL,
-};
-
 #define SK_NO_STATUS (-1)
 
 #define SK_SIZE_HANDLE(x) \
@@ -48,6 +40,12 @@ SK_SIZE_HANDLE(SKpath);
 SK_SIZE_HANDLE(SKimage);
 SK_SIZE_HANDLE(SKfont);
 SK_SIZE_HANDLE(SKcachedString);
+
+enum SKbackend
+{
+    SK_BE_None,
+    SK_BE_OpenGL,
+};
 
 typedef float SKscalar;
 
@@ -203,9 +201,8 @@ enum SKContextOptionEnum
     SK_CONTEXT_BIAS,
     SK_OPACITY,
     SK_METRICS_MODE,
-    SK_CURRENT_VIEWPORT,
-    SK_DEFAULT_FONT,
-    SK_PROJECT,
+    SK_USE_CURRENT_VIEWPORT,
+    SK_PROJECTION_TYPE,
     SK_Y_UP,
 };
 
@@ -213,8 +210,8 @@ typedef SKenum SKcontextOptionEnum;
 
 enum SKProjectionType
 {
-    SK_CC,
-    SK_STD,
+    SK_CARTESIAN,
+    SK_STANDARD,
 };
 
 typedef SKenum SKprojectionType;
@@ -322,6 +319,7 @@ enum SKStringOptionEnum
 typedef SKenum SKstringOptionEnum;
 
 SK_API SKcontext skNewContext();
+SK_API SKcontext skNewBackEndContext(SKenum backend);
 SK_API void      skDeleteContext(SKcontext ctx);
 SK_API void      skSetCurrentContext(SKcontext ctx);
 SK_API SKcontext skGetCurrentContext();

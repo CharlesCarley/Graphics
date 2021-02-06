@@ -22,10 +22,10 @@
 #ifndef _skGraphicsConfig_h_
 #define _skGraphicsConfig_h_
 
-#define Graphics_BUILD_WINDOW
+/* #undef Graphics_BUILD_WINDOW */
 /* #undef Graphics_NO_PALETTE */
 #define Graphics_OP_CHECKS 
-#define Graphics_EXTRA_BUILTIN_FONTS
+/* #undef Graphics_EXTRA_BUILTIN_FONTS */
 
 
 #define SK_CAST(x, T) reinterpret_cast<T>(x)

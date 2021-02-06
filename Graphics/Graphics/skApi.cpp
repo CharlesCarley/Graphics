@@ -43,6 +43,15 @@ SK_API SKcontext skNewContext()
     return context;
 }
 
+
+SK_API SKcontext skNewBackEndContext(SKenum backend)
+{
+    SKcontext context = (SKcontext) new skContext(SK_BE_None);
+    skSetCurrentContext(context);
+    return context;
+}
+
+
 SK_API void skDeleteContext(SKcontext ctx)
 {
     skContext* context = reinterpret_cast<skContext*>(ctx);

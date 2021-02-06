@@ -36,17 +36,17 @@ class skFont;
 
 struct SKcontextOptions
 {
-    SKint32       verticesPerSegment;
-    skColor       clearColor;
-    skRectangle   clearRectangle;
-    skVector2     contextSize;
-    skVector2     contextScale;
-    skVector2     contextBias;
-    skScalar      opacity;
-    SKmetricsMode metrics;
-    SKint32       currentViewport;
-    SKint32       defaultFont;
-    bool          yIsUp;
+    SKint32          verticesPerSegment;
+    skColor          clearColor;
+    skRectangle      clearRectangle;
+    skVector2        contextSize;
+    skVector2        contextScale;
+    skVector2        contextBias;
+    skScalar         opacity;
+    SKmetricsMode    metrics;
+    SKint32          currentViewport;
+    SKprojectionType projectionType;
+    bool             yIsUp;
 };
 
 #define SK_TEXTURE(x) reinterpret_cast<skTexture*>((x))
@@ -59,7 +59,11 @@ struct SKcontextOptions
 #define SK_CONTEXT_HANDLE(x) SK_TO_HANDLE(x, SKcontext)
 #define SK_CSTRING_HANDLE(x) SK_TO_HANDLE(x, SKcacheString)
 
-
+#define SK_DEFAULT_VERTICES_PER_SEGMENT 16
+#define SK_MIN_VERTICES_PER_SEGMENT 3
+#define SK_MAX_VERTICES_PER_SEGMENT 128
+#define SK_DEFAULT_PROJECTION_MODE SK_STANDARD
+#define SK_DEFAULT_METRICS_MODE SK_PIXEL
 
 template <typename Ret, typename H, typename C>
 Ret* SKcheckType(H inp, C* ctx)

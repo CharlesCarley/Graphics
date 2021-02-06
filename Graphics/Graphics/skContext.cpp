@@ -48,16 +48,16 @@ skContext::skContext(SKint32 backend)
 
     m_matrix.makeIdentity();
 
-    m_options.verticesPerSegment = 5;
+    m_options.verticesPerSegment = SK_DEFAULT_VERTICES_PER_SEGMENT;
     m_options.clearColor         = skColor(0, 0, 0, 1);
     m_options.clearRectangle     = skRectangle(0, 0, 1, 1);
     m_options.contextSize        = skVector2::Unit;
     m_options.contextScale       = skVector2::Unit;
     m_options.contextBias        = skVector2::Zero;
     m_options.opacity            = 1.f;
-    m_options.metrics            = SK_PIXEL;
+    m_options.metrics            = SK_DEFAULT_METRICS_MODE;
     m_options.currentViewport    = 0;
-    m_options.defaultFont        = SK_FONT_DEFAULT;
+    m_options.projectionType     = SK_DEFAULT_PROJECTION_MODE;
     m_options.yIsUp              = false;
 
     if (m_backend == SK_BE_OpenGL)
@@ -85,10 +85,19 @@ SKimage skContext::createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt)
 {
     if (m_backend == SK_BE_OpenGL)
     {
-        skOpenGLTexture* ima = new skOpenGLTexture(w, h, fmt);
-        ima->setContext(this);
-        return SK_IMAGE_HANDLE(ima);
+        skOpenGLTexture* tex = new skOpenGLTexture(w, h, fmt);
+
+        tex->setContext(this);
+        return SK_IMAGE_HANDLE(tex);
     }
+    else if (m_backend == SK_BE_None)
+    {
+        skTexture* tex = new skTexture(w, h, fmt);
+
+        tex->setContext(this);
+        return SK_IMAGE_HANDLE(tex);
+    }
+
     return nullptr;
 }
 
@@ -100,6 +109,14 @@ SKimage skContext::newImage()
         ima->setContext(this);
         return SK_IMAGE_HANDLE(ima);
     }
+    else if (m_backend == SK_BE_None)
+    {
+        skTexture* tex = new skTexture();
+
+        tex->setContext(this);
+        return SK_IMAGE_HANDLE(tex);
+    }
+
     return nullptr;
 }
 
@@ -117,9 +134,17 @@ skTexture* skContext::createInternalImage(SKuint32 w, SKuint32 h, SKpixelFormat 
 {
     if (m_backend == SK_BE_OpenGL)
     {
-        skOpenGLTexture* ima = new skOpenGLTexture(w, h, fmt);
-        ima->setContext(this);
-        return ima;
+        skOpenGLTexture* tex = new skOpenGLTexture(w, h, fmt);
+
+        tex->setContext(this);
+        return tex;
+    }
+    else if (m_backend == SK_BE_None)
+    {
+        skTexture* tex = new skTexture(w, h, fmt);
+
+        tex->setContext(this);
+        return tex;
     }
 
     SK_ASSERT(0);
@@ -236,7 +261,7 @@ void skContext::displayString(SKfont font, const char* str, SKuint32 len, skScal
 
 void skContext::projectContext(SKprojectionType pt)
 {
-    if (pt == SK_CC)
+    if (pt == SK_CARTESIAN)
     {
         m_options.yIsUp   = true;
         const skScalar hx = m_options.contextSize.x * .5f;
@@ -343,13 +368,12 @@ SKint32 skContext::getContextI(SKcontextOptionEnum op) const
         return skClamp<SKint32>(SKint32(m_options.opacity * 255.f), 0, 255);
     case SK_METRICS_MODE:
         return (SKint32)m_options.metrics;
-    case SK_CURRENT_VIEWPORT:
+    case SK_USE_CURRENT_VIEWPORT:
         return m_options.currentViewport ? 1 : 0;
-    case SK_DEFAULT_FONT:
-        return m_options.defaultFont;
     case SK_Y_UP:
         return m_options.yIsUp ? 1 : 0;
-    //case SK_PROJECT:
+    case SK_PROJECTION_TYPE:
+        return m_options.projectionType;
     //case SK_CLEAR_COLOR:
     //case SK_CLEAR_RECT:
     //case SK_CONTEXT_SIZE:
@@ -366,7 +390,9 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
     switch (op)
     {
     case SK_VERTICES_PER_SEGMENT:
-        m_options.verticesPerSegment = skMax<SKint32>(v, 1);
+        m_options.verticesPerSegment = skClamp<SKint32>(v,
+                                                        SK_MIN_VERTICES_PER_SEGMENT,
+                                                        SK_MAX_VERTICES_PER_SEGMENT);
         break;
     case SK_OPACITY:
         m_options.opacity = (skScalar)skClamp<SKint32>(v, 0, 255) / (skScalar)255.f;
@@ -374,21 +400,26 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
     case SK_METRICS_MODE:
         m_options.metrics = (SKmetricsMode)v;
         break;
-    case SK_CURRENT_VIEWPORT:
+    case SK_USE_CURRENT_VIEWPORT:
         m_options.currentViewport = v ? true : false;
-        break;
-    case SK_DEFAULT_FONT:
-        m_options.defaultFont = v >= SK_FONT_DEFAULT && v < SK_FONT_MAX ? v : SK_FONT_DEFAULT;
         break;
     case SK_Y_UP:
         m_options.yIsUp = v != 0;
         break;
-    //case SK_CLEAR_COLOR:
-    //case SK_CLEAR_RECT:
-    //case SK_CONTEXT_SIZE:
-    //case SK_CONTEXT_SCALE:
-    //case SK_CONTEXT_BIAS:
-    //case SK_PROJECT:
+    case SK_PROJECTION_TYPE:
+        switch (v)
+        {
+        case SK_STANDARD:
+            m_options.projectionType = SK_STANDARD;
+            m_options.yIsUp          = false;
+            break;
+        case SK_CARTESIAN:
+            m_options.projectionType = SK_CARTESIAN;
+            m_options.yIsUp          = true;
+            break;
+        default:
+            break;
+        }
     default:
         break;
     }
@@ -404,21 +435,13 @@ skScalar skContext::getContextF(SKcontextOptionEnum op) const
         return m_options.opacity;
     case SK_METRICS_MODE:
         return (skScalar)m_options.metrics;
-    case SK_CURRENT_VIEWPORT:
+    case SK_USE_CURRENT_VIEWPORT:
         return m_options.currentViewport ? skScalar(1.0) : skScalar(0.0);
     case SK_Y_UP:
         return m_options.yIsUp ? skScalar(1.0) : skScalar(0.0);
-    //case SK_CLEAR_COLOR:
-    //case SK_CLEAR_RECT:
-    //case SK_CONTEXT_SIZE:
-    //case SK_CONTEXT_SCALE:
-    //case SK_CONTEXT_BIAS:
-    //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
     default:
         break;
     }
-
     return SK_NO_STATUS;
 }
 
@@ -427,7 +450,9 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
     switch (op)
     {
     case SK_VERTICES_PER_SEGMENT:
-        m_options.verticesPerSegment = skMax<SKint32>(SKint32(v), 1);
+        m_options.verticesPerSegment = skClamp<SKint32>(SKint32(v),
+                                                        SK_MIN_VERTICES_PER_SEGMENT,
+                                                        SK_MAX_VERTICES_PER_SEGMENT);
         break;
     case SK_OPACITY:
         m_options.opacity = skClamp<skScalar>(v, 0.f, 1.f);
@@ -435,7 +460,7 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
     case SK_METRICS_MODE:
         m_options.metrics = (SKmetricsMode)(SKint32)v;
         break;
-    case SK_CURRENT_VIEWPORT:
+    case SK_USE_CURRENT_VIEWPORT:
         m_options.currentViewport = skIsZero(v) ? true : false;
         break;
     case SK_CONTEXT_SCALE:
@@ -450,7 +475,7 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
     //case SK_CONTEXT_SIZE:
     //case SK_CONTEXT_BIAS:
     //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
+    //case SK_PROJECTION_TYPE:
     default:
         break;
     }
@@ -469,9 +494,9 @@ skColor skContext::getContextC(SKcontextOptionEnum op) const
     //case SK_CONTEXT_BIAS:
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
-    //case SK_CURRENT_VIEWPORT:
+    //case SK_USE_CURRENT_VIEWPORT:
     //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
+    //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
         break;
@@ -493,9 +518,9 @@ void skContext::setContextC(SKcontextOptionEnum op, const skColor& v)
     //case SK_CONTEXT_BIAS:
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
-    //case SK_CURRENT_VIEWPORT:
+    //case SK_USE_CURRENT_VIEWPORT:
     //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
+    //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
         break;
@@ -517,9 +542,9 @@ skVector2 skContext::getContextV(SKcontextOptionEnum op) const
     //case SK_CLEAR_RECT:
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
-    //case SK_CURRENT_VIEWPORT:
+    //case SK_USE_CURRENT_VIEWPORT:
     //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
+    //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
         break;
@@ -546,9 +571,9 @@ void skContext::setContextV(SKcontextOptionEnum op, const skVector2& v)
     //case SK_CLEAR_RECT:
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
-    //case SK_CURRENT_VIEWPORT:
+    //case SK_USE_CURRENT_VIEWPORT:
     //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
+    //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
         break;
@@ -568,9 +593,9 @@ skRectangle skContext::getContextR(SKcontextOptionEnum op) const
     //case SK_CLEAR_COLOR:
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
-    //case SK_CURRENT_VIEWPORT:
+    //case SK_USE_CURRENT_VIEWPORT:
     //case SK_DEFAULT_FONT:
-    //case SK_PROJECT:
+    //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
         break;
@@ -583,7 +608,7 @@ void skContext::setContextR(SKcontextOptionEnum op, const skRectangle& v)
 {
     switch (op)
     {
-    case SK_PROJECT:
+    case SK_PROJECTION_TYPE:
         projectRect(v.x, v.y, v.width, v.height);
         break;
     case SK_CLEAR_RECT:
@@ -596,7 +621,7 @@ void skContext::setContextR(SKcontextOptionEnum op, const skRectangle& v)
     //case SK_CONTEXT_BIAS:
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
-    //case SK_CURRENT_VIEWPORT:
+    //case SK_USE_CURRENT_VIEWPORT:
     //case SK_DEFAULT_FONT:
     //case SK_Y_UP:
     default:
