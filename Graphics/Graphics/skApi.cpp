@@ -26,9 +26,9 @@
 #include "skCachedString.h"
 #include "skContext.h"
 #include "skFont.h"
+#include "skGraphics.h"
 #include "skPath.h"
 #include "skTexture.h"
-#include "skGraphics.h"
 
 static SKcontext g_currentContext;
 
@@ -73,14 +73,6 @@ SK_API void skContextSize(skScalar w, skScalar h)
         return;
 
     ctx->setContextV(SK_CONTEXT_SIZE, skVector2(w, h));
-}
-
-SK_API void skFlush()
-{
-    skContext* ctx = SK_CURRENT_CTX();
-    if (!ctx)
-        return;
-    ctx->flush();
 }
 
 SK_API void skClearContext()
@@ -239,7 +231,6 @@ SK_API void skScale(SKscalar x, SKscalar y)
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
 
-    
     skMatrix4& matrix = ctx->getMatrix();
 
     skMatrix4 m;
@@ -387,7 +378,6 @@ SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c)
     ctx->setPaintC(en, skColor(c));
 }
 
-
 SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v)
 {
     skContext* ctx = SK_CURRENT_CTX();
@@ -414,7 +404,6 @@ SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v)
 
     *v = ctx->getPaintC(en).asInt();
 }
-
 
 SK_API SKimage skNewImage()
 {
@@ -972,6 +961,6 @@ SK_API void skGetCachedString2fv(const SKcachedString str, SKstringOptionEnum en
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
 
     const skVector2 vec = SK_CSTRING(str)->getV(en);
-    v[0] = vec.x;
-    v[1] = vec.y;
+    v[0]                = vec.x;
+    v[1]                = vec.y;
 }

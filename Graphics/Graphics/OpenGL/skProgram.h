@@ -22,47 +22,58 @@
 #ifndef _skProgram_h_
 #define _skProgram_h_
 
-#include "skGraphicsConfig.h"
 #include "Math/skScalar.h"
 #include "Utils/skArray.h"
-
+#include "skGraphicsConfig.h"
 
 class skProgram
 {
 protected:
     SKuint32 m_program;
 
-
 public:
     skProgram();
+
     ~skProgram();
 
-    bool compile(const char* vert, const char* frag, const char* vertName = "", const char* fragName = "");
-    bool compile(const skShaderSource& vertex, const skShaderSource& fragment);
+    bool compile(const char* vert,
+                 const char* frag,
+                 const char* vertName = "",
+                 const char* fragName = "");
+
+    bool compile(const skShaderSource& vertex,
+                 const skShaderSource& fragment);
 
     void enable(bool val) const;
-    void enable(void)
+
+    void enable()
     {
         enable(true);
     }
-    void disable(void)
+    void disable()
     {
         enable(false);
     }
 
     void bindAttribute(const char* loc, SKuint32 attr) const;
+
     void setUniformMatrix(const char* name, skScalar* matrix) const;
+
     void setUniform4F(const char* name, skScalar* p) const;
+
     void setUniform1I(const char* name, SKuint32) const;
+
     void setUniform1F(const char* name, skScalar) const;
 
     void setUniformMatrix(SKuint32 loc, const skScalar* matrix) const;
+
     void setUniform4F(SKuint32 loc, const skScalar* p) const;
+
     void setUniform1I(SKuint32 loc, SKuint32) const;
+
     void setUniform1F(SKuint32 loc, skScalar) const;
 
     void getUniformLoc(const char* name, SKuint32* d) const;
 };
-
 
 #endif  //_skProgram_h_

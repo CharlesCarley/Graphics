@@ -92,6 +92,7 @@ public:
     SKsize addElement(SKuint32 name, SKuint32 type);
 
     void write(const void* ptr, const SKuint32& sizeInBytes, const SKint32& mode);
+
     void fill(SKuint32 op) const;
 };
 

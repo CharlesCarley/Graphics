@@ -24,7 +24,7 @@
 
 #define Graphics_BUILD_WINDOW
 /* #undef Graphics_NO_PALETTE */
-/* #undef Graphics_OP_CHECKS */
+#define Graphics_OP_CHECKS 
 #define Graphics_EXTRA_BUILTIN_FONTS
 
 
@@ -45,6 +45,7 @@
 #else
 
 #define SK_CHECK_PARAM(x, r) \
+    SK_ASSERT(x);            \
     if (!(x))                \
         return r
 

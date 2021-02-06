@@ -115,12 +115,12 @@ public:
         vertices.push_back(v);
     }
 
-    void clear(void)
+    void clear()
     {
         vertices.resizeFast(0);
     }
 
-    bool empty(void) const
+    bool empty() const
     {
         return vertices.empty();
     }

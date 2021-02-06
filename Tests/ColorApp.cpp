@@ -245,7 +245,6 @@ private:
         skColor1ui(CS_Grey00);
         skStroke();
         skClearPath();
-        skFlush();
         m_window->flush();
     }
 

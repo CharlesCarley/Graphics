@@ -288,12 +288,6 @@ void skContext::clear(void) const
         m_renderContext->clear(m_options.clearRectangle);
 }
 
-void skContext::flush(void) const
-{
-    if (m_renderContext)
-        m_renderContext->flush();
-}
-
 void skContext::selectPath(skPath* pth)
 {
     if (pth)

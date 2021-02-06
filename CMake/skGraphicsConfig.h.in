@@ -45,6 +45,7 @@
 #else
 
 #define SK_CHECK_PARAM(x, r) \
+    SK_ASSERT(x);            \
     if (!(x))                \
         return r
 

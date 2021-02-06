@@ -330,7 +330,7 @@ void skPath::makeRoundRect(skScalar x,
 void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q, SKint32 P)
 {
     clear();
-    //  there is no tessellation so this will not work for fills 
+    //  there is no tessellation so this will not work for fills
 
     Q = skMax(2, Q);
     if (P > Q)
@@ -364,7 +364,6 @@ void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q,
 
     close();
 }
-
 
 void skPath::makePolygon(const skScalar* vertices,
                          int             count,

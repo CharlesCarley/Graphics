@@ -39,7 +39,6 @@ typedef struct SKfontOptions
     SKint32  yMax;
 } SKfontOptions;
 
-
 typedef struct SKChar
 {
     skScalar x, y;
@@ -58,16 +57,15 @@ typedef struct SKGlyphMetrics
 class skGlyph
 {
 private:
-    SKuint8* m_data;
-    SKuint32 m_width, m_height;
-
+    SKuint8*       m_data;
+    SKuint32       m_width, m_height;
     SKglyphMetrics m_metrics;
-    
+
 public:
     skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h);
     ~skGlyph();
 
-    void merge(skFont *font, skImage* dest, SKuint32 x, SKuint32 y);
+    void merge(skFont* font, skImage* dest, SKuint32 x, SKuint32 y);
     void setMetrics(const SKglyphMetrics& metrics);
 
     SKuint32 getWidth() const
@@ -84,17 +82,14 @@ public:
     {
         return m_metrics;
     }
-
 };
-
-
 
 class skFont : public skContextObj
 {
 public:
     typedef SKChar Char;
 
-public:
+private:
     Char*         m_chars;
     skScalar      m_pointScale;
     skTexture*    m_image;
@@ -144,7 +139,6 @@ public:
                     SKuint32    dpi);
 
     void buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y);
-
 
     const Char& getChar(char ch) const;
 

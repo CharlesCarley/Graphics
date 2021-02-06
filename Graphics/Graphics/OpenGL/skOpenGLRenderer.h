@@ -22,7 +22,6 @@
 #ifndef _skOpenGLRenderer_h_
 #define _skOpenGLRenderer_h_
 
-
 #include "skRender.h"
 
 class skVertexBuffer;
@@ -51,8 +50,6 @@ public:
 
     void clear(const skRectangle& rect) override;
 
-    void flush(void) override;
-
     void fill(skPath* pth) override;
 
     void stroke(skPath* pth) override;
@@ -72,6 +69,5 @@ private:
 
     void compileBuiltin(void) const;
 };
-
 
 #endif  //_skOpenGLRenderer_h_

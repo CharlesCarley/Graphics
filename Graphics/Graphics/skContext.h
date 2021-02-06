@@ -62,8 +62,6 @@ public:
 
     void stroke(void) const;
 
-    void flush(void) const;
-
     SKimage createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt);
 
     SKimage newImage();

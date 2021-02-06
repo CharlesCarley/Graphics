@@ -45,8 +45,6 @@ public:
 
     virtual void selectPaint(skPaint* paint) = 0;
 
-    virtual void flush(void) = 0;
-
     virtual void projectBox(skScalar x1, skScalar y1, skScalar x2, skScalar y2) = 0;
 
     virtual void displayString(skFont* font, const char* str, SKuint32 len, skScalar x, skScalar y) = 0;

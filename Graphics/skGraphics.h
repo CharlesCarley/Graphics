@@ -26,7 +26,6 @@
 #include "skGraphicsConfig.h"
 SK_ST_C;
 
-
 /*********************************************************
     Render engines
  */
@@ -42,7 +41,6 @@ enum SKbackend
     {                     \
         size_t unused;    \
     } * (x)
-
 
 SK_SIZE_HANDLE(SKcontext);
 SK_SIZE_HANDLE(SKpaint);
@@ -324,13 +322,11 @@ enum SKStringOptionEnum
 typedef SKenum SKstringOptionEnum;
 
 SK_API SKcontext skNewContext();
-SK_API void skDeleteContext(SKcontext ctx);
-SK_API void skSetCurrentContext(SKcontext ctx);
+SK_API void      skDeleteContext(SKcontext ctx);
+SK_API void      skSetCurrentContext(SKcontext ctx);
 SK_API SKcontext skGetCurrentContext();
 
-
 SK_API void skClearContext();
-SK_API void skFlush();
 
 SK_API void skSetContext1i(SKcontextOptionEnum en, SKint32 v);
 SK_API void skSetContext1f(SKcontextOptionEnum en, SKscalar v);
@@ -370,7 +366,6 @@ SK_API void skProjectContext(SKprojectionType pt);
 SK_API void skProjectRect(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 SK_API void skProjectBox(SKscalar x1, SKscalar y1, SKscalar x2, SKscalar y2);
 
-
 SK_API void skColor1ui(SKuint32 c);
 SK_API void skColor3f(SKscalar r, SKscalar g, SKscalar b);
 SK_API void skColor4f(SKscalar r, SKscalar g, SKscalar b, SKscalar a);
@@ -381,12 +376,9 @@ SK_API void skSetPaint1i(SKpaintStyle en, SKint32 v);
 SK_API void skSetPaint1f(SKpaintStyle en, SKscalar v);
 SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c);
 
-
 SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v);
 SK_API void skGetPaint1f(SKpaintStyle en, SKscalar* v);
 SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v);
-
-
 
 /**********************************************************
    Images

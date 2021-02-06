@@ -22,9 +22,8 @@
 #ifndef _skCachedProgram_h_
 #define _skCachedProgram_h_
 
-
-#include "skProgram.h"
 #include "Math/skMatrix4.h"
+#include "skProgram.h"
 
 class skCachedProgram : public skProgram
 {
@@ -38,13 +37,19 @@ protected:
 
 public:
     skCachedProgram();
+    
     ~skCachedProgram();
 
     void setZOrder(skScalar z);
+
     void setViewProj(const skMatrix4& vProj);
+
     void setImage(SKuint32 ima);
+
     void setMode(SKuint32 m);
+
     void setSurface(const skScalar* p);
+
     void setBrush(const skScalar* p);
 };
 

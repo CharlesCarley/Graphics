@@ -107,6 +107,7 @@ public:
     }
 
     void save(const char* file) const;
+
     void load(const char* file);
 
     void getI(SKimageOptionEnum opt, SKint32* v) const;

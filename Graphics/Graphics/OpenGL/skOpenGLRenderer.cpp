@@ -38,10 +38,7 @@
 #include "skPaint.h"
 #include "skPath.h"
 
-
 const GLint clear_bits = GL_COLOR_BUFFER_BIT;
-
-
 
 skOpenGLRenderer::skOpenGLRenderer() :
     m_projection(skMatrix4::Identity),
@@ -97,7 +94,6 @@ void skOpenGLRenderer::projectBox(skScalar x1, skScalar y1, skScalar x2, skScala
     m_projection = m_projection * tm;
 }
 
-
 void skOpenGLRenderer::loadRect(const skRectangle& rect)
 {
     skMath::ortho2D(m_projection, rect.getLeft(), rect.getTop(), rect.getRight(), rect.getBottom());
@@ -108,7 +104,6 @@ void skOpenGLRenderer::loadRect(const skRectangle& rect)
     m_projection = m_projection * tm;
 }
 
-
 void skOpenGLRenderer::clear(void)
 {
     const skContext& ctx = ref();
@@ -117,8 +112,6 @@ void skOpenGLRenderer::clear(void)
     rect.setSize(ctx.getContextV(SK_CONTEXT_SIZE));
     clear(rect);
 }
-
-
 
 void skOpenGLRenderer::clear(const skRectangle& rect)
 {
@@ -137,7 +130,6 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         return;
     }
-
 
     if (m_checkScissor == -1)
     {
@@ -168,7 +160,6 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-
 void skOpenGLRenderer::doPolyFill(void) const
 {
     const skContext& ctx = ref();
@@ -177,7 +168,6 @@ void skOpenGLRenderer::doPolyFill(void) const
         return;
 
     const bool lines = m_fillOp == GL_LINES || m_fillOp == GL_LINE_STRIP;
-
 
     m_curPaint->m_program->enable(true);
     m_curPaint->m_program->setMode(m_curPaint->m_brushMode);
@@ -237,7 +227,6 @@ void skOpenGLRenderer::doPolyFill(void) const
     }
 }
 
-
 void skOpenGLRenderer::fill(skPath* pth)
 {
     m_curPath = pth;
@@ -256,7 +245,6 @@ void skOpenGLRenderer::fill(skPath* pth)
     if (!blend)
         blend = m_curPaint->m_brushMode != SK_BM_REPLACE;
 
-
     if (blend)
         glEnable(GL_BLEND);
 
@@ -267,8 +255,6 @@ void skOpenGLRenderer::fill(skPath* pth)
 
     m_fillOp = 0;
 }
-
-
 
 void skOpenGLRenderer::stroke(skPath* pth)
 {
@@ -295,11 +281,15 @@ void skOpenGLRenderer::stroke(skPath* pth)
     m_fillOp = 0;
 }
 
-
-void skOpenGLRenderer::displayString(skFont* font, const char* str, SKuint32 len, skScalar x, skScalar y)
+void skOpenGLRenderer::displayString(skFont*     font,
+                                     const char* str,
+                                     SKuint32    len,
+                                     skScalar    x,
+                                     skScalar    y)
 {
-    if (!font || !len || !m_curPaint)
-        return;
+    SK_CHECK_PARAM(font, SK_RETURN_VOID);
+    SK_CHECK_PARAM(len, SK_RETURN_VOID);
+    SK_CHECK_PARAM(m_curPaint, SK_RETURN_VOID);
 
     font->buildPath(m_fontPath, str, len, x, y);
     m_curPaint->m_brushPattern = font->getImage();
@@ -330,13 +320,6 @@ void skOpenGLRenderer::displayString(skCachedString* str)
     m_curPaint->m_brushPattern = nullptr;
     m_curPaint->m_program      = nullptr;
 }
-
-
-
-void skOpenGLRenderer::flush(void)
-{
-}
-
 
 void skOpenGLRenderer::selectPaint(skPaint* paint)
 {

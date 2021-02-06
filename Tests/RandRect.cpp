@@ -213,7 +213,6 @@ int main(int argc, char** argv)
         app.update();
 }
 
-
 Application::Application() :
     m_manager(nullptr),
     m_window(nullptr),
@@ -360,7 +359,6 @@ void Application::draw(void)
     skProjectRect(0, 0, m_size.x, m_size.y);
 
     skScalar x, y, w, h;
-
     m_scale.x = m_size.x / 20;
     m_scale.y = m_size.y / 20;
 
@@ -433,14 +431,15 @@ void Application::draw(void)
     skStroke();
 
     maxRects = initializeRectSort();
-    i        = 0;
+
+    i = 0;
 
     shelf += 10;
     skScalar mx = 0;
 
     for (; shelf < m_size.y && i<ColorSize; shelf += (SKuint16)mx> 0 ? maxRects.y : mx)
     {
-        x = m_size.x / 2;
+        x  = m_size.x / 2;
         mx = 0;
         while (i < ColorSize && x + m_sort[i].m_rect.width < m_size.x)
         {
