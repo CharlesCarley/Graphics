@@ -227,9 +227,11 @@ typedef SKenum SKmetricsMode;
 
 enum SKLineType
 {
-    SK_LINE_LIST,
+    SK_LT_MIN,
     SK_LINE_LOOP,
+    SK_LINE_LIST,
     SK_POINTS,
+    SK_LT_MAX,
 };
 typedef SKenum SKlineType;
 

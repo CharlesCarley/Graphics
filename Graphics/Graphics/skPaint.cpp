@@ -86,7 +86,7 @@ void skPaint::setI(SKpaintStyle opt, SKint32 v)
         m_penWidth = skMax<SKscalar>((SKscalar)v, 0.f);
         break;
     case SK_LINE_TYPE:
-        m_lineType = (SKlineType)v;
+        m_lineType = skClamp<SKint32>(v, SK_LT_MIN + 1, SK_LT_MAX - 1);
         break;
     case SK_AUTO_CLEAR:
         m_autoClear = (SKint8)v != 0;
@@ -142,7 +142,7 @@ void skPaint::setF(SKpaintStyle opt, SKscalar v)
         m_penWidth = skMax(v, 0.f);
         break;
     case SK_LINE_TYPE:
-        m_lineType = (SKlineType)v;
+        m_lineType = skClamp<SKint32>((SKint32)v, SK_LT_MIN + 1, SK_LT_MAX - 1);
         break;
     case SK_AUTO_CLEAR:
         m_autoClear = (SKuint8)((int)v ? 1 : 0);

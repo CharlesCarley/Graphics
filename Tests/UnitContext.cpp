@@ -179,6 +179,7 @@ TEST_CASE("GetWorkingPaint")
     skDeleteContext(ctx);
 }
 
+
 /*
 SK_API void skSetPaint1i(SKpaintStyle en, SKint32 v);
 SK_API void skSetPaint1f(SKpaintStyle en, SKscalar v);
@@ -228,13 +229,69 @@ TEST_CASE("PaintDefaults")
     AssertPaintEqualI(SK_BRUSH_STYLE, SK_BS_PATTERN);
 
 
-
-
-
+    // default
     AssertPaintEqualI(SK_LINE_TYPE, SK_LINE_LOOP);
+
+
+    // valid options
+    skSetPaint1i(SK_LINE_TYPE, SK_LINE_LIST);
+    AssertPaintEqualI(SK_LINE_TYPE, SK_LINE_LIST);
+
+    skSetPaint1i(SK_LINE_TYPE, SK_LINE_LOOP);
+    AssertPaintEqualI(SK_LINE_TYPE, SK_LINE_LOOP);
+
+    skSetPaint1i(SK_LINE_TYPE, SK_POINTS);
+    AssertPaintEqualI(SK_LINE_TYPE, SK_POINTS);
+
+    // invalid options
+    skSetPaint1i(SK_LINE_TYPE, -10000);
+    AssertPaintEqualI(SK_LINE_TYPE, SK_LINE_LOOP);
+
+    skSetPaint1i(SK_LINE_TYPE, 10000);
+    AssertPaintEqualI(SK_LINE_TYPE, SK_POINTS);
+
+
+
+    // default
     AssertPaintEqualI(SK_PEN_STYLE, SK_PS_SOLID);
+
+    // valid options
+    skSetPaint1i(SK_PEN_STYLE, SK_PS_DASHED);
+    AssertPaintEqualI(SK_PEN_STYLE, SK_PS_DASHED);
+
+    skSetPaint1i(SK_PEN_STYLE, SK_PS_SOLID);
+    AssertPaintEqualI(SK_PEN_STYLE, SK_PS_SOLID);
+
+
+    // invalid options
+    skSetPaint1i(SK_PEN_STYLE, -10000);
+    AssertPaintEqualI(SK_PEN_STYLE, SK_PS_SOLID);
+
+    skSetPaint1i(SK_PEN_STYLE, 10000);
+    AssertPaintEqualI(SK_PEN_STYLE, SK_PS_DASHED);
+
+
     AssertPaintEqualI(SK_PEN_WIDTH, 1);
+    skSetPaint1f(SK_PEN_WIDTH, 1.5f);
+    AssertPaintEqualF(SK_PEN_WIDTH, 1.5f);
+
+    skSetPaint1f(SK_PEN_WIDTH, -100);
+    AssertPaintEqualF(SK_PEN_WIDTH, 0);
+
+    skSetPaint1f(SK_PEN_WIDTH, 100);
+    AssertPaintEqualF(SK_PEN_WIDTH, 100);
+
+
     AssertPaintEqualI(SK_AUTO_CLEAR, 0);
+    skSetPaint1i(SK_AUTO_CLEAR, 1);
+    AssertPaintEqualI(SK_AUTO_CLEAR, 1);
+
+
+    skSetPaint1i(SK_AUTO_CLEAR, -1000);
+    AssertPaintEqualI(SK_AUTO_CLEAR, 1);
+
+    skSetPaint1i(SK_AUTO_CLEAR, 1000);
+    AssertPaintEqualI(SK_AUTO_CLEAR, 1);
 
     skDeleteContext(ctx);
 }
