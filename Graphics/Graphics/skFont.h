@@ -24,6 +24,8 @@
 
 #include "Utils/skArray.h"
 #include "skContextObject.h"
+#include "skGlyph.h"
+
 class skImage;
 
 typedef struct SKfontOptions
@@ -46,43 +48,6 @@ typedef struct SKChar
     skScalar xOffs;
     skScalar yOffs;
 } SKchar;
-
-typedef struct SKGlyphMetrics
-{
-    SKint32 yBearing, height;
-    SKint32 width, advance;
-    SKint32 i;
-} SKglyphMetrics;
-
-class skGlyph
-{
-private:
-    SKuint8*       m_data;
-    SKuint32       m_width, m_height;
-    SKglyphMetrics m_metrics;
-
-public:
-    skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h);
-    ~skGlyph();
-
-    void merge(skFont* font, skImage* dest, SKuint32 x, SKuint32 y);
-    void setMetrics(const SKglyphMetrics& metrics);
-
-    SKuint32 getWidth() const
-    {
-        return m_width;
-    }
-
-    SKuint32 getHeight() const
-    {
-        return m_height;
-    }
-
-    const SKglyphMetrics& getMertics() const
-    {
-        return m_metrics;
-    }
-};
 
 class skFont : public skContextObj
 {

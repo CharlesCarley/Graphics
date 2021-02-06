@@ -31,6 +31,7 @@
 #include "Utils/skPlatformHeaders.h"
 #include "skBuiltinFonts.h"
 #include "skContext.h"
+#include "skGlyph.h"
 #include "skPath.h"
 #include "skTexture.h"
 
@@ -44,47 +45,6 @@ const SKint32      CharEnd   = 127;
 const SKint32      CharTotal = CharEnd - CharStart;
 const SKint32      Spacer    = 2;
 const skFont::Char NullChar  = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
-
-skGlyph::skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h) :
-    m_width(w),
-    m_height(h)
-{
-    SKsize lim = (SKsize)w * (SKsize)h;
-    m_data     = new SKuint8[lim];
-
-    skMemcpy(m_data, ptr, lim);
-    skMemset(&m_metrics, 0, sizeof(SKglyphMetrics));
-}
-
-skGlyph::~skGlyph()
-{
-    delete[] m_data;
-}
-
-void skGlyph::setMetrics(const SKglyphMetrics& metrics)
-{
-    skMemcpy(&m_metrics, &metrics, sizeof(SKglyphMetrics));
-}
-
-void skGlyph::merge(skFont* font, skImage* dest, SKuint32 x, SKuint32 y)
-{
-    if (!m_data)
-        return;
-
-    SKuint8* ptr = m_data;
-    SKuint32 ix, iy;
-
-    for (iy = 0; iy < m_height; ++iy)
-    {
-        const SKint32 ny = y + iy;
-        for (ix = 0; ix < m_width; ix++)
-        {
-            const SKint32 nx = x + ix;
-            const SKuint8 ch = *ptr++;
-            dest->setPixel(nx, ny, skPixel(ch, ch, ch, ch));
-        }
-    }
-}
 
 skFont::skFont() :
     skContextObj(),
@@ -596,17 +556,15 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     m_chars = new Char[CharTotal];
     skMemset(m_chars, 0, sizeof(Char) * CharTotal);
 
-
-    SKint32 x      = 0,
-            y      = 0,
-            rowMax = 0;
+    SKint32 x = 0,
+            y = 0;
 
     SKuint32 i;
     for (i = 0; i < m_glyphs.size(); ++i)
     {
         skGlyph* glyph = m_glyphs[i];
 
-        glyph->merge(this, ima, x, y);
+        glyph->merge(ima, x, y);
 
         const SKglyphMetrics& metrics = glyph->getMertics();
         if (i >= CharTotal)
@@ -625,7 +583,6 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
         {
             x = Spacer;
             y += m_opts.yMax + Spacer;
-            rowMax = 0;
         }
         else
             x += nx;

@@ -46,6 +46,7 @@ set(Graphics_SRC
     skContext.cpp
     skContextObject.cpp
     skFont.cpp
+    skGlyph.cpp
     skCachedString.cpp
     skTexture.cpp
     skPaint.cpp
@@ -65,6 +66,7 @@ set(Graphics_SRC
     skContextObject.h
     skContour.h
     skFont.h
+    skGlyph.h
     skCachedString.h
     skTexture.h
     skPaint.h
@@ -75,7 +77,6 @@ set(Graphics_SRC
     OpenGL/skOpenGLRenderer.h
     OpenGL/skCachedProgram.h
     OpenGL/skImageOpenGL.h
-    README.md
 )
 
 if (Graphics_BUILD_WINDOW)
