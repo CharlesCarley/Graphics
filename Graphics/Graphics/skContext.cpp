@@ -21,7 +21,7 @@
 */
 #include "skContext.h"
 #include <cstdio>
-#include "OpenGL/skImageOpenGL.h"
+#include "OpenGL/skOpenGLTexture.h"
 #include "Utils/skDisableWarnings.h"
 #include "Utils/skLogger.h"
 #include "Window/OpenGL/skOpenGL.h"
@@ -85,7 +85,7 @@ SKimage skContext::createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt)
 {
     if (m_backend == SK_BE_OpenGL)
     {
-        skImageOpenGL* ima = new skImageOpenGL(w, h, fmt);
+        skOpenGLTexture* ima = new skOpenGLTexture(w, h, fmt);
         ima->setContext(this);
         return SK_IMAGE_HANDLE(ima);
     }
@@ -96,7 +96,7 @@ SKimage skContext::newImage()
 {
     if (m_backend == SK_BE_OpenGL)
     {
-        skImageOpenGL* ima = new skImageOpenGL();
+        skOpenGLTexture* ima = new skOpenGLTexture();
         ima->setContext(this);
         return SK_IMAGE_HANDLE(ima);
     }
@@ -117,7 +117,7 @@ skTexture* skContext::createInternalImage(SKuint32 w, SKuint32 h, SKpixelFormat 
 {
     if (m_backend == SK_BE_OpenGL)
     {
-        skImageOpenGL* ima = new skImageOpenGL(w, h, fmt);
+        skOpenGLTexture* ima = new skOpenGLTexture(w, h, fmt);
         ima->setContext(this);
         return ima;
     }

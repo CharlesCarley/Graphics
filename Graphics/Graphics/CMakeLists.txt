@@ -56,7 +56,7 @@ set(Graphics_SRC
     OpenGL/skCachedProgram.cpp
     OpenGL/skProgram.cpp
     OpenGL/skVertexBuffer.cpp
-    OpenGL/skImageOpenGL.cpp
+    OpenGL/skOpenGLTexture.cpp
 
     ../skGraphics.h
     
@@ -76,7 +76,7 @@ set(Graphics_SRC
     OpenGL/skVertexBuffer.h
     OpenGL/skOpenGLRenderer.h
     OpenGL/skCachedProgram.h
-    OpenGL/skImageOpenGL.h
+    OpenGL/skOpenGLTexture.h
 )
 
 if (Graphics_BUILD_WINDOW)

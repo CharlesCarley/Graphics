@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "OpenGL/skImageOpenGL.h"
+#include "OpenGL/skOpenGLTexture.h"
 #include "Utils/Config/skConfig.h"
 #include "Utils/skDisableWarnings.h"
 #include "Window/Window/OpenGL/skOpenGL.h"
@@ -69,24 +69,24 @@ void skGetMinMag(const SKuint32& filter, GLint& min, GLint& mag, bool mipmap)
     }
 }
 
-skImageOpenGL::skImageOpenGL() :
+skOpenGLTexture::skOpenGLTexture() :
     skTexture(), m_dirty(true), m_tex(0)
 {
 }
 
-skImageOpenGL::skImageOpenGL(SKint32 w, SKint32 h, SKpixelFormat fmt) :
+skOpenGLTexture::skOpenGLTexture(SKint32 w, SKint32 h, SKpixelFormat fmt) :
     skTexture(w, h, fmt),
     m_dirty(true),
     m_tex(0)
 {
 }
 
-skImageOpenGL::~skImageOpenGL()
+skOpenGLTexture::~skOpenGLTexture()
 {
     glDeleteTextures(1, &m_tex);
 }
 
-SKuint32 skImageOpenGL::getImage(void)
+SKuint32 skOpenGLTexture::getImage(void)
 {
     if (m_dirty && m_image)
     {

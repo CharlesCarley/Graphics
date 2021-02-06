@@ -19,29 +19,32 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#ifndef _skImageOpenGL_h_
-#define _skImageOpenGL_h_
+#ifndef _skOpenGLTexture_h_
+#define _skOpenGLTexture_h_
 
 #include "skTexture.h"
 
-class skImageOpenGL : public skTexture
+class skOpenGLTexture : public skTexture
 {
 protected:
     bool     m_dirty;
     SKuint32 m_tex;
 
 public:
-    skImageOpenGL();
-    skImageOpenGL(SKint32 w, SKint32 h, SKpixelFormat fmt);
-    ~skImageOpenGL() override;
+    skOpenGLTexture();
+
+    skOpenGLTexture(SKint32 w, SKint32 h, SKpixelFormat fmt);
+
+    ~skOpenGLTexture() override;
 
     SKuint32 getImage(void);
 
 private:
+
     void notifyImage(void) override
     {
         m_dirty = true;
     }
 };
 
-#endif  //_skImageOpenGL_h_
+#endif  //_skOpenGLTexture_h_

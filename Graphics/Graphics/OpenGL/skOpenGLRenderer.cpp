@@ -20,7 +20,7 @@
 -------------------------------------------------------------------------------
 */
 #include "OpenGL/skOpenGLRenderer.h"
-#include "OpenGL/skImageOpenGL.h"
+#include "OpenGL/skOpenGLTexture.h"
 #include "OpenGL/skProgram.h"
 #include "OpenGL/skVertexBuffer.h"
 #include "Pipeline/ColoredFragment.inl"
@@ -176,7 +176,7 @@ void skOpenGLRenderer::doPolyFill(void) const
     if (m_curPaint->m_brushPattern && !lines)
     {
         m_curPath->makeUV();
-        skImageOpenGL* ima = (skImageOpenGL*)m_curPaint->m_brushPattern;
+        skOpenGLTexture* ima = (skOpenGLTexture*)m_curPaint->m_brushPattern;
 
         glEnable(GL_TEXTURE_2D);
         glActiveTexture(GL_TEXTURE0);
@@ -310,7 +310,7 @@ void skOpenGLRenderer::displayString(skCachedString* str)
     skFont* fnt = ctx.getWorkFont();
     SK_CHECK_PARAM(fnt, SK_RETURN_VOID);
 
-    skImageOpenGL* img = (skImageOpenGL*)fnt->getImage();
+    skOpenGLTexture* img = (skOpenGLTexture*)fnt->getImage();
 
     m_curPaint->m_brushPattern = img;
     m_fillOp                   = GL_TRIANGLES;

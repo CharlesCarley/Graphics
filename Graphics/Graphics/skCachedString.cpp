@@ -20,7 +20,7 @@
 -------------------------------------------------------------------------------
 */
 #include "skCachedString.h"
-#include "OpenGL/skImageOpenGL.h"
+#include "OpenGL/skOpenGLTexture.h"
 #include "Utils/skLogger.h"
 #include "skContext.h"
 #include "skFont.h"
