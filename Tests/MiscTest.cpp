@@ -354,7 +354,7 @@ public:
     {
         skClearColor1i(CS_Grey02);
         skClearContext();
-        skProjectContext(m_projectionMode == 0 ? SK_STD : SK_CC);
+        skProjectContext(m_projectionMode == 0 ? SK_STANDARD : SK_CARTESIAN);
 
         switch (m_test)
         {

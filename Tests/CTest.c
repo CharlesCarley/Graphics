@@ -65,7 +65,7 @@ void WindowPaint(SKwindow window, void* user)
 
     skClearColor1i(CS_Grey02);
     skClearContext();
-    skProjectContext(SK_STD);
+    skProjectContext(SK_STANDARD);
 
     SKint32 s[3] = {0, 0, 0};
     skGetContext2i(SK_CONTEXT_SIZE, (SKint32*)&s);

@@ -44,3 +44,35 @@ AddTest(RandRect)
 AddTest(MiscTest)
 AddTest(ColorApp)
 AddCTest(CTest)
+
+
+
+
+
+set(SRC_ALL
+    Catch2.h
+    catch/catch.hpp
+    Main.cpp
+    UnitContext.cpp
+)
+
+
+include_directories(. ../
+    ${Utils_INCLUDE} 
+    ${Math_INCLUDE} 
+    ${Window_INCLUDE} 
+    ${Image_INCLUDE} 
+    ${FreeType_INCLUDE} 
+    ${FreeImage_INCLUDE} 
+    )
+
+add_executable(UnitTests ${SRC_ALL})
+target_link_libraries(UnitTests
+    Graphics 
+    ${Math_LIBRARY}
+    ${Utils_LIBRARY}
+    ${Window_LIBRARY}
+    ${Image_LIBRARY}
+    ${FreeImage_LIBRARY}
+    )
+set_target_properties(UnitTests  PROPERTIES FOLDER "Tests")
