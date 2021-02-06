@@ -35,7 +35,7 @@ Optional defines.
 
 | Option                       | Description                                                     | Default |
 |:-----------------------------|:----------------------------------------------------------------|:--------|
-| Graphcs_BUILD_WINDOW         | Build an optional C-API wrapper for window access.              | ON      |
+| Graphcs_BUILD_WINDOW         | Build an optional C-API wrapper for standalone window access.   | ON      |
 | Graphcs_USE_SDL              | Build the SDL backend for the window API.                       | OFF     |
 | Graphics_NO_PALETTE          | Disable the built in color palette.                             | OFF     |
 | Graphics_OP_CHECKS           | Add extra checks for function parameters.                       | ON      |
