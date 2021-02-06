@@ -141,11 +141,10 @@ void skContext::selectImage(SKimage ima)
     if (m_workPaint)
     {
         skTexture* img = SK_TEXTURE(ima);
-
         if (img && img->getContext() != this)
             return;
 
-        m_workPaint->m_brushPattern = img;
+        m_workPaint->setT(SK_BRUSH_PATTERN, img);
     }
 }
 
@@ -314,7 +313,7 @@ void skContext::fill(void) const
         m_renderContext->selectPaint(m_workPaint);
         m_renderContext->fill(m_workPath);
 
-        if (m_workPaint->m_autoClear != 0)
+        if (m_workPaint->autoClear())
             m_workPath->clear();
         m_renderContext->selectPaint(nullptr);
     }
@@ -326,7 +325,8 @@ void skContext::stroke(void) const
     {
         m_renderContext->selectPaint(m_workPaint);
         m_renderContext->stroke(m_workPath);
-        if (m_workPaint->m_autoClear != 0)
+
+        if (m_workPaint->autoClear())
             m_workPath->clear();
 
         m_renderContext->selectPaint(nullptr);
@@ -607,189 +607,49 @@ void skContext::setContextR(SKcontextOptionEnum op, const skRectangle& v)
 void skContext::setPaintI(SKpaintStyle op, SKint32 v) const
 {
     if (m_workPaint)
-    {
-        switch (op)
-        {
-        case SK_PEN_STYLE:
-            m_workPaint->m_penStyle = (SKpenStyle)skClamp<SKint32>(v, SK_PS_MIN + 1, SK_PS_MAX - 1);
-            break;
-        case SK_BRUSH_STYLE:
-            m_workPaint->m_brushStyle = (SKbrushStyle)skClamp<SKint32>(v, SK_BS_MIN + 1, SK_BS_MAX - 1);
-            break;
-        case SK_BRUSH_MODE:
-            m_workPaint->m_brushMode = skClamp<SKint32>(v, SK_BM_MIN + 1, SK_BM_MAX - 1);
-            break;
-        case SK_PEN_WIDTH:
-            m_workPaint->m_penWidth = skMax<SKscalar>((SKscalar)v, 0.f);
-            break;
-        case SK_LINE_TYPE:
-            m_workPaint->m_lineType = (SKlineType)v;
-            break;
-        case SK_AUTO_CLEAR:
-            m_workPaint->m_autoClear = (SKint8)v != 0;
-            break;
-        default:
-            break;
-        }
-    }
+        m_workPaint->setI(op, v);
 }
 
 SKint32 skContext::getPaintI(SKpaintStyle op) const
 {
+    SKint32 rValue = SK_NO_STATUS;
     if (m_workPaint)
-    {
-        switch (op)
-        {
-        case SK_PEN_STYLE:
-            return (SKint32)m_workPaint->m_penStyle;
-        case SK_BRUSH_STYLE:
-            return (SKint32)m_workPaint->m_brushStyle;
-        case SK_BRUSH_MODE:
-            return (SKint32)m_workPaint->m_brushMode;
-        case SK_PEN_WIDTH:
-            return (SKint32)m_workPaint->m_penWidth;
-        case SK_LINE_TYPE:
-            return (SKint32)m_workPaint->m_lineType;
-        case SK_AUTO_CLEAR:
-            return (SKint32)m_workPaint->m_autoClear;
-        //case SK_BRUSH_COLOR:
-        //case SK_PEN_COLOR:
-        //case SK_SURFACE_COLOR:
-        //case SK_BRUSH_PATTERN:
-        default:
-            break;
-        }
-    }
-
-    return -1;
+        m_workPaint->getI(op, &rValue);
+    return rValue;
 }
 
 void skContext::setPaintF(SKpaintStyle op, SKscalar v) const
 {
     if (m_workPaint)
-    {
-        switch (op)
-        {
-        case SK_PEN_STYLE:
-            m_workPaint->m_penStyle = (SKpenStyle)skClamp<SKint32>((SKint32)v, SK_PS_MIN + 1, SK_PS_MAX - 1);
-            break;
-        case SK_BRUSH_STYLE:
-            m_workPaint->m_brushStyle = (SKbrushStyle)skClamp<SKint32>((SKint32)v, SK_BS_MIN + 1, SK_BS_MAX - 1);
-            break;
-        case SK_BRUSH_MODE:
-            m_workPaint->m_brushMode = skClamp<SKint32>((SKint32)v, SK_BM_MIN + 1, SK_BM_MAX - 1);
-            break;
-        case SK_PEN_WIDTH:
-            m_workPaint->m_penWidth = skMax(v, 0.f);
-            break;
-        case SK_LINE_TYPE:
-            m_workPaint->m_lineType = (SKlineType)(int)v;
-            break;
-        case SK_AUTO_CLEAR:
-            m_workPaint->m_autoClear = (SKuint8)((int)v ? 1 : 0);
-            break;
-        //case SK_BRUSH_COLOR:
-        //case SK_PEN_COLOR:
-        //case SK_SURFACE_COLOR:
-        //case SK_BRUSH_PATTERN:
-        default:
-            break;
-        }
-    }
+        m_workPaint->setF(op, v);
 }
 
 SKscalar skContext::getPaintF(SKpaintStyle op) const
 {
+    SKscalar rValue = SK_NO_STATUS;
     if (m_workPaint)
-    {
-        switch (op)
-        {
-        case SK_PEN_STYLE:
-            return (SKscalar)m_workPaint->m_penStyle;
-        case SK_BRUSH_STYLE:
-            return (SKscalar)m_workPaint->m_brushStyle;
-        case SK_BRUSH_MODE:
-            return (SKscalar)m_workPaint->m_brushMode;
-        case SK_PEN_WIDTH:
-            return m_workPaint->m_penWidth;
-        case SK_AUTO_CLEAR:
-            return (SKscalar)m_workPaint->m_autoClear;
-        case SK_LINE_TYPE:
-            return (SKscalar)m_workPaint->m_lineType;
-        //case SK_BRUSH_COLOR:
-        //case SK_PEN_COLOR:
-        //case SK_SURFACE_COLOR:
-        //case SK_BRUSH_PATTERN:
-        default:
-            break;
-        }
-    }
-
-    return -1;
+        m_workPaint->getF(op, &rValue);
+    return rValue;
 }
 
 void skContext::setPaintC(SKpaintStyle op, const skColor& v) const
 {
     if (m_workPaint)
-    {
-        switch (op)
-        {
-        case SK_BRUSH_COLOR:
-            m_workPaint->m_brushColor = v;
-            break;
-        case SK_PEN_COLOR:
-            m_workPaint->m_penColor = v;
-            break;
-        case SK_SURFACE_COLOR:
-            m_workPaint->m_surfaceColor = v;
-            break;
-        //case SK_PEN_STYLE:
-        //case SK_BRUSH_STYLE:
-        //case SK_BRUSH_MODE:
-        //case SK_PEN_WIDTH:
-        //case SK_BRUSH_PATTERN:
-        //case SK_LINE_TYPE:
-        //case SK_AUTO_CLEAR:
-        default:
-            break;
-        }
-    }
+        m_workPaint->setC(op, v);
 }
 
-const skColor& skContext::getPaintC(SKpaintStyle op) const
+SKuint32 skContext::getPaintC(SKpaintStyle op) const
 {
+    SKuint32 rValue = SK_NPOS32;
     if (m_workPaint)
-    {
-        switch (op)
-        {
-        case SK_BRUSH_COLOR:
-            return m_workPaint->m_brushColor;
-        case SK_PEN_COLOR:
-            return m_workPaint->m_penColor;
-        case SK_SURFACE_COLOR:
-            return m_workPaint->m_surfaceColor;
-        //case SK_PEN_STYLE:
-        //case SK_BRUSH_STYLE:
-        //case SK_BRUSH_MODE:
-        //case SK_PEN_WIDTH:
-        //case SK_BRUSH_PATTERN:
-        //case SK_LINE_TYPE:
-        //case SK_AUTO_CLEAR:
-        default:
-            break;
-        }
-    }
-
-    return skColor::White;
+        m_workPaint->getC(op, &rValue);
+    return rValue;
 }
 
 void skContext::setPaintP(SKpaintStyle op, skTexture* v) const
 {
     if (m_workPaint)
-    {
-        if (op == SK_BRUSH_PATTERN)
-            m_workPaint->m_brushPattern = v;
-    }
+        m_workPaint->setT(op, v);
 }
 
 skTexture* skContext::getPaintP(SKpaintStyle op) const
@@ -797,7 +657,11 @@ skTexture* skContext::getPaintP(SKpaintStyle op) const
     if (m_workPaint)
     {
         if (op == SK_BRUSH_PATTERN)
-            return m_workPaint->m_brushPattern;
+        {
+            skTexture* rValue = nullptr;
+            m_workPaint->getT(op, &rValue);
+            return rValue;
+        }
     }
     return nullptr;
 }

@@ -26,9 +26,14 @@
 
 class skCachedProgram;
 
+
+
+
 class skPaint : public skContextObj
 {
-public:
+private:
+    friend class skOpenGLRenderer;
+
     SKbrushStyle     m_brushStyle;
     SKbrushMode      m_brushMode;
     SKpenStyle       m_penStyle;
@@ -41,11 +46,30 @@ public:
     SKint8           m_autoClear;
     skCachedProgram* m_program;
 
+public:
     skPaint();
     ~skPaint();
 
+    bool autoClear()
+    {
+        return m_autoClear != 0;
+    }
+
     void getI(SKpaintStyle opt, SKint32* v) const;
+
     void setI(SKpaintStyle opt, SKint32 v);
+
+    void getF(SKpaintStyle opt, SKscalar* v) const;
+
+    void setF(SKpaintStyle opt, SKscalar v);
+
+    void getC(SKpaintStyle opt, SKuint32* v) const;
+
+    void setC(SKpaintStyle opt, const skColor& v);
+
+    void getT(SKpaintStyle opt, skTexture** v) const;
+
+    void setT(SKpaintStyle opt, skTexture* v);
 };
 
 #endif  //_skPaint_h_

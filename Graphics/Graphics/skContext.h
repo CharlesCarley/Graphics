@@ -124,7 +124,7 @@ public:
 
     void setPaintC(SKpaintStyle op, const skColor& v) const;
 
-    const skColor& getPaintC(SKpaintStyle op) const;
+    SKuint32 getPaintC(SKpaintStyle op) const;
 
     const SKcontextOptions& getOptions(void) const;
 
@@ -146,10 +146,9 @@ public:
     }
 
 
-    skPaint& getWorkPaint(void)
+    skPaint* getWorkPaint(void)
     {
-        SK_ASSERT(m_workPaint);
-        return *m_workPaint;
+        return m_workPaint;
     }
 
     skPath& getWorkPath(void)

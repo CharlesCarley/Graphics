@@ -192,7 +192,7 @@ SK_API SKpaint skGetWorkingPaint()
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, nullptr);
 
-    return (SKpaint)&ctx->getWorkPaint();
+    return (SKpaint)ctx->getWorkPaint();
 }
 
 SK_API SKpath skGetWorkingPath()
@@ -402,7 +402,7 @@ SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v)
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
 
-    *v = ctx->getPaintC(en).asInt();
+    *v = ctx->getPaintC(en);
 }
 
 SK_API SKimage skNewImage()
