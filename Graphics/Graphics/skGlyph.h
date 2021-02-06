@@ -62,5 +62,4 @@ public:
         return m_metrics;
     }
 };
-
-#endif _skGlyph_h_
+#endif // _skGlyph_h_
