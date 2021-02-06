@@ -39,12 +39,15 @@ skContext::skContext(SKint32 backend)
     m_id            = _ctxHandle++;
     m_backend       = backend;
 
+    // not owned by the user
     m_workPaint = new skPaint();
     m_workPaint->setContext(this);
-    m_tempPath = new skPath();
-    m_tempPath->setContext(this);
-    m_workPath = m_tempPath;
-    m_workFont = nullptr;
+    m_workPath = new skPath();
+    m_workPath->setContext(this);
+
+    m_tempPaint = nullptr;
+    m_tempPath  = nullptr;
+    m_workFont  = nullptr;
 
     m_matrix.makeIdentity();
 
@@ -66,8 +69,14 @@ skContext::skContext(SKint32 backend)
 
 skContext::~skContext()
 {
+    if (m_tempPaint)
+        selectPaint(nullptr);
     delete m_workPaint;
-    delete m_tempPath;
+
+    if (m_tempPath)
+        selectPath(nullptr);
+    delete m_workPath;
+
     delete m_renderContext;
 }
 
@@ -325,9 +334,34 @@ void skContext::selectPath(skPath* pth)
     else
     {
         if (m_tempPath)
+        {
             m_workPath = m_tempPath;
+            m_tempPath = nullptr;
+        }
         else
             skLogd(LD_WARN, "Attempt to select a null working path\n");
+    }
+}
+
+void skContext::selectPaint(skPaint* obj)
+{
+    if (obj)
+    {
+        if (m_workPaint)
+            m_tempPaint = m_workPaint;
+
+        m_workPaint = obj;
+        m_workPaint->setContext(this);
+    }
+    else
+    {
+        if (m_tempPaint)
+        {
+            m_workPaint = m_tempPaint;
+            m_tempPaint = nullptr;
+        }
+        else
+            skLogd(LD_WARN, "Attempt to select a null working paint\n");
     }
 }
 
@@ -340,6 +374,7 @@ void skContext::fill(void) const
 
         if (m_workPaint->autoClear())
             m_workPath->clear();
+
         m_renderContext->selectPaint(nullptr);
     }
 }

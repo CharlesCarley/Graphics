@@ -23,6 +23,27 @@
 #include "Graphics/skGraphics.h"
 #include "Utils/skDisableWarnings.h"
 
+bool feq(float a, float b)
+{
+    return fabs(a - b) < FLT_EPSILON;
+}
+
+void AssertEqualI(SKint32 option, const SKint32 expected)
+{
+    SKint32 prop;
+    prop = SK_NO_STATUS;
+    skGetContext1i(option, &prop);
+    EXPECT_EQ(expected, prop);
+}
+
+void AssertEqualF(SKint32 option, const SKscalar expected)
+{
+    SKscalar prop;
+    prop = SK_NO_STATUS;
+    skGetContext1f(option, &prop);
+    EXPECT_TRUE(feq(expected, prop));
+}
+
 TEST_CASE("ContextCreate")
 {
     SKcontext ctx1 = skNewBackEndContext(SK_BE_None);
@@ -48,19 +69,10 @@ TEST_CASE("ContextGetDefaults")
 {
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
 
-    SKint32 prop;
-
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_USE_CURRENT_VIEWPORT, &prop);
-    EXPECT_EQ(prop, 0);
-
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_METRICS_MODE, &prop);
-    EXPECT_EQ(prop, SK_PIXEL);
-
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_Y_UP, &prop);
-    EXPECT_EQ(prop, 0);
+    AssertEqualI(SK_USE_CURRENT_VIEWPORT, 0);
+    AssertEqualI(SK_METRICS_MODE, SK_PIXEL);
+    AssertEqualI(SK_Y_UP, 0);
+    AssertEqualI(SK_PROJECTION_TYPE, SK_STANDARD);
 
     skDeleteContext(ctx);
 }
@@ -68,61 +80,114 @@ TEST_CASE("ContextGetDefaults")
 TEST_CASE("SK_PROJECTION_TYPE")
 {
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
-    SKint32   prop;
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_PROJECTION_TYPE, &prop);
-    EXPECT_EQ(prop, SK_STANDARD);
 
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_Y_UP, &prop);
-    EXPECT_EQ(prop, 0);
+    AssertEqualI(SK_PROJECTION_TYPE, SK_STANDARD);
+    AssertEqualI(SK_Y_UP, 0);
 
     skSetContext1i(SK_PROJECTION_TYPE, SK_CARTESIAN);
+    AssertEqualI(SK_PROJECTION_TYPE, SK_CARTESIAN);
+    AssertEqualI(SK_Y_UP, 1);
 
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_PROJECTION_TYPE, &prop);
-    EXPECT_EQ(prop, SK_CARTESIAN);
-
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_Y_UP, &prop);
-    EXPECT_EQ(prop, 1);
-
-    // make sure it stays the same when it's set to an invalid value
+    // make sure it stays the same when
+    // it's set to an invalid value
     skSetContext1i(SK_PROJECTION_TYPE, -1);
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_PROJECTION_TYPE, &prop);
-    EXPECT_EQ(prop, SK_CARTESIAN);
+    AssertEqualI(SK_PROJECTION_TYPE, SK_CARTESIAN);
 
     skSetContext1i(SK_PROJECTION_TYPE, 2);
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_PROJECTION_TYPE, &prop);
-    EXPECT_EQ(prop, SK_CARTESIAN);
-
+    AssertEqualI(SK_PROJECTION_TYPE, SK_CARTESIAN);
     skDeleteContext(ctx);
 }
 
 TEST_CASE("SK_VERTICES_PER_SEGMENT")
 {
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
-    SKint32   prop;
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_VERTICES_PER_SEGMENT, &prop);
-    EXPECT_EQ(prop, 16);
+
+    AssertEqualI(SK_VERTICES_PER_SEGMENT, 16);
 
     skSetContext1i(SK_VERTICES_PER_SEGMENT, 32);
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_VERTICES_PER_SEGMENT, &prop);
-    EXPECT_EQ(prop, 32);
+    AssertEqualI(SK_VERTICES_PER_SEGMENT, 32);
 
     skSetContext1i(SK_VERTICES_PER_SEGMENT, -1000);
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_VERTICES_PER_SEGMENT, &prop);
-    EXPECT_EQ(prop, 3);
+    AssertEqualI(SK_VERTICES_PER_SEGMENT, 3);
 
     skSetContext1i(SK_VERTICES_PER_SEGMENT, 1000);
-    prop = SK_NO_STATUS;
-    skGetContext1i(SK_VERTICES_PER_SEGMENT, &prop);
-    EXPECT_EQ(prop, 128);
+    AssertEqualI(SK_VERTICES_PER_SEGMENT, 128);
 
+    skDeleteContext(ctx);
+}
+
+TEST_CASE("SK_OPACITY")
+{
+    SKcontext ctx = skNewBackEndContext(SK_BE_None);
+
+    AssertEqualI(SK_OPACITY, 255);
+    AssertEqualF(SK_OPACITY, 1.f);
+
+    skSetContext1i(SK_OPACITY, 128);
+
+    AssertEqualI(SK_OPACITY, 128);
+    AssertEqualF(SK_OPACITY, 128.f / 255.f);
+
+    skSetContext1i(SK_OPACITY, -55555555);
+    AssertEqualI(SK_OPACITY, 0);
+
+    skSetContext1i(SK_OPACITY, 55555555);
+    AssertEqualI(SK_OPACITY, 255);
+
+    skDeleteContext(ctx);
+}
+
+TEST_CASE("GetWorkingPaint")
+{
+    // Test working paint creation / selection / deletion
+    SKcontext ctx = skNewBackEndContext(SK_BE_None);
+
+    SKpaint p1, p2;
+
+    p1 = skGetWorkingPaint();
+    EXPECT_NE(p1, nullptr);
+
+    skSelectPaint(nullptr);
+    p1= skGetWorkingPaint();
+    EXPECT_NE(p1, nullptr);
+
+    p2 = skNewPaint();
+    skSelectPaint(p2);
+    EXPECT_EQ(skGetWorkingPaint(), p2);
+
+    skSelectPaint(nullptr);
+    EXPECT_EQ(skGetWorkingPaint(), p1);
+
+
+    skSelectPaint(p2);
+    skDeletePaint(p2);  
+    // tests 'dangling' reference in ~skContext()
+    skDeleteContext(ctx);
+}
+
+TEST_CASE("GetWorkingPath")
+{
+    // Test working paint creation / selection / deletion
+    SKcontext ctx = skNewBackEndContext(SK_BE_None);
+
+    SKpath p1, p2;
+
+    p1 = skGetWorkingPath();
+    EXPECT_NE(p1, nullptr);
+
+    skSelectPath(nullptr);
+    p1 = skGetWorkingPath();
+    EXPECT_NE(p1, nullptr);
+
+    p2 = skNewPath();
+    skSelectPath(p2);
+    EXPECT_EQ(skGetWorkingPath(), p2);
+
+    skSelectPath(nullptr);
+    EXPECT_EQ(skGetWorkingPath(), p1);
+
+    skSelectPath(p2);
+    skDeletePath(p2);
+    // tests 'dangling' reference in ~skContext()
     skDeleteContext(ctx);
 }

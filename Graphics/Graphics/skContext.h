@@ -31,6 +31,7 @@ private:
     skRenderer*      m_renderContext;
     SKint32          m_id;
     skPaint*         m_workPaint;
+    skPaint*         m_tempPaint;
     skPath*          m_workPath;
     skFont*          m_workFont;
     skPath*          m_tempPath;
@@ -89,6 +90,8 @@ public:
     void displayString(SKfont font, const char* str, SKuint32 len, skScalar x, skScalar y);
 
     void selectPath(skPath* pth);
+
+    void selectPaint(skPaint* obj);
 
     SKint32 getContextI(SKcontextOptionEnum opt) const;
 

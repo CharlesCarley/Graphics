@@ -22,7 +22,7 @@
 #ifndef _skGraphicsConfig_h_
 #define _skGraphicsConfig_h_
 
-/* #undef Graphics_BUILD_WINDOW */
+#define Graphics_BUILD_WINDOW
 /* #undef Graphics_NO_PALETTE */
 #define Graphics_OP_CHECKS 
 /* #undef Graphics_EXTRA_BUILTIN_FONTS */

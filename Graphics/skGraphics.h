@@ -22,8 +22,10 @@
 #ifndef _skGraphics_h_
 #define _skGraphics_h_
 
-#include "Utils/Config/skConfig.h"
+
 #include "skGraphicsConfig.h"
+#include "Math/skScalar.h"
+
 SK_ST_C;
 
 #define SK_NO_STATUS (-1)
@@ -32,7 +34,7 @@ SK_ST_C;
     typedef struct x##_t  \
     {                     \
         size_t unused;    \
-    } * (x)
+    } * x
 
 SK_SIZE_HANDLE(SKcontext);
 SK_SIZE_HANDLE(SKpaint);
@@ -47,7 +49,7 @@ enum SKbackend
     SK_BE_OpenGL,
 };
 
-typedef float SKscalar;
+typedef skScalar SKscalar;
 
 typedef struct SKrecti
 {
@@ -283,12 +285,8 @@ enum SKBuiltinFont
     // https://fonts.google.com/
     // Rock_Salt
     SK_FONT_SPC1,
-
-    // https://fonts.google.com/
     // Caveat
     SK_FONT_SPC2,
-
-    // https://fonts.google.com/
     // Roboto
     SK_FONT_UI,
     SK_FONT_UI_LIGHT,
@@ -323,8 +321,9 @@ SK_API SKcontext skNewBackEndContext(SKenum backend);
 SK_API void      skDeleteContext(SKcontext ctx);
 SK_API void      skSetCurrentContext(SKcontext ctx);
 SK_API SKcontext skGetCurrentContext();
+SK_API void      skClearContext();
+SK_API void      skClear(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 
-SK_API void skClearContext();
 
 SK_API void skSetContext1i(SKcontextOptionEnum en, SKint32 v);
 SK_API void skSetContext1f(SKcontextOptionEnum en, SKscalar v);
@@ -354,7 +353,6 @@ SK_API void skRotate(SKscalar r);
 
 SK_API void skClearColor4f(SKscalar r, SKscalar g, SKscalar b, SKscalar a);
 SK_API void skClearColor1i(SKcolori rgba);
-SK_API void skClear(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 
 /**********************************************************
     View projection
@@ -363,6 +361,14 @@ SK_API void skClear(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 SK_API void skProjectContext(SKprojectionType pt);
 SK_API void skProjectRect(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 SK_API void skProjectBox(SKscalar x1, SKscalar y1, SKscalar x2, SKscalar y2);
+
+/**********************************************************
+    Paint objects
+*/
+
+SK_API SKpaint skNewPaint();
+SK_API void    skDeletePaint(SKpaint obj);
+SK_API void    skSelectPaint(SKpaint obj);
 
 SK_API void skColor1ui(SKuint32 c);
 SK_API void skColor3f(SKscalar r, SKscalar g, SKscalar b);
@@ -377,6 +383,8 @@ SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c);
 SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v);
 SK_API void skGetPaint1f(SKpaintStyle en, SKscalar* v);
 SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v);
+
+
 
 /**********************************************************
    Images
