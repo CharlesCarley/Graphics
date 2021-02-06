@@ -44,6 +44,22 @@ void AssertEqualF(SKint32 option, const SKscalar expected)
     EXPECT_TRUE(feq(expected, prop));
 }
 
+void AssertPaintEqualI(SKint32 option, const SKint32 expected)
+{
+    SKint32 prop;
+    prop = SK_NO_STATUS;
+    skGetPaint1i(option, &prop);
+    EXPECT_EQ(expected, prop);
+}
+
+void AssertPaintEqualF(SKint32 option, const SKscalar expected)
+{
+    SKscalar prop;
+    prop = SK_NO_STATUS;
+    skGetPaint1f(option, &prop);
+    EXPECT_TRUE(feq(expected, prop));
+}
+
 TEST_CASE("ContextCreate")
 {
     SKcontext ctx1 = skNewBackEndContext(SK_BE_None);
@@ -143,12 +159,11 @@ TEST_CASE("GetWorkingPaint")
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
 
     SKpaint p1, p2;
-
     p1 = skGetWorkingPaint();
     EXPECT_NE(p1, nullptr);
 
     skSelectPaint(nullptr);
-    p1= skGetWorkingPaint();
+    p1 = skGetWorkingPaint();
     EXPECT_NE(p1, nullptr);
 
     p2 = skNewPaint();
@@ -158,16 +173,75 @@ TEST_CASE("GetWorkingPaint")
     skSelectPaint(nullptr);
     EXPECT_EQ(skGetWorkingPaint(), p1);
 
-
     skSelectPaint(p2);
-    skDeletePaint(p2);  
+    skDeletePaint(p2);
     // tests 'dangling' reference in ~skContext()
+    skDeleteContext(ctx);
+}
+
+/*
+SK_API void skSetPaint1i(SKpaintStyle en, SKint32 v);
+SK_API void skSetPaint1f(SKpaintStyle en, SKscalar v);
+SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c);
+SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v);
+SK_API void skGetPaint1f(SKpaintStyle en, SKscalar* v);
+SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v);
+*/
+TEST_CASE("PaintDefaults")
+{
+    // Test working paint creation / selection / deletion
+    SKcontext ctx = skNewBackEndContext(SK_BE_None);
+
+    // default
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_REPLACE);
+
+    // valid options
+    skSetPaint1i(SK_BRUSH_MODE, SK_BM_ADD);
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_ADD);
+    skSetPaint1i(SK_BRUSH_MODE, SK_BM_MODULATE);
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_MODULATE);
+    skSetPaint1i(SK_BRUSH_MODE, SK_BM_SUBTRACT);
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_SUBTRACT);
+    skSetPaint1i(SK_BRUSH_MODE, SK_BM_DIVIDE);
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_DIVIDE);
+
+    // invalid options
+    skSetPaint1i(SK_BRUSH_MODE, -10000);
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_REPLACE);
+    skSetPaint1i(SK_BRUSH_MODE, 10000);
+    AssertPaintEqualI(SK_BRUSH_MODE, SK_BM_DIVIDE);
+
+
+
+    // default
+    AssertPaintEqualI(SK_BRUSH_STYLE, SK_BS_SOLID);
+
+    // valid options
+    skSetPaint1i(SK_BRUSH_STYLE, SK_BS_PATTERN);
+    AssertPaintEqualI(SK_BRUSH_STYLE, SK_BS_PATTERN);
+
+    // invalid options
+    skSetPaint1i(SK_BRUSH_STYLE, -10000);
+    AssertPaintEqualI(SK_BRUSH_STYLE, SK_BS_SOLID);
+
+    skSetPaint1i(SK_BRUSH_STYLE, 10000);
+    AssertPaintEqualI(SK_BRUSH_STYLE, SK_BS_PATTERN);
+
+
+
+
+
+    AssertPaintEqualI(SK_LINE_TYPE, SK_LINE_LOOP);
+    AssertPaintEqualI(SK_PEN_STYLE, SK_PS_SOLID);
+    AssertPaintEqualI(SK_PEN_WIDTH, 1);
+    AssertPaintEqualI(SK_AUTO_CLEAR, 0);
+
     skDeleteContext(ctx);
 }
 
 TEST_CASE("GetWorkingPath")
 {
-    // Test working paint creation / selection / deletion
+    // Test working path creation / selection / deletion
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
 
     SKpath p1, p2;
