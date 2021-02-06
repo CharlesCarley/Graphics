@@ -330,7 +330,8 @@ void skPath::makeRoundRect(skScalar x,
 void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q, SKint32 P)
 {
     clear();
-    //  there is no tessellation so this will not work for fills
+    // there is no tessellation so this will not work for fills
+    // https://www.desmos.com/calculator/3jyqtcbssp
 
     Q = skMax(2, Q);
     if (P > Q)

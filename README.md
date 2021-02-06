@@ -33,5 +33,10 @@ cmake ..
 
 Optional defines.
 
-+ Graphcs_BUILD_WINDOW - Build an optional C-API wrapper for window access. Default: ON
-+ Graphcs_USE_SDL - Build the SDL backend for the window API. . Default: OFF
+| Option                       | Description                                                     | Default |
+|:-----------------------------|:----------------------------------------------------------------|:--------|
+| Graphcs_BUILD_WINDOW         | Build an optional C-API wrapper for window access.              | ON      |
+| Graphcs_USE_SDL              | Build the SDL backend for the window API.                       | OFF     |
+| Graphics_NO_PALETTE          | Disable the built in color palette.                             | OFF     |
+| Graphics_OP_CHECKS           | Add extra checks for function parameters.                       | ON      |
+| Graphics_EXTRA_BUILTIN_FONTS | Include extra [fonts](https://fonts.google.com/) in the binary. | OFF     |
