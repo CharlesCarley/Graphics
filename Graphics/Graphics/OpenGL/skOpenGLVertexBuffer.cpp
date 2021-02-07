@@ -19,8 +19,8 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "skVertexBuffer.h"
-#include "Window/Window/OpenGL/skOpenGL.h"
+#include "skOpenGLVertexBuffer.h"
+#include "Window/OpenGL/skOpenGL.h"
 
 static SKuint32 skOpenGLGetAttributeSize(SKuint32 type)
 {
@@ -91,7 +91,7 @@ static SKsize skOpenGLGetBufferMode(SKsize type)
     }
 }
 
-skVertexBuffer::skVertexBuffer()
+skOpenGLVertexBuffer::skOpenGLVertexBuffer()
 {
     m_bufId     = 0;
     m_size      = 0;
@@ -100,13 +100,13 @@ skVertexBuffer::skVertexBuffer()
     m_totalFill = 0;
 }
 
-skVertexBuffer::~skVertexBuffer()
+skOpenGLVertexBuffer::~skOpenGLVertexBuffer()
 {
     if (m_bufId)
         glDeleteBuffers(1, &m_bufId);
 }
 
-SKsize skVertexBuffer::addElement(SKuint32 name, SKuint32 type)
+SKsize skOpenGLVertexBuffer::addElement(SKuint32 name, SKuint32 type)
 {
     if (skOpenGLGetAttributeSize(type) != 0)
     {
@@ -122,7 +122,7 @@ SKsize skVertexBuffer::addElement(SKuint32 name, SKuint32 type)
     return 0;
 }
 
-void skVertexBuffer::write(const void* ptr, const SKuint32& sizeInBytes, const SKint32& mode)
+void skOpenGLVertexBuffer::write(const void* ptr, const SKuint32& sizeInBytes, const SKint32& mode)
 {
     if (!ptr || m_elements.empty())
         return;
@@ -162,7 +162,7 @@ void skVertexBuffer::write(const void* ptr, const SKuint32& sizeInBytes, const S
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void skVertexBuffer::fill(SKuint32 op) const
+void skOpenGLVertexBuffer::fill(SKuint32 op) const
 {
     glBindBuffer(GL_ARRAY_BUFFER, m_bufId);
     glDrawArrays(op, 0, m_totalFill);

@@ -26,6 +26,20 @@ option(Graphics_USE_SDL             "Build with SDL" OFF)
 option(Graphics_NO_PALETTE          "Disable builtin palette" OFF)
 option(Graphics_OP_CHECKS           "Check function parameters" ON)
 option(Graphics_EXTRA_BUILTIN_FONTS "Include extra fonts in the build. https://fonts.google.com/" OFF)
+option(Graphics_BACKEND_OPENGL      "Compile the OpenGL back end" ON)
+
+option(Graphics_AUTO_RUN_TESTS      "Adds a custom target that runs on build" OFF)
+    
+
+if(Graphics_AUTO_RUN_TESTS)
+    set(Utils_BUILD_TESTS ON CACHE BOOL "Build Utils tests" FORCE)
+    set(Utils_AUTO_RUN_TESTS ON CACHE BOOL "Build Utils tests" FORCE)
+endif()
+
+
+if (NOT Graphics_BACKEND_OPENGL)
+    set(Graphics_BUILD_WINDOW OFF CACHE BOOL "Compile standalone window system" FORCE)
+endif()
 
 if (NOT Graphics_BUILD_WINDOW)
     set(Graphics_USE_SDL OFF CACHE BOOL "Build with SDL" FORCE)
@@ -41,8 +55,8 @@ macro(DefineExternalTarget NAME GROUP PATH)
     set(${NAME}_LIBRARY             ${${NAME}_TargetName})
 endmacro()
 
-if (Graphics_USE_SDL)
-    set(SDL_FOLDER Dependencies)
+if (Graphics_USE_SDL AND Graphics_BACKEND_OPENGL)
+    set(SDL_FOLDER Extern)
     set(SDL_LIBRARY SDL2main SDL2-static)
     set(SDL_INCLUDE ${Dependencies_PATH}/SDL/SDL)
     set(Window_WITH_SDL TRUE)
@@ -59,10 +73,12 @@ DefineExternalTarget(Math          Extern "${Dependencies_PATH}")
 DefineExternalTarget(FreeType      Extern "${Dependencies_PATH}/FreeType/Source/2.10.4/include")
 DefineExternalTarget(FreeImage     Extern "${Dependencies_PATH}/FreeImage/Source")
 DefineExternalTarget(Image         Extern "${Dependencies_PATH}/Image")
-DefineExternalTarget(Window        Extern "${Dependencies_PATH}/Window")
-
-find_package(OpenGL REQUIRED)
-set(OpenGL_LIB ${OPENGL_LIBRARIES})
 
 
+if (Graphics_BACKEND_OPENGL)
+    DefineExternalTarget(Window        Extern "${Dependencies_PATH}/Window")
+
+    find_package(OpenGL REQUIRED)
+    set(OpenGL_LIB ${OPENGL_LIBRARIES})
+endif()
 

@@ -23,7 +23,7 @@
 #define _skGraphics_h_
 
 
-#include "skGraphicsConfig.h"
+#include "Graphics/skGraphicsConfig.h"
 #include "Math/skScalar.h"
 
 SK_ST_C;

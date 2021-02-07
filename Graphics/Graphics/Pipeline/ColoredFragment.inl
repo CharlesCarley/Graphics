@@ -20,7 +20,7 @@
 -------------------------------------------------------------------------------
 */
 #pragma once
-#include "skGraphicsConfig.h"
+#include "Graphics/skGraphicsConfig.h"
 
 // 1, SK_BM_REPLACE,
 // 2, SK_BM_ADD,

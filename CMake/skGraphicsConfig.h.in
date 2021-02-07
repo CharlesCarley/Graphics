@@ -26,7 +26,7 @@
 #cmakedefine Graphics_NO_PALETTE 
 #cmakedefine Graphics_OP_CHECKS 
 #cmakedefine Graphics_EXTRA_BUILTIN_FONTS
-
+#cmakedefine Graphics_BACKEND_OPENGL
 
 #define SK_CAST(x, T) reinterpret_cast<T>(x)
 #define SK_CAST_CTX(x) SK_CAST(x, skContext*)

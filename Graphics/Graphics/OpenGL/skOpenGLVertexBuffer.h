@@ -19,47 +19,18 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#ifndef _skVertexBuffer_h_
-#define _skVertexBuffer_h_
+#ifndef _skOpenGLVertexBuffer_h_
+#define _skOpenGLVertexBuffer_h_
 
 #include "Utils/skArray.h"
-
-typedef enum skAttribute
-{
-    SK_ATTR_POSITION,
-    SK_ATTR_TEXTURE0,
-    SK_ATTR_NORMAL,
-    SK_ATTR_COLORS,
-} skAttribute;
-
-typedef enum skAttributeType
-{
-    SK_FLOAT1_32 = 0,  //!< sizeof(float)*1
-    SK_FLOAT2_32,      //!< sizeof(float)*2
-    SK_FLOAT3_32,      //!< sizeof(float)*3
-    SK_FLOAT4_32,      //!< sizeof(float)*4
-    SK_UINT1_32,       //!< sizeof(int)  *1
-} skAttributeType;
-
-typedef enum skBufferMode
-{
-    SK_STREAM_DRAW,
-    SK_STREAM_READ,
-    SK_STREAM_COPY,
-    SK_STATIC_DRAW,
-    SK_STATIC_READ,
-    SK_STATIC_COPY,
-    SK_DYNAMIC_DRAW,
-    SK_DYNAMIC_READ,
-    SK_DYNAMIC_COPY,
-} skBufferMode;
+#include "skVertexBuffer.h"
 
 typedef struct skVertexElement
 {
     SKuint32 name, type;
 } skVertexElement;
 
-class skVertexBuffer
+class skOpenGLVertexBuffer : public skVertexBuffer
 {
 private:
     SKuint32 m_bufId;
@@ -71,8 +42,8 @@ private:
     skArray<skVertexElement> m_elements;
 
 public:
-    skVertexBuffer();
-    ~skVertexBuffer();
+    skOpenGLVertexBuffer();
+    ~skOpenGLVertexBuffer() override;
 
     const SKuint32& getId(void) const
     {
@@ -89,11 +60,11 @@ public:
         return m_size;
     }
 
-    SKsize addElement(SKuint32 name, SKuint32 type);
+    SKsize addElement(SKuint32 name, SKuint32 type) override;
 
-    void write(const void* ptr, const SKuint32& sizeInBytes, const SKint32& mode);
+    void write(const void* ptr, const SKuint32& sizeInBytes, const SKint32& mode) override;
 
-    void fill(SKuint32 op) const;
+    void fill(SKuint32 op) const override;
 };
 
-#endif  //_skVertexBuffer_h_
+#endif  //_skOpenGLVertexBuffer_h_

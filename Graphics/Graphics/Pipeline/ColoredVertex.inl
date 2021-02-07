@@ -20,7 +20,7 @@
 -------------------------------------------------------------------------------
 */
 #pragma once
-#include "skGraphicsConfig.h"
+#include "Graphics/skGraphicsConfig.h"
 
 SKShader(ColoredVertex,
 

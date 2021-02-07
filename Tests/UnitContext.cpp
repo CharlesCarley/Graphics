@@ -331,6 +331,16 @@ TEST_CASE("GetWorkingPath")
 
     skSelectPath(p2);
     skDeletePath(p2);
+   
     // tests 'dangling' reference in ~skContext()
+    skDeleteContext(ctx);
+}
+
+
+
+TEST_CASE("PathDefaults")
+{
+    SKcontext ctx = skNewBackEndContext(SK_BE_None);
+
     skDeleteContext(ctx);
 }

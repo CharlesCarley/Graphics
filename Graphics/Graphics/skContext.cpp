@@ -21,15 +21,22 @@
 */
 #include "skContext.h"
 #include <cstdio>
+
+#ifdef Graphics_BACKEND_OPENGL
+#include "OpenGL/skOpenGLRenderer.h"
 #include "OpenGL/skOpenGLTexture.h"
+#include "OpenGL/skOpenGLVertexBuffer.h"
+#include "Window/OpenGL/skOpenGL.h"
+#endif
+
 #include "Utils/skDisableWarnings.h"
 #include "Utils/skLogger.h"
-#include "Window/OpenGL/skOpenGL.h"
 #include "skCachedString.h"
 #include "skFont.h"
 #include "skPaint.h"
 #include "skPath.h"
 #include "skRender.h"
+#include "skTexture.h"
 
 skContext::skContext(SKint32 backend)
 {
@@ -63,8 +70,10 @@ skContext::skContext(SKint32 backend)
     m_options.projectionType     = SK_DEFAULT_PROJECTION_MODE;
     m_options.yIsUp              = false;
 
+#ifdef Graphics_BACKEND_OPENGL
     if (m_backend == SK_BE_OpenGL)
         makeCurrent(new skOpenGLRenderer());
+#endif
 }
 
 skContext::~skContext()
@@ -94,10 +103,12 @@ SKimage skContext::createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt)
 {
     if (m_backend == SK_BE_OpenGL)
     {
+#ifdef Graphics_BACKEND_OPENGL
         skOpenGLTexture* tex = new skOpenGLTexture(w, h, fmt);
 
         tex->setContext(this);
         return SK_IMAGE_HANDLE(tex);
+#endif
     }
     else if (m_backend == SK_BE_None)
     {
@@ -114,9 +125,11 @@ SKimage skContext::newImage()
 {
     if (m_backend == SK_BE_OpenGL)
     {
+#ifdef Graphics_BACKEND_OPENGL
         skOpenGLTexture* ima = new skOpenGLTexture();
         ima->setContext(this);
         return SK_IMAGE_HANDLE(ima);
+#endif
     }
     else if (m_backend == SK_BE_None)
     {
@@ -143,10 +156,12 @@ skTexture* skContext::createInternalImage(SKuint32 w, SKuint32 h, SKpixelFormat 
 {
     if (m_backend == SK_BE_OpenGL)
     {
+#ifdef Graphics_BACKEND_OPENGL
         skOpenGLTexture* tex = new skOpenGLTexture(w, h, fmt);
 
         tex->setContext(this);
         return tex;
+#endif
     }
     else if (m_backend == SK_BE_None)
     {
@@ -729,6 +744,15 @@ skTexture* skContext::getPaintP(SKpaintStyle op) const
 const SKcontextOptions& skContext::getOptions(void) const
 {
     return m_options;
+}
+
+skVertexBuffer* skContext::createBuffer()
+{
+#ifdef Graphics_BACKEND_OPENGL
+    if (m_backend == SK_BE_OpenGL)
+        return new skOpenGLVertexBuffer();
+#endif
+    return nullptr;
 }
 
 SKcachedString skContext::newString(void)

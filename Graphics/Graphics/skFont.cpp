@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-
 #include "skFont.h"
 #include "ft2build.h"
 #include FT_FREETYPE_H

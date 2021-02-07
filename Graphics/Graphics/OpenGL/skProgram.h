@@ -24,7 +24,7 @@
 
 #include "Math/skScalar.h"
 #include "Utils/skArray.h"
-#include "skGraphicsConfig.h"
+#include "Graphics/skGraphicsConfig.h"
 
 class skProgram
 {

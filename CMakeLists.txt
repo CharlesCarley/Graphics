@@ -29,9 +29,38 @@ include(Configure)
 subdirs(CMake)
 subdirs(Extern)
 
-
 configure_file(${CMAKE_SOURCE_DIR}/CMake/skGraphicsConfig.h.in  
-               ${CMAKE_SOURCE_DIR}/Graphics/skGraphicsConfig.h)
+               ${CMAKE_BINARY_DIR}/Graphics/skGraphicsConfig.h)
+
+set(Graphics_INCLUDE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
+    ${Utils_INCLUDE} 
+    ${Math_INCLUDE} 
+    ${Image_INCLUDE} 
+    ${FreeType_INCLUDE} 
+    ${FreeImage_INCLUDE} 
+)
+
+set(Graphics_LIBRARY
+    Graphics
+    ${Utils_LIBRARY} 
+    ${Math_LIBRARY} 
+    ${Image_LIBRARY} 
+    ${FreeType_LIBRARY} 
+    ${FreeImage_LIBRARY} 
+)
+
+if(Graphics_BACKEND_OPENGL)
+
+    list(APPEND Graphics_INCLUDE
+        ${WINDOW_INCLUDE} 
+    )
+    list(APPEND Graphics_LIBRARY
+        ${WINDOW_LIBRARY} 
+    )
+
+endif()
 
 subdirs(Graphics)
 subdirs(Tests)

@@ -21,13 +21,12 @@
 */
 #ifndef _skGraphicsWindow_h_
 #define _skGraphicsWindow_h_
+#include "Graphics/skGraphicsConfig.h"
+#ifdef Graphics_BUILD_WINDOW
 
 #include "Utils/Config/skConfig.h"
 #include "Window/skWindowEnums.h"
-
-#include "skGraphicsConfig.h"
-#include "skGraphics.h"
-#ifdef Graphics_BUILD_WINDOW
+#include "Graphics/skGraphics.h"
 
 SK_SIZE_HANDLE(SKwindowManager);
 SK_SIZE_HANDLE(SKwindow);

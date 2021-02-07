@@ -282,7 +282,7 @@ public:
         }
 
         m_manager->addHandler(this);
-        skSetCurrentContext(skNewContext());
+        skSetCurrentContext(skNewBackEndContext(SK_BE_OpenGL));
         m_manager->broadcastEvent(SK_WIN_SIZE);
 
         m_lastFill = 0x00000000;

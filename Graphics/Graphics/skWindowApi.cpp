@@ -19,17 +19,17 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
+#include "Graphics/skGraphicsConfig.h"
 #include "Utils/skDisableWarnings.h"
+
+#ifdef Graphics_BUILD_WINDOW
+#include "Graphics/skGraphicsWindow.h"
 #include "Window/skKeyboard.h"
 #include "Window/skMouse.h"
 #include "Window/skWindow.h"
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
 #include "skContext.h"
-#include "skGraphicsConfig.h"
-#include "skGraphicsWindow.h"
-
-#ifdef Graphics_BUILD_WINDOW
 
 SK_API SKwindowManager skNewWindowManager(SKuint32 type)
 {

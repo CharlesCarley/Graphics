@@ -160,7 +160,7 @@ int main(int argc, char** argv)
     Program p;
     memset(&p, 0, sizeof(Program));
 
-    p.manager   = skNewWindowManager(WM_CTX_PLATFORM);
+    p.manager   = skNewWindowManager(WM_CTX_SDL);
     p.m_lco     = -1;
     Events.user = &p;
     p.window    = skNewWindow(p.manager,

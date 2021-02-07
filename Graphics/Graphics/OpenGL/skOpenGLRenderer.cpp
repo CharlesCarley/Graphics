@@ -22,7 +22,7 @@
 #include "OpenGL/skOpenGLRenderer.h"
 #include "OpenGL/skOpenGLTexture.h"
 #include "OpenGL/skProgram.h"
-#include "OpenGL/skVertexBuffer.h"
+#include "OpenGL/skOpenGLVertexBuffer.h"
 #include "Pipeline/ColoredFragment.inl"
 #include "Pipeline/ColoredVertex.inl"
 #include "Pipeline/FontFragment.inl"
@@ -322,7 +322,6 @@ void skOpenGLRenderer::displayString(skCachedString* str)
 void skOpenGLRenderer::selectPaint(skPaint* paint)
 {
     m_curPaint = paint;
-
     if (m_curPaint)
     {
         m_curPaint->m_program = m_defaultShader;

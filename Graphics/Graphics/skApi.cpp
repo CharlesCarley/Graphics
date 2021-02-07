@@ -22,13 +22,13 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include "Graphics/skGraphics.h"
 #include "Math/skBoundingBox2D.h"
 #include "skCachedString.h"
 #include "skContext.h"
 #include "skFont.h"
-#include "skGraphics.h"
-#include "skPath.h"
 #include "skPaint.h"
+#include "skPath.h"
 #include "skTexture.h"
 
 static SKcontext g_currentContext;
@@ -304,7 +304,6 @@ SK_API void skProjectBox(SKscalar x1, SKscalar y1, SKscalar x2, SKscalar y2)
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
 
     ctx->projectBox(x1, y1, x2, y2);
-
 }
 
 SK_API SKpaint skNewPaint()
@@ -319,7 +318,6 @@ SK_API void skDeletePaint(SKpaint obj)
     delete (skPaint*)obj;
 }
 
-
 SK_API void skSelectPaint(SKpaint obj)
 {
     skContext* ctx = SK_CURRENT_CTX();
@@ -327,7 +325,6 @@ SK_API void skSelectPaint(SKpaint obj)
 
     ctx->selectPaint((skPaint*)obj);
 }
-
 
 SK_API void skColor1ui(SKuint32 c)
 {

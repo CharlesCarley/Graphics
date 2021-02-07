@@ -22,7 +22,6 @@
 #ifndef _skContext_h_
 #define _skContext_h_
 
-#include "OpenGL/skOpenGLRenderer.h"
 #include "skContextObject.h"
 
 class skContext
@@ -130,6 +129,8 @@ public:
     SKuint32 getPaintC(SKpaintStyle op) const;
 
     const SKcontextOptions& getOptions(void) const;
+
+    skVertexBuffer* createBuffer();
 
     SKint32 getId(void) const
     {

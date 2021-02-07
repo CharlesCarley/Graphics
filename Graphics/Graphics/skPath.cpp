@@ -20,8 +20,8 @@
 -------------------------------------------------------------------------------
 */
 #include "skPath.h"
-#include "OpenGL/skVertexBuffer.h"
 #include "skContext.h"
+#include "skVertexBuffer.h"
 
 #define vTOL 0.01f
 
@@ -422,9 +422,12 @@ void skPath::pushVert(const skVertex& v)
 
         if (!m_buffer)
         {
-            m_buffer = new skVertexBuffer();
-            m_buffer->addElement(SK_ATTR_POSITION, SK_FLOAT2_32);
-            m_buffer->addElement(SK_ATTR_TEXTURE0, SK_FLOAT2_32);
+            m_buffer = m_ctx->createBuffer();
+            if (m_buffer)
+            {
+                m_buffer->addElement(SK_ATTR_POSITION, SK_FLOAT2_32);
+                m_buffer->addElement(SK_ATTR_TEXTURE0, SK_FLOAT2_32);
+            }
         }
 
         m_bounds.compare(pv.x, pv.y);
@@ -496,8 +499,11 @@ void skPath::makeUV(void)
 
 void skPath::update(void) const
 {
-    m_buffer->write(
-        m_contour->vertices.ptr(),
-        m_contour->vertices.size() * sizeof(skVertex),
-        SK_STREAM_DRAW);
+    if (m_buffer)
+    {
+        m_buffer->write(
+            m_contour->vertices.ptr(),
+            m_contour->vertices.size() * sizeof(skVertex),
+            SK_STREAM_DRAW);
+    }
 }

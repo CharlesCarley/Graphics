@@ -25,7 +25,7 @@
 #include "Math/skColor.h"
 #include "Math/skMatrix4.h"
 #include "Utils/skAllocator.h"
-#include "skGraphics.h"
+#include "Graphics/skGraphics.h"
 
 class skContext;
 class skRenderer;
@@ -33,6 +33,9 @@ class skPaint;
 class skPath;
 class skTexture;
 class skFont;
+class skCachedString;
+class skProgram;
+class skVertexBuffer;
 
 struct SKcontextOptions
 {

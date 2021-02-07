@@ -25,8 +25,11 @@ subdirs(Math)
 subdirs(Image)
 
 
-if (Graphics_USE_SDL)
-    subdirs(SDL)
+if(Graphics_BACKEND_OPENGL)
+    if (Graphics_USE_SDL)
+        subdirs(SDL)
+    endif()
+    subdirs(Window/Window)
 endif()
-subdirs(Window/Window)
+
 subdirs(Data2Array)
