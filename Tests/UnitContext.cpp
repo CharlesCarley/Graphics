@@ -190,7 +190,6 @@ TEST_CASE("GetWorkingPaint")
 
 TEST_CASE("PaintDefaults")
 {
-    // Test working paint creation / selection / deletion
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
 
     // default
@@ -276,6 +275,38 @@ TEST_CASE("PaintDefaults")
 
     skDeleteContext(ctx);
 }
+
+TEST_CASE("PaintSelectDefaults")
+{
+    SKcontext ctx = skNewBackEndContext(SK_BE_None);
+    // test selecting and using objects
+
+    SKpaint p1 = skNewPaint();
+    SKpaint p2 = skNewPaint();
+
+    skSelectPaint(p1);
+    skColor1ui(CS_BaseGreen);
+
+    skSelectPaint(p2);
+    skColor1ui(CS_BaseRed);
+
+    skSelectPaint(nullptr);
+
+
+    // default
+    AssertPaintEqualUI(SK_SURFACE_COLOR, CS_Grey10);
+    skSelectPaint(p1);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, CS_BaseGreen);
+    skSelectPaint(p2);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, CS_BaseRed);
+    skSelectPaint(nullptr);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, CS_Grey10);
+
+    skDeletePaint(p1);
+    skDeletePaint(p2);
+    skDeleteContext(ctx);
+}
+
 
 TEST_CASE("GetWorkingPath")
 {

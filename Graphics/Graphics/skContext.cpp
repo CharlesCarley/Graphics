@@ -325,7 +325,7 @@ void skContext::selectPath(skPath* pth)
 {
     if (pth)
     {
-        if (m_workPath)
+        if (m_workPath && !m_tempPath)
             m_tempPath = m_workPath;
 
         m_workPath = pth;
@@ -347,7 +347,7 @@ void skContext::selectPaint(skPaint* obj)
 {
     if (obj)
     {
-        if (m_workPaint)
+        if (m_workPaint && !m_tempPaint)
             m_tempPaint = m_workPaint;
 
         m_workPaint = obj;
