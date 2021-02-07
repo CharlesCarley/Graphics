@@ -69,8 +69,7 @@ void skPath::arcTo(skScalar  x,
     if (!m_ctx)
         return;
 
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
-
+    SKint32 vertexCount = m_ctx->getVerticesPerSegment();
     if (vertexCount <= 0)
         vertexCount = 8;
 
@@ -100,16 +99,15 @@ void skPath::arcTo(skScalar  x,
 
 void skPath::cubicTo(skScalar fx, skScalar fy, skScalar tx, skScalar ty)
 {
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
-
+    SKint32 vertexCount = m_ctx->getVerticesPerSegment();
     if (vertexCount <= 0)
         vertexCount = 8;
 
     const skScalar step = skScalar(1.0) / skScalar(vertexCount);
+    const skScalar hd   = skVector2(fx, fy).distance(skVector2(tx, ty)) * .5f;
 
-    skScalar       s = 1.f, t = 0.f;
-    skVector2      c0, c1, c2, c3, cr;
-    const skScalar hd = skVector2(fx, fy).distance(skVector2(tx, ty)) * .5f;
+    skScalar  s = 1.f, t = 0.f;
+    skVector2 c0, c1, c2, c3, cr;
 
     c0 = skVector2(fx, fy);
     c1 = skVector2(c0.x + hd, c0.y);
@@ -132,13 +130,15 @@ void skPath::cubicTo(skScalar fx, skScalar fy, skScalar tx, skScalar ty)
         t += step;
         s = skScalar(1.0) - t;
     }
+
     lineTo(c3.x, c3.y);
 }
 
 void skPath::rectTo(skScalar fx, skScalar fy, skScalar tx, skScalar ty)
 {
     const skScalar fac = skVector2(tx, ty).distance(skVector2(fx, fy)) * .5f;
-    skScalar       cv  = fx + fac;
+
+    skScalar cv = fx + fac;
 
     if (tx - fac < cv)
         cv = tx - fac;
@@ -197,8 +197,7 @@ void skPath::makeEllipse(skScalar x, skScalar y, skScalar w, skScalar h)
         return;
 
     clear();
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT), i;
-
+    SKint32 vertexCount = m_ctx->getVerticesPerSegment(), i;
     if (vertexCount <= 0)
         vertexCount = 8;
 
@@ -231,10 +230,7 @@ void skPath::rectCurveTo(skScalar x,
                          skScalar angle1,
                          skScalar angle2)
 {
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
-
-    if (vertexCount <= 0)
-        vertexCount = 8;
+    SKint32 vertexCount = m_ctx->getVerticesPerSegment();
 
     const skScalar step = skRadians(skDegrees(angle2) / (skScalar)vertexCount);
 
@@ -271,7 +267,7 @@ void skPath::makeRoundRect(skScalar x,
     if (!m_ctx)
         return;
 
-    SKint32 vertexCount = m_ctx->getContextI(SK_VERTICES_PER_SEGMENT);
+    SKint32 vertexCount = m_ctx->getVerticesPerSegment();
 
     if (vertexCount <= 0)
         vertexCount = 8;
@@ -378,7 +374,9 @@ void skPath::makePolygon(const skScalar* vertices,
         return;
 
     const skScalar* vp = vertices;
-    skScalar        x, y;
+
+    skScalar x, y;
+
     clear();
 
     m_reserve = count;
@@ -414,8 +412,7 @@ void skPath::pushVert(const skVertex& v)
 
         if (m_ctx->getContextI(SK_METRICS_MODE) == SK_RELATIVE)
         {
-            const skVector2 size = m_ctx->getContextV(SK_CONTEXT_SIZE);
-
+            const skVector2 size = m_ctx->getSize();
             pv.x *= size.x;
             pv.y *= size.y;
         }

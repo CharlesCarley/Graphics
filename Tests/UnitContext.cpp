@@ -389,12 +389,20 @@ TEST_CASE("ImageTest")
     skDeleteContext(ctx);
 }
 
-void AssertFontEqualI(SKfont image, SKint32 option, const SKint32 expected)
+void AssertFontEqualI(SKfont font, SKint32 option, const SKint32 expected)
 {
     SKint32 prop;
     prop = SK_NO_STATUS;
-    skGetFont1i(image, option, &prop);
+    skGetFont1i(font, option, &prop);
     EXPECT_EQ(expected, prop);
+}
+
+void AssertFontEqualF(SKfont font, SKint32 option, const SKscalar expected)
+{
+    SKscalar prop;
+    prop = SK_NO_STATUS;
+    skGetFont1f(font, option, &prop);
+    EXPECT_TRUE(feq(expected, prop));
 }
 
 TEST_CASE("FontLoadTest")
@@ -405,37 +413,37 @@ TEST_CASE("FontLoadTest")
     font = skNewFont(SK_FONT_DEFAULT_FIXED, 24, 72);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 72);
-    AssertFontEqualI(font, SK_FONT_SIZE, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
 
     font = skNewFont(SK_FONT_DEFAULT, 24, 72);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 72);
-    AssertFontEqualI(font, SK_FONT_SIZE, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
 
     font = skNewFont(SK_FONT_SPC1, 24, 72);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 72);
-    AssertFontEqualI(font, SK_FONT_SIZE, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
 
     font = skNewFont(SK_FONT_SPC2, 24, 72);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 72);
-    AssertFontEqualI(font, SK_FONT_SIZE, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
 
     font = skNewFont(SK_FONT_UI, 24, 72);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 72);
-    AssertFontEqualI(font, SK_FONT_SIZE, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
 
     font = skNewFont(SK_FONT_UI_LIGHT, 24, 72);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 72);
-    AssertFontEqualI(font, SK_FONT_SIZE, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
 
     skDeleteContext(ctx);
@@ -452,13 +460,13 @@ TEST_CASE("FontRangeTest")
     font = skNewFont(SK_FONT_DEFAULT, 0, 0);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 24);
-    AssertFontEqualI(font, SK_FONT_SIZE, 8);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 8);
     skDeleteFont(font);
 
     font = skNewFont(SK_FONT_DEFAULT, 88888, 7545681);
     EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 300);
-    AssertFontEqualI(font, SK_FONT_SIZE, 96);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 96);
     skDeleteFont(font);
 
     skDeleteContext(ctx);
@@ -473,10 +481,33 @@ TEST_CASE("FontPropertyTest")
 
     SKfont font;
     font = skNewFont(SK_FONT_DEFAULT, 0, 0);
-    EXPECT_NE(font, nullptr);
     AssertFontEqualI(font, SK_FONT_DPI, 24);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 8);
+    EXPECT_NE(font, nullptr);
+   
+    // read only after creation
+    skSetFont1i(font, SK_FONT_DPI, 300);
+    AssertFontEqualI(font, SK_FONT_DPI, 24);
+    skSetFont1i(font, SK_FONT_PIXEL_SIZE, 300);
+    AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 8);
+
+
+    AssertFontEqualF(font, SK_FONT_SIZE, 8);
     AssertFontEqualI(font, SK_FONT_SIZE, 8);
 
+    skSetFont1f(font, SK_FONT_SIZE, 300);
+    AssertFontEqualI(font, SK_FONT_SIZE, 300);
+    AssertFontEqualI(font, SK_FONT_RELATIVE_SCALE, 300 / ((24 * 8) >> 6));
+
+    AssertFontEqualI(font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
+    AssertFontEqualI(font, SK_FONT_MIPMAP, 0);
+
+    skSetFont1i(font, SK_FONT_FILTER, -1);
+    AssertFontEqualI(font, SK_FONT_FILTER, SK_FILTER_NONE);
+    skSetFont1i(font, SK_FONT_FILTER, 9999);
+    AssertFontEqualI(font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
+    skSetFont1i(font, SK_FONT_FILTER, SK_FILTER_NONE);
+    AssertFontEqualI(font, SK_FONT_FILTER, SK_FILTER_NONE);
 
     skDeleteFont(font);
     skDeleteContext(ctx);

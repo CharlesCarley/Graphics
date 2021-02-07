@@ -30,6 +30,15 @@ SKShader(FontFragment,
 
     void main(void)
     {
-        gl_FragColor = surface * texture2D(ima, texCo).a;
+        double v2 = texture2D(ima, texCo).a;
+        if (v2 >= 0.375 && v2 <= 0.7)
+        {
+            vec3 v = vec3(1.1) * surface.xyz;
+            gl_FragColor = vec4(v.x, v.y, v.z, v2);
+        }
+        else if (v2 > 0.7)
+            gl_FragColor = surface;
+        else
+            gl_FragColor = vec4(0);
     }
 );

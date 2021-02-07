@@ -54,7 +54,7 @@ skFont::skFont() :
     m_opts.dpi       = 72;
     m_opts.tabSize   = 4;
     m_opts.scale     = skScalar(1.0);
-    m_opts.filter    = SK_FILTER_NONE_LINEAR;
+    m_opts.filter    = SK_FILTER_BI_LINEAR;
     m_opts.mipmap    = 0;
     m_opts.pixelSize = 0;
 }
@@ -382,61 +382,109 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
     }
 }
 
+skScalar skFont::getPixelSize(void) const
+{
+    return skScalar(FTINT(m_opts.pixelSize * m_opts.dpi));
+}
+
 void skFont::getI(SKfontOptionEnum opt, SKint32* v) const
 {
-    if (opt == SK_FONT_FILTER)
+    switch (opt)
+    {
+    case SK_FONT_FILTER:
         *v = (SKint32)m_opts.filter;
-    else if (opt == SK_FONT_MIPMAP)
+        break;
+    case SK_FONT_MIPMAP:
         *v = (SKint32)m_opts.mipmap;
-    else if (opt == SK_FONT_SIZE)
+        break;
+    case SK_FONT_SIZE:
         *v = (SKint32)m_opts.scale;
-    else if (opt == SK_FONT_DPI)
+        break;
+    case SK_FONT_PIXEL_SIZE:
+        *v = (SKint32)m_opts.pixelSize;
+        break;
+    case SK_FONT_RELATIVE_SCALE:
+        *v = (SKint32)getRelativeScale();
+        break;
+    case SK_FONT_DPI:
         *v = (SKint32)m_opts.dpi;
-    else if (opt == SK_FONT_TAB_SIZE)
+        break;
+    case SK_FONT_TAB_SIZE:
         *v = (SKint32)m_opts.tabSize;
+        break;
+    }
 }
 
 void skFont::setI(SKfontOptionEnum opt, SKint32 v)
 {
-    if (opt == SK_FONT_FILTER)
+    switch (opt)
     {
-        if (v > SK_FILTER_MIN && v < SK_FILTER_MAX)
-        {
-            if (m_image)
-                m_image->setI(SK_IMAGE_FILTER, v);
-            m_opts.filter = v;
-        }
-    }
-    else if (opt == SK_FONT_MIPMAP)
-    {
+    case SK_FONT_FILTER:
+        m_opts.filter = skClamp<SKint32>(v, SK_FILTER_MIN + 1, SK_FILTER_MAX - 1);
         if (m_image)
-            m_image->setI(SK_IMAGE_MIPMAP, v != 0);
+            m_image->setI(SK_IMAGE_FILTER, m_opts.filter);
+        break;
+    case SK_FONT_MIPMAP:
         m_opts.mipmap = v != 0 ? 1 : 0;
-    }
-    else if (opt == SK_FONT_SIZE)
-        m_opts.scale = (skScalar)v;
-    else if (opt == SK_FONT_TAB_SIZE)
+        if (m_image)
+            m_image->setI(SK_IMAGE_MIPMAP, m_opts.mipmap);
+        break;
+    case SK_FONT_SIZE:
+        m_opts.scale = skMax<skScalar>((skScalar)v, skScalar(1));
+        break;
+    case SK_FONT_TAB_SIZE:
         m_opts.tabSize = skMax(v, 0);
+        break;
+    default:
+        break;
+    }
 }
 
 void skFont::getF(SKfontOptionEnum opt, skScalar* v) const
 {
-    if (opt != SK_FONT_SIZE)
+    switch (opt)
     {
-        SKint32 t;
-        getI(opt, &t);
-        *v = (skScalar)t;
+    case SK_FONT_DPI:
+    case SK_FONT_FILTER:
+    case SK_FONT_MIPMAP:
+    case SK_FONT_PIXEL_SIZE:
+    case SK_FONT_TAB_SIZE:
+    {
+        SKint32 r = SK_NO_STATUS;
+        getI(opt, &r);
+        *v = (skScalar)r;
+        break;
     }
-    else
+    case SK_FONT_SIZE:
         *v = m_opts.scale;
+        break;
+    case SK_FONT_RELATIVE_SCALE:
+        *v = getRelativeScale();
+        break;
+    default:
+        break;
+    }
 }
 
 void skFont::setF(SKfontOptionEnum opt, skScalar v)
 {
-    if (opt != SK_FONT_SIZE)
-        setI(opt, (SKint32)v);
-    else
-        m_opts.scale = v;
+    switch (opt)
+    {
+    case SK_FONT_DPI:
+    case SK_FONT_FILTER:
+    case SK_FONT_MIPMAP:
+    case SK_FONT_PIXEL_SIZE:
+    case SK_FONT_TAB_SIZE:
+    {
+        setI(opt, v);
+        break;
+    }
+    case SK_FONT_SIZE:
+        m_opts.scale = skMax<skScalar>(v, 1);
+        break;
+    default:
+        break;
+    }
 }
 
 void skFont::loadGlyphs(struct FT_FaceRec_* face)

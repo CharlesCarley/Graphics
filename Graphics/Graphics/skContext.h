@@ -179,6 +179,17 @@ public:
         return m_renderContext;
     }
 
+    const skVector2& getSize() const
+    {
+        return m_options.contextSize;
+    }
+
+    const SKint32& getVerticesPerSegment() const
+    {
+        SK_ASSERT(m_options.verticesPerSegment > 0);
+        return m_options.verticesPerSegment;
+    }
+
     bool isValid(void) const
     {
         return m_backend == SK_BE_None || m_renderContext != nullptr;

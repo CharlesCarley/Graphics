@@ -107,10 +107,7 @@ public:
         return m_opts.scale > 0 ? skScalar(m_opts.scale) : skScalar(1);
     }
 
-    skScalar getPixelSize(void) const
-    {
-        return skScalar(m_opts.pixelSize * m_opts.dpi) / 64.f;
-    }
+    skScalar getPixelSize(void) const;
 
     skScalar getRelativeScale(void) const
     {

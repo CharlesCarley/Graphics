@@ -40,7 +40,6 @@ SK_ST_C;
 #define SK_MIN_FONT_SIZE 8
 #define SK_MAX_FONT_SIZE 96
 
-
 #define SK_SIZE_HANDLE(x) \
     typedef struct x##_t  \
     {                     \
@@ -255,10 +254,12 @@ typedef struct SKtextExtent
 
 enum SKFontOptionEnum
 {
+    SK_FONT_DPI,         // read only
+    SK_FONT_PIXEL_SIZE,  // read only
     SK_FONT_FILTER,
     SK_FONT_MIPMAP,
-    SK_FONT_SIZE,
-    SK_FONT_DPI,
+    SK_FONT_SIZE,            // user defined
+    SK_FONT_RELATIVE_SCALE,  // 
     SK_FONT_TAB_SIZE,
 };
 typedef SKenum SKfontOptionEnum;

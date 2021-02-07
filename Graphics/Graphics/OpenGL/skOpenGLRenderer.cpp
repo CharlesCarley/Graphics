@@ -106,7 +106,7 @@ void skOpenGLRenderer::clear(void)
     const skContext& ctx = ref();
     skRectangle      rect;
     rect.setPosition(0, 0);
-    rect.setSize(ctx.getContextV(SK_CONTEXT_SIZE));
+    rect.setSize(ctx.getSize());
     clear(rect);
 }
 

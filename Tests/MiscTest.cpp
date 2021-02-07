@@ -384,7 +384,7 @@ public:
     {
         skNewContext();
 
-        m_font = skNewFont(SK_FONT_DEFAULT, 72, 128);
+        m_font = skNewFont(SK_FONT_UI, 72, 128);
         skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
         skSetFont1i(m_font, SK_FONT_MIPMAP, 1);
         skSelectFont(m_font);
