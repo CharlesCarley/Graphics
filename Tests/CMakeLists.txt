@@ -63,8 +63,8 @@ target_link_libraries(UnitTests ${Graphics_LIBRARY} )
 set_target_properties(UnitTests  PROPERTIES FOLDER "Tests")
 
 add_custom_command(TARGET UnitTests 
-                POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy test1.png
+                PRE_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test1.png
                 "${CMAKE_CURRENT_BINARY_DIR}"
                 )
 
