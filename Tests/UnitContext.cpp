@@ -52,6 +52,14 @@ void AssertPaintEqualI(SKint32 option, const SKint32 expected)
     EXPECT_EQ(expected, prop);
 }
 
+void AssertPaintEqualUI(SKint32 option, const SKuint32 expected)
+{
+    SKuint32 prop;
+    prop = SK_NO_STATUS;
+    skGetPaint1ui(option, &prop);
+    EXPECT_EQ(expected, prop);
+}
+
 void AssertPaintEqualF(SKint32 option, const SKscalar expected)
 {
     SKscalar prop;
@@ -179,10 +187,7 @@ TEST_CASE("GetWorkingPaint")
     skDeleteContext(ctx);
 }
 
-/*
-SK_API void skSetPaint1ui(SKpaintStyle en, SKuint32 c);
-SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v);
-*/
+
 TEST_CASE("PaintDefaults")
 {
     // Test working paint creation / selection / deletion
@@ -248,6 +253,26 @@ TEST_CASE("PaintDefaults")
     AssertPaintEqualI(SK_AUTO_CLEAR, 1);
     skSetPaint1i(SK_AUTO_CLEAR, 1000);
     AssertPaintEqualI(SK_AUTO_CLEAR, 1);
+
+    AssertPaintEqualUI(SK_BRUSH_COLOR, CS_Grey10);
+    skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey05);
+    AssertPaintEqualUI(SK_BRUSH_COLOR, CS_Grey05);
+
+    AssertPaintEqualUI(SK_SURFACE_COLOR, CS_Grey10);
+    skColor3f(0.502f, 0.502f, 0.502f);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, 0x808080FF);
+
+    skColor4f(0.502f, 0.502f, 0.502f, 0.502f);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, 0x80808080);
+
+    skColor3ub(72, 72, 72);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, 0x484848FF);
+
+    skColor3ub(173, 72, 0);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, 0xAD4800FF);
+
+    skColor4ub(72, 173, 128, 23);
+    AssertPaintEqualUI(SK_SURFACE_COLOR, 0x48AD8017);
 
     skDeleteContext(ctx);
 }

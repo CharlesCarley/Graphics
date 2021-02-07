@@ -67,7 +67,6 @@ void skCachedString::rebuild()
     m_size.y = (skScalar)h;
 }
 
-
 void skCachedString::buildString(const char* str)
 {
     const skContext& ctx   = ref();

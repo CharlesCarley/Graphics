@@ -28,6 +28,7 @@ skPaint::skPaint()
     m_brushStyle   = SK_BS_SOLID;
     m_penStyle     = SK_PS_SOLID;
     m_penWidth     = 1;
+    m_surfaceColor = skColor(1, 1, 1, 1);
     m_brushColor   = skColor(1, 1, 1, 1);
     m_penColor     = skColor(0, 0, 0, 1);
     m_brushPattern = nullptr;
@@ -173,7 +174,6 @@ void skPaint::setC(SKpaintStyle opt, const skColor& v)
 void skPaint::getC(SKpaintStyle opt, SKuint32* v) const
 {
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
-
     switch (opt)
     {
     case SK_BRUSH_COLOR:
