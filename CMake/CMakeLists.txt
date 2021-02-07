@@ -35,6 +35,7 @@ if (MSVC)
         Json:*.json
         Python:*.py
         CLang:../*.clang-format
+        GitHub:../.github/workflows/cmake.yml
     )
     set(ProjectFiles )
 
