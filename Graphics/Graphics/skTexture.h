@@ -30,8 +30,8 @@ class skImage;
 
 typedef struct SKimageOptions
 {
-    SKint32 m_filter;
-    SKint32 m_mipmap;
+    SKint32 filter;
+    SKint32 mipmap;
 } SKimageOptions;
 
 class skTexture : public skContextObj
@@ -42,7 +42,7 @@ protected:
 
 public:
     explicit skTexture();
-    skTexture(SKint32 w, SKint32 h, int fmt);
+    skTexture(SKint32 w, SKint32 h, SKpixelFormat fmt);
 
     virtual ~skTexture();
 
@@ -107,8 +107,7 @@ public:
     }
 
     void save(const char* file) const;
-
-    void load(const char* file);
+    bool load(const char* file);
 
     void getI(SKimageOptionEnum opt, SKint32* v) const;
     void setI(SKimageOptionEnum opt, SKint32 v);
@@ -116,6 +115,7 @@ public:
     void setF(SKimageOptionEnum opt, skScalar v);
 
 protected:
+
     void makeGradient(SKint32      fx,
                       SKint32      fy,
                       SKint32      tx,

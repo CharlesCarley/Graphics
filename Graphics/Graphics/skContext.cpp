@@ -41,6 +41,7 @@
 skContext::skContext(SKint32 backend)
 {
     static SKint32 _ctxHandle = 0;
+    skImage::initialize();
 
     m_renderContext = nullptr;
     m_id            = _ctxHandle++;
@@ -57,7 +58,6 @@ skContext::skContext(SKint32 backend)
     m_workFont  = nullptr;
 
     m_matrix.makeIdentity();
-
     m_options.verticesPerSegment = SK_DEFAULT_VERTICES_PER_SEGMENT;
     m_options.clearColor         = skColor(0, 0, 0, 1);
     m_options.clearRectangle     = skRectangle(0, 0, 1, 1);
@@ -87,6 +87,7 @@ skContext::~skContext()
     delete m_workPath;
 
     delete m_renderContext;
+    skImage::finalize();
 }
 
 void skContext::makeCurrent(skRenderer* ctx)

@@ -20,14 +20,13 @@ typedef struct Program
 
 void InitializeContext(SKcontext ctx, Program* program)
 {
-    program->texture = skNewImage();
-    skImageLoad(program->texture, "test2.png");
+    program->texture = skImageLoad("test2.png");
 
     SKint32 bpp, fmt;
     skGetImage1i(program->texture, SK_IMAGE_WIDTH, &program->texWidth);
     skGetImage1i(program->texture, SK_IMAGE_HEIGHT, &program->texHeight);
     skGetImage1i(program->texture, SK_IMAGE_BPP, &bpp);
-    skGetImage1i(program->texture, SK_IMAGE_FORMAT, &fmt);
+    skGetImage1i(program->texture, SK_IMAGE_PIXEL_FORMAT, &fmt);
     skSetImage1i(program->texture, SK_IMAGE_FILTER, SK_FILTER_BI_LINEAR);
 }
 
@@ -36,7 +35,6 @@ void UpdateMouseCo(void* user, SKint32 x, SKint32 y)
     Program* data = user;
     if (!data)
         return;
-
 
     if (data->m_lco < 0)
         data->m_lco = (SKscalar)y;
@@ -75,7 +73,6 @@ void WindowPaint(SKwindow window, void* user)
     wy = (SKscalar)(s[1] >> 1);
     w  = (SKscalar)data->texWidth;
     h  = (SKscalar)data->texHeight;
-
 
     if (w < h)
         sz = w;
@@ -129,7 +126,6 @@ void WindowButtonReleased(SKwindow    window,
     skWindowRedraw(window);
 }
 
-
 void WindowKeyDown(SKwindow window, void* user, skScanCode code)
 {
     if (code == KC_ESC)
@@ -141,7 +137,6 @@ void WindowKeyUp(SKwindow window, void* user, skScanCode code)
     if (code == KC_Q)
         skWindowClose(window);
 }
-
 
 SKwindowCallbacks Events = {
     WindowClosed,

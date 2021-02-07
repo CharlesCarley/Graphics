@@ -22,8 +22,8 @@
 #ifndef _skGraphics_h_
 #define _skGraphics_h_
 
-
 #include "Graphics/skGraphicsConfig.h"
+#include "Image/skImageTypes.h"
 #include "Math/skScalar.h"
 
 SK_ST_C;
@@ -106,20 +106,6 @@ typedef enum SKgradientType
     SK_RADIAL,
 } SKgradientType;
 
-typedef enum SKpixelFormat
-{
-    SK_ALPHA,
-    SK_LUMINANCE,
-    SK_LUMINANCE_ALPHA,
-    SK_BGR,
-    SK_RGB,
-    SK_RGBA,
-    SK_BGRA,
-    SK_ARGB,
-    SK_ABGR,
-    SK_PF_MAX,
-} SKpixelFormat;
-
 enum SKPenStyle
 {
     SK_PS_MIN,
@@ -178,20 +164,7 @@ enum SKFiltering
 };
 
 typedef SKenum SKfiltering;
-
-// Duplicated in image
-enum SKImageFormat
-{
-    SK_IMF_TGA,
-    SK_IMF_BMP,
-    SK_IMF_JPEG,
-    SK_IMF_J2K,
-    SK_IMF_PNG,
-    SK_IMF_PSD,
-    SK_IMF_XPM,
-};
-
-typedef SKenum SKimageFormat;
+typedef SKenum SKpixelFormat;
 
 enum SKContextOptionEnum
 {
@@ -307,7 +280,7 @@ enum SKImageOptionEnum
     SK_IMAGE_BPP,
     SK_IMAGE_SIZE_IN_BYTES,
     SK_IMAGE_BYTES,
-    SK_IMAGE_FORMAT,
+    SK_IMAGE_PIXEL_FORMAT,
 };
 typedef SKenum SKimageOptionEnum;
 
@@ -326,7 +299,6 @@ SK_API SKcontext skGetCurrentContext();
 SK_API void      skClearContext();
 SK_API void      skClear(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 
-
 SK_API void skSetContext1i(SKcontextOptionEnum en, SKint32 v);
 SK_API void skSetContext1f(SKcontextOptionEnum en, SKscalar v);
 
@@ -342,6 +314,9 @@ SK_API void skSetContext2f(SKcontextOptionEnum en, SKscalar f0, SKscalar f1);
 SK_API void skSetContext4i(SKcontextOptionEnum en, SKint32 i0, SKint32 i1, SKint32 i2, SKint32 i3);
 SK_API void skSetContext4f(SKcontextOptionEnum en, SKscalar f0, SKscalar f1, SKscalar f2, SKscalar f3);
 
+SK_API void skClearColor4f(SKscalar r, SKscalar g, SKscalar b, SKscalar a);
+SK_API void skClearColor1i(SKcolori rgba);
+
 SK_API SKpaint skGetWorkingPaint();
 SK_API SKpath  skGetWorkingPath();
 
@@ -352,9 +327,6 @@ SK_API void skLoadIdentity();
 SK_API void skTranslate(SKscalar x, SKscalar y);
 SK_API void skScale(SKscalar x, SKscalar y);
 SK_API void skRotate(SKscalar r);
-
-SK_API void skClearColor4f(SKscalar r, SKscalar g, SKscalar b, SKscalar a);
-SK_API void skClearColor1i(SKcolori rgba);
 
 /**********************************************************
     View projection
@@ -386,11 +358,10 @@ SK_API void skGetPaint1i(SKpaintStyle en, SKint32* v);
 SK_API void skGetPaint1f(SKpaintStyle en, SKscalar* v);
 SK_API void skGetPaint1ui(SKpaintStyle en, SKuint32* v);
 
-
-
 /**********************************************************
    Images
 */
+
 SK_API SKimage skNewImage();
 SK_API void    skDeleteImage(SKimage ima);
 SK_API void    skSelectImage(SKimage ima);
@@ -423,9 +394,9 @@ SK_API void skImageRadialGradientEx(SKimage      ima,
                                     SKcolorStop* stops,
                                     SKint32      stopCount);
 
-SK_API void skImageSave(SKimage ima, const char* path);
-SK_API void skImageLoad(SKimage ima, const char* path);
-SK_API void skSetImageUV(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
+SK_API void    skImageSave(SKimage ima, const char* path);
+SK_API SKimage skImageLoad(const char* path);
+SK_API void    skSetImageUV(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
 
 SK_API void skSetImage1i(SKimage image, SKimageOptionEnum en, SKint32 v);
 SK_API void skGetImage1i(SKimage image, SKimageOptionEnum en, SKint32* v);

@@ -23,19 +23,20 @@
 #include <memory.h>
 #include <cstdio>
 #include "Image/skImage.h"
+#include "Utils/skString.h"
 
 skTexture::skTexture() :
     m_image(nullptr)
 {
-    m_opts.m_filter = SK_FILTER_NONE;
-    m_opts.m_mipmap = 0;
+    m_opts.filter = SK_FILTER_NONE;
+    m_opts.mipmap = 0;
 }
 
-skTexture::skTexture(SKint32 w, SKint32 h, int fmt)
+skTexture::skTexture(SKint32 w, SKint32 h, SKpixelFormat fmt)
 {
-    m_opts.m_filter = SK_FILTER_NONE;
-    m_opts.m_mipmap = 0;
-    m_image         = new skImage(w, h, (skPixelFormat)fmt);
+    m_opts.filter = SK_FILTER_NONE;
+    m_opts.mipmap = 0;
+    m_image       = new skImage(w, h, (skPixelFormat)fmt);
 }
 
 skTexture::~skTexture()
@@ -194,32 +195,24 @@ void skTexture::getI(const SKimageOptionEnum opt, SKint32* v) const
     case SK_IMAGE_BPP:
         if (m_image)
             *v = m_image->getBPP();
-        else
-            *v = -1;
         break;
     case SK_IMAGE_FILTER:
-        *v = m_opts.m_filter;
+        *v = m_opts.filter;
         break;
     case SK_IMAGE_MIPMAP:
-        *v = m_opts.m_mipmap;
+        *v = m_opts.mipmap;
         break;
     case SK_IMAGE_WIDTH:
         if (m_image)
             *v = m_image->getWidth();
-        else
-            *v = -1;
         break;
     case SK_IMAGE_HEIGHT:
         if (m_image)
             *v = m_image->getHeight();
-        else
-            *v = -1;
         break;
     case SK_IMAGE_PITCH:
         if (m_image)
             *v = m_image->getPitch();
-        else
-            *v = -1;
         break;
     case SK_IMAGE_SIZE_IN_BYTES:
         if (m_image)  // needs unsigned
@@ -227,15 +220,12 @@ void skTexture::getI(const SKimageOptionEnum opt, SKint32* v) const
         else
             *v = -1;
         break;
-    case SK_IMAGE_FORMAT:
+    case SK_IMAGE_PIXEL_FORMAT:
         if (m_image)  // needs unsigned
             *v = (SKint32)m_image->getFormat();
-        else
-            *v = -1;
         break;
     case SK_IMAGE_BYTES:
     default:
-        *v = -1;
         break;
     }
 }
@@ -245,10 +235,10 @@ void skTexture::setI(SKimageOptionEnum opt, SKint32 v)
     if (opt == SK_IMAGE_FILTER)
     {
         if (v > SK_FILTER_MIN && v < SK_FILTER_MAX)
-            m_opts.m_filter = v;
+            m_opts.filter = v;
     }
     else if (opt == SK_IMAGE_MIPMAP)
-        m_opts.m_mipmap = v;
+        m_opts.mipmap = v;
 }
 
 void skTexture::getF(SKimageOptionEnum opt, skScalar* v) const
@@ -266,14 +256,20 @@ void skTexture::setF(SKimageOptionEnum opt, skScalar v)
 void skTexture::save(const char* file) const
 {
     if (m_image)
-        m_image->save(IMF_PNG, file);
+        m_image->save(file);
 }
 
-void skTexture::load(const char* file)
+bool skTexture::load(const char* file)
 {
-    skImage* ima = new skImage();
-    ima->load(IMF_PNG, file);
-
     delete m_image;
-    m_image = ima;
+    m_image = nullptr;
+
+    skImage* ima = new skImage();
+    if (ima->load(file))
+        m_image = ima;
+    else
+        delete ima;
+
+    return m_image != nullptr;
 }
+

@@ -51,7 +51,6 @@ skOpenGLRenderer::skOpenGLRenderer() :
     m_curPaint(nullptr),
     m_fillOp(GL_TRIANGLE_STRIP)
 {
-    skImage::initialize();
     compileBuiltin();
 }
 
@@ -61,7 +60,6 @@ skOpenGLRenderer::~skOpenGLRenderer()
     delete m_defaultShader;
     delete m_fontShader;
     delete m_blankShader;
-    skImage::finalize();
 }
 
 void skOpenGLRenderer::compileBuiltin(void) const

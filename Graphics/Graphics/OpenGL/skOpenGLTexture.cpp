@@ -25,7 +25,7 @@
 #include "Window/Window/OpenGL/skOpenGL.h"
 #include "skContext.h"
 
-void skGetFormat(int fmt, GLenum& glfmt)
+void SK_GetFormat(int fmt, GLenum& glfmt)
 {
     glfmt = GL_RGB;
     switch (fmt)
@@ -44,7 +44,7 @@ void skGetFormat(int fmt, GLenum& glfmt)
     }
 }
 
-void skGetMinMag(const SKuint32& filter, GLint& min, GLint& mag, bool mipmap)
+void SK_GetMinMag(const SKuint32& filter, GLint& min, GLint& mag, bool mipmap)
 {
     switch (filter)
     {
@@ -92,8 +92,8 @@ SKuint32 skOpenGLTexture::getImage(void)
         GLenum format;
         GLint  min, mag;
 
-        skGetFormat(m_image->getBPP(), format);
-        skGetMinMag(m_opts.m_filter, min, mag, m_opts.m_mipmap != 0);
+        SK_GetFormat(m_image->getBPP(), format);
+        SK_GetMinMag(m_opts.filter, min, mag, m_opts.mipmap != 0);
 
         glGenTextures(1, &m_tex);
         glBindTexture(GL_TEXTURE_2D, m_tex);
@@ -109,7 +109,7 @@ SKuint32 skOpenGLTexture::getImage(void)
                      GL_UNSIGNED_BYTE,
                      m_image->getBytes());
 
-        if (m_opts.m_mipmap)
+        if (m_opts.mipmap)
             glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

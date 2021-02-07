@@ -514,13 +514,16 @@ SK_API void skImageSave(SKimage ima, const char* path)
     img->save(path);
 }
 
-SK_API void skImageLoad(SKimage ima, const char* path)
+SK_API SKimage skImageLoad(const char* path)
 {
-    skTexture* img = SKcheckType<skTexture, SKimage, skContext>(ima, SK_CURRENT_CTX());
-    SK_CHECK_PARAM(img, SK_RETURN_VOID);
-    SK_CHECK_PARAM(path, SK_RETURN_VOID);
+    skContext* ctx = SK_CURRENT_CTX();
+    SK_CHECK_CTX(ctx, nullptr);
+    SK_CHECK_PARAM(path, nullptr);
 
-    img->load(path);
+    skTexture* tex = (skTexture*)ctx->newImage();
+    if (tex != nullptr)
+        tex->load(path);
+    return (SKimage)tex;
 }
 
 SK_API void skDeleteImage(SKimage ima)

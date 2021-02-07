@@ -187,7 +187,6 @@ TEST_CASE("GetWorkingPaint")
     skDeleteContext(ctx);
 }
 
-
 TEST_CASE("PaintDefaults")
 {
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
@@ -292,7 +291,6 @@ TEST_CASE("PaintSelectDefaults")
 
     skSelectPaint(nullptr);
 
-
     // default
     AssertPaintEqualUI(SK_SURFACE_COLOR, CS_Grey10);
     skSelectPaint(p1);
@@ -306,7 +304,6 @@ TEST_CASE("PaintSelectDefaults")
     skDeletePaint(p2);
     skDeleteContext(ctx);
 }
-
 
 TEST_CASE("GetWorkingPath")
 {
@@ -331,16 +328,64 @@ TEST_CASE("GetWorkingPath")
 
     skSelectPath(p2);
     skDeletePath(p2);
-   
+
     // tests 'dangling' reference in ~skContext()
     skDeleteContext(ctx);
 }
 
+/*
+SK_API void skSetImage1i(SKimage image, SKimageOptionEnum en, SKint32 v);
+SK_API void skGetImage1i(SKimage image, SKimageOptionEnum en, SKint32* v);
+SK_API void skSetImage1f(SKimage image, SKimageOptionEnum en, SKscalar v);
+SK_API void skGetImage1f(SKimage image, SKimageOptionEnum en, SKscalar* v);
+*/
 
+void AssertImageEqualI(SKimage image, SKint32 option, const SKint32 expected)
+{
+    SKint32 prop;
+    prop = SK_NO_STATUS;
+    skGetImage1i(image, option, &prop);
+    EXPECT_EQ(expected, prop);
+}
 
-TEST_CASE("PathDefaults")
+TEST_CASE("ImageDefaults")
 {
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
+
+    SKimage image;
+    image = skNewImage();
+    AssertImageEqualI(image, SK_IMAGE_FILTER, SK_FILTER_NONE);
+    AssertImageEqualI(image, SK_IMAGE_MIPMAP, 0);
+    AssertImageEqualI(image, SK_IMAGE_WIDTH, SK_NO_STATUS);
+    AssertImageEqualI(image, SK_IMAGE_HEIGHT, SK_NO_STATUS);
+    AssertImageEqualI(image, SK_IMAGE_PITCH, SK_NO_STATUS);
+    AssertImageEqualI(image, SK_IMAGE_BPP, SK_NO_STATUS);
+    AssertImageEqualI(image, SK_IMAGE_SIZE_IN_BYTES, SK_NO_STATUS);
+    AssertImageEqualI(image, SK_IMAGE_PIXEL_FORMAT, SK_NO_STATUS);
+    skDeleteImage(image);
+
+    image = skCreateImage(64, 64, SK_RGB);
+    AssertImageEqualI(image, SK_IMAGE_FILTER, SK_FILTER_NONE);
+    AssertImageEqualI(image, SK_IMAGE_MIPMAP, 0);
+    AssertImageEqualI(image, SK_IMAGE_WIDTH, 64);
+    AssertImageEqualI(image, SK_IMAGE_HEIGHT, 64);
+    AssertImageEqualI(image, SK_IMAGE_PITCH, 64 * 3);
+    AssertImageEqualI(image, SK_IMAGE_BPP, 3);
+    AssertImageEqualI(image, SK_IMAGE_SIZE_IN_BYTES, 64 * 64 * 3);
+    AssertImageEqualI(image, SK_IMAGE_PIXEL_FORMAT, SK_RGB);
+    skDeleteImage(image);
+
+
+    image = skImageLoad("test1.png");
+    AssertImageEqualI(image, SK_IMAGE_FILTER, SK_FILTER_NONE);
+    AssertImageEqualI(image, SK_IMAGE_MIPMAP, 0);
+    AssertImageEqualI(image, SK_IMAGE_WIDTH, 300);
+    AssertImageEqualI(image, SK_IMAGE_HEIGHT, 295);
+    AssertImageEqualI(image, SK_IMAGE_PITCH, 300 * 4);
+    AssertImageEqualI(image, SK_IMAGE_BPP, 4);
+    AssertImageEqualI(image, SK_IMAGE_SIZE_IN_BYTES, 300 * 295 * 4);
+    AssertImageEqualI(image, SK_IMAGE_PIXEL_FORMAT, SK_RGBA);
+    skDeleteImage(image);
 
     skDeleteContext(ctx);
 }

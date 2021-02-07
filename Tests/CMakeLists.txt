@@ -21,7 +21,7 @@ if(Graphics_BACKEND_OPENGL)
             )
        set_target_properties(${File} PROPERTIES FOLDER "Tests")
 
-       file(GLOB Files *.png)
+        file(GLOB Files *.png)
 
         add_custom_command(TARGET ${File} 
                         POST_BUILD
@@ -61,7 +61,15 @@ include_directories(. ${Graphics_INCLUDE})
 add_executable(UnitTests ${SRC_ALL})
 target_link_libraries(UnitTests ${Graphics_LIBRARY} )
 set_target_properties(UnitTests  PROPERTIES FOLDER "Tests")
+
+add_custom_command(TARGET UnitTests 
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy test1.png
+                "${CMAKE_CURRENT_BINARY_DIR}"
+                )
+
 if (Graphics_AUTO_RUN_TESTS)
+
     add_custom_command(TARGET 
         UnitTests POST_BUILD
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
