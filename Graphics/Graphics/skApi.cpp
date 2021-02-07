@@ -597,14 +597,6 @@ SK_API SKfont skNewFontFromFile(const char* path, SKuint32 size, SKuint32 dpi)
     return ctx->newFontFromFile(path, size, dpi);
 }
 
-SK_API SKfont skNewFontFromMemory(const void* mem, const SKuint32 len, SKuint32 size, SKuint32 dpi)
-{
-    skContext* ctx = SK_CURRENT_CTX();
-    SK_CHECK_CTX(ctx, nullptr);
-
-    return ctx->newFontFromMemory(mem, len, size, dpi);
-}
-
 SK_API void skDeleteFont(SKfont font)
 {
     skContext* ctx = SK_CURRENT_CTX();

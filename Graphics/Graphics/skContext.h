@@ -78,8 +78,6 @@ public:
 
     SKfont newFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
 
-    SKfont newFontFromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi);
-
     void deleteFont(SKfont font);
 
     SKcachedString newString(void);

@@ -200,8 +200,8 @@ void skContext::selectImage(SKimage ima)
 
 SKfont skContext::newFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
 {
-    if (dpi == SK_NPOS32 || dpi < 8)
-        return nullptr;
+    dpi  = skClamp<SKuint32>(dpi, SK_MIN_DPI, SK_MAX_DPI);
+    size = skClamp<SKuint32>(size, SK_MIN_FONT_SIZE, SK_MAX_FONT_SIZE);
 
     skFont* fnt = new skFont();
     fnt->setContext(this);
@@ -224,11 +224,10 @@ void skContext::selectFont(SKfont font)
 
 SKfont skContext::newFontFromFile(const char* path, SKuint32 size, SKuint32 dpi)
 {
-    if (!path)
-        return nullptr;
+    SK_CHECK_PARAM(path, nullptr);
 
-    if (dpi == SK_NPOS32 || dpi < 8)
-        return nullptr;
+    dpi  = skClamp<SKuint32>(dpi, SK_MIN_DPI, SK_MAX_DPI);
+    size = skClamp<SKuint32>(size, SK_MIN_FONT_SIZE, SK_MAX_FONT_SIZE);
 
     skFont* fnt = new skFont();
     fnt->setContext(this);
@@ -238,27 +237,6 @@ SKfont skContext::newFontFromFile(const char* path, SKuint32 size, SKuint32 dpi)
         delete fnt;
         return nullptr;
     }
-
-    return SK_FONT_HANDLE(fnt);
-}
-
-SKfont skContext::newFontFromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi)
-{
-    if (!mem || len == SK_NPOS32 || len <= 0)
-        return nullptr;
-
-    if (dpi == SK_NPOS32 || dpi < 8)
-        return nullptr;
-
-    skFont* fnt = new skFont();
-    fnt->setContext(this);
-
-    if (!fnt->fromMemory(mem, len, size, dpi))
-    {
-        delete fnt;
-        return nullptr;
-    }
-
     return SK_FONT_HANDLE(fnt);
 }
 

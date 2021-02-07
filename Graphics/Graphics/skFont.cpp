@@ -260,11 +260,6 @@ bool skFont::fromFile(const char* path, SKuint32 size, SKuint32 dpi)
     return res;
 }
 
-bool skFont::fromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi)
-{
-    return loadTrueTypeFont(mem, len, size, dpi);
-}
-
 void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y)
 {
     SK_CHECK_PARAM(path, SK_RETURN_VOID);
@@ -462,6 +457,7 @@ void skFont::loadGlyphs(struct FT_FaceRec_* face)
         FT_GlyphSlot slot = face->glyph;
         if (!slot)
             continue;
+
         FT_Render_Glyph(slot, FT_RENDER_MODE_LCD);
 
         SKuint8* imgBuf = face->glyph->bitmap.buffer;
@@ -525,9 +521,10 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
         return false;
     }
 
-    if (FT_New_Memory_Face(lib, (const FT_Byte*)mem, (FT_Long)len, 0, &face))
+    if ((status = FT_New_Memory_Face(lib, (const FT_Byte*)mem, (FT_Long)len, 0, &face)) != 0)
     {
         skLogd(LD_ERROR, "Failed to load font face.\n");
+        skLogd(LD_WARN, FT_Error_String(status));
         return false;
     }
 
@@ -536,8 +533,12 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     m_opts.pixelSize = size;
     m_opts.scale     = (skScalar)size;
 
-    if (FT_Set_Char_Size(face, FTI64(size), FTI64(size), dpi, dpi))
+    if ((status = FT_Set_Char_Size(face, FTI64(size), FTI64(size), dpi, dpi)) != 0)
+    {
+        skLogd(LD_ERROR, "Failed to set the character size.\n");
+        skLogd(LD_WARN, FT_Error_String(status));
         return false;
+    }
 
     // loads the glyphs
     // computes the metrics
@@ -547,7 +548,7 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     skImage* ima = m_image->getInternalImage();
     if (!ima)
     {
-        skLogd(LD_ERROR, "Failed to get the image for the font.\n");
+        skLogd(LD_ERROR, "Failed to create the font image.\n");
         return false;
     }
 

@@ -97,10 +97,6 @@ public:
                   SKuint32    size,
                   SKuint32    dpi);
 
-    bool fromMemory(const void* mem,
-                    SKuint32    len,
-                    SKuint32    size,
-                    SKuint32    dpi);
 
     void buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y);
 

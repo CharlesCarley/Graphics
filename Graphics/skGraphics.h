@@ -30,6 +30,17 @@ SK_ST_C;
 
 #define SK_NO_STATUS (-1)
 
+#define SK_DEFAULT_VERTICES_PER_SEGMENT 16
+#define SK_MIN_VERTICES_PER_SEGMENT 3
+#define SK_MAX_VERTICES_PER_SEGMENT 128
+#define SK_DEFAULT_PROJECTION_MODE SK_STANDARD
+#define SK_DEFAULT_METRICS_MODE SK_PIXEL
+#define SK_MIN_DPI 24
+#define SK_MAX_DPI 300
+#define SK_MIN_FONT_SIZE 8
+#define SK_MAX_FONT_SIZE 96
+
+
 #define SK_SIZE_HANDLE(x) \
     typedef struct x##_t  \
     {                     \
@@ -411,7 +422,6 @@ SK_API SKfont skNewFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
 SK_API void   skSelectFont(SKfont font);
 SK_API void   skDeleteFont(SKfont font);
 SK_API SKfont skNewFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
-SK_API SKfont skNewFontFromMemory(const void* mem, SKuint32 len, SKuint32 size, SKuint32 dpi);
 
 SK_API SKint32 skGetFontAverageWidth(SKfont font);
 SK_API void    skGetFontTextExtentEx(SKfont font, const char* text, SKint32 chidx, SKint32 len, SKint32* w, SKint32* h);

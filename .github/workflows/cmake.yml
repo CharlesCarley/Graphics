@@ -29,7 +29,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{github.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DGraphics_AUTO_RUN_TESTS=ON -DGraphics_BACKEND_OPENGL=OFF
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DGraphics_AUTO_RUN_TESTS=ON -DGraphics_BACKEND_OPENGL=OFF -DGraphics_EXTRA_BUILTIN_FONTS=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/build

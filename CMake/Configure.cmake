@@ -27,13 +27,22 @@ option(Graphics_NO_PALETTE          "Disable builtin palette" OFF)
 option(Graphics_OP_CHECKS           "Check function parameters" ON)
 option(Graphics_EXTRA_BUILTIN_FONTS "Include extra fonts in the build. https://fonts.google.com/" OFF)
 option(Graphics_BACKEND_OPENGL      "Compile the OpenGL back end" ON)
+option(Graphics_BUILD_TESTS         "Build UnitTests" ON)
 option(Graphics_AUTO_RUN_TESTS      "Adds a custom target that runs on build" OFF)
 
 if(Graphics_AUTO_RUN_TESTS)
+    set(Graphics_BUILD_TESTS ON CACHE BOOL "Build Utils tests" FORCE)
     set(Utils_BUILD_TESTS ON CACHE BOOL "Build Utils tests" FORCE)
     set(Utils_AUTO_RUN_TESTS ON CACHE BOOL "Build Utils tests" FORCE)
+else()
+    set(Utils_BUILD_TESTS OFF CACHE BOOL "Build Utils tests" FORCE)
+    set(Utils_AUTO_RUN_TESTS OFF CACHE BOOL "Build Utils tests" FORCE)
 endif()
 
+
+if (Graphics_BUILD_TESTS)
+    set(Graphics_EXTRA_BUILTIN_FONTS ON CACHE BOOL "Include extra fonts in the build. https://fonts.google.com/" FORCE)
+endif()
 
 if (NOT Graphics_BACKEND_OPENGL)
     set(Graphics_BUILD_WINDOW OFF CACHE BOOL "Compile standalone window system" FORCE)
