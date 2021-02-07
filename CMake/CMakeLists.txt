@@ -26,6 +26,7 @@ if (MSVC)
         CMake:../CMakeLists.txt
         CMake\\Extern:../Extern/CMakeLists.txt
         Include:*.in
+        Markdown:../*.md
         BatchScript:*.bat
         BatchScript:*.sh
         Configuration:*.config

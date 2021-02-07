@@ -27,9 +27,7 @@ option(Graphics_NO_PALETTE          "Disable builtin palette" OFF)
 option(Graphics_OP_CHECKS           "Check function parameters" ON)
 option(Graphics_EXTRA_BUILTIN_FONTS "Include extra fonts in the build. https://fonts.google.com/" OFF)
 option(Graphics_BACKEND_OPENGL      "Compile the OpenGL back end" ON)
-
 option(Graphics_AUTO_RUN_TESTS      "Adds a custom target that runs on build" OFF)
-    
 
 if(Graphics_AUTO_RUN_TESTS)
     set(Utils_BUILD_TESTS ON CACHE BOOL "Build Utils tests" FORCE)

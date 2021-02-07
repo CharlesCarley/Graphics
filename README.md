@@ -40,3 +40,5 @@ Optional defines.
 | Graphics_NO_PALETTE          | Disable the built in color palette.                             | OFF     |
 | Graphics_OP_CHECKS           | Add extra checks for function parameters.                       | ON      |
 | Graphics_EXTRA_BUILTIN_FONTS | Include extra [fonts](https://fonts.google.com/) in the binary. | OFF     |
+| Graphics_BACKEND_OPENGL      | Build the main OpenGL backend.                                  | ON      |
+| Graphics_AUTO_RUN_TESTS      | Automatically execute tests after a successful build.           | OFF     |
