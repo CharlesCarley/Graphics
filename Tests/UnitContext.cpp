@@ -472,9 +472,6 @@ TEST_CASE("FontRangeTest")
     skDeleteContext(ctx);
 }
 
-
-
-
 TEST_CASE("FontPropertyTest")
 {
     SKcontext ctx = skNewBackEndContext(SK_BE_None);
@@ -490,7 +487,6 @@ TEST_CASE("FontPropertyTest")
     AssertFontEqualI(font, SK_FONT_DPI, 24);
     skSetFont1i(font, SK_FONT_PIXEL_SIZE, 300);
     AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 8);
-
 
     AssertFontEqualF(font, SK_FONT_SIZE, 8);
     AssertFontEqualI(font, SK_FONT_SIZE, 8);

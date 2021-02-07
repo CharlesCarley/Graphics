@@ -98,7 +98,7 @@ private:
         {
             if (m_projectionMode != 0)
             {
-                skSetFont1f(m_font, SK_FONT_SIZE, 32);
+                skSetFont1i(m_font, SK_FONT_SIZE, m_accumulator);
                 skSetContext1i(SK_Y_UP, 0);
                 skRebuildCachedString(m_cstring);
                 m_projectionMode = 0;
@@ -109,7 +109,7 @@ private:
         {
             if (m_projectionMode != 1)
             {
-                skSetFont1f(m_font, SK_FONT_SIZE, 32);
+                skSetFont1i(m_font, SK_FONT_SIZE, m_accumulator);
                 skSetContext1i(SK_Y_UP, 1);
                 skRebuildCachedString(m_cstring);
                 m_projectionMode = 1;
@@ -205,6 +205,7 @@ private:
         }
         else if (m_test == 4)
         {
+            m_accumulator = 48;
         }
     }
 
@@ -244,12 +245,10 @@ public:
             CS_LabelEmphasis2,
         };
 
-
-        SKint32 size = 48, yPos = 20;
+        SKint32 size = m_accumulator, yPos = 20;
         for (unsigned int color : colors)
         {
             skSetFont1i(m_font, SK_FONT_SIZE, size);
-
             skColor1ui(color);
             skDisplayString(m_font,
                             text,
@@ -384,7 +383,7 @@ public:
     {
         skNewContext();
 
-        m_font = skNewFont(SK_FONT_UI, 72, 128);
+        m_font = skNewFont(SK_FONT_DEFAULT, 72, 128);
         skSetFont1i(m_font, SK_FONT_FILTER, SK_FILTER_BI_LINEAR);
         skSetFont1i(m_font, SK_FONT_MIPMAP, 1);
         skSelectFont(m_font);

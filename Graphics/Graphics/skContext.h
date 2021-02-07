@@ -184,6 +184,12 @@ public:
         return m_options.contextSize;
     }
 
+    bool yIsUp() const
+    {
+        return m_options.yIsUp != 0;
+    }
+
+
     const SKint32& getVerticesPerSegment() const
     {
         SK_ASSERT(m_options.verticesPerSegment > 0);

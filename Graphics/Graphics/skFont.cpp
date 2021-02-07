@@ -34,7 +34,8 @@
 #include "skPath.h"
 #include "skTexture.h"
 
-// TODO clean and check all of this...
+// TODO: clean and check the extent functions.
+//       naming / spacing / alignment could be more precise too.
 
 #define FTINT(x) ((x) >> 6)
 #define FTI64(x) ((x) << 6)
@@ -201,7 +202,6 @@ SKint32 skFont::getAverageWidth(void)
         return m_opts.average;
 
     skScalar av = 0.f;
-
     const skScalar scale = getRelativeScale();
 
     for (SKint32 ch = CharStart; ch < CharEnd; ch++)
@@ -265,16 +265,11 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
     SK_CHECK_PARAM(path, SK_RETURN_VOID);
     SK_CHECK_PARAM(str, SK_RETURN_VOID);
     const skScalar fntScale = getRelativeScale();
+
     if (skIsZero(fntScale))
         return;
 
-    const skContext& ctx   = ref();
-    const skVector2& scale = ctx.getContextV(SK_CONTEXT_SCALE);
-    const skVector2& bias  = ctx.getContextV(SK_CONTEXT_BIAS);
-
-    const bool yIsUp   = ctx.getContextI(SK_Y_UP) == 1;
-    const bool doScale = scale != skVector2::Unit;
-    const bool doBias  = bias != skVector2::Zero;
+    const bool yIsUp = m_ctx->yIsUp();
 
     path->setContext(this->getContext());
     path->clear();
@@ -307,7 +302,6 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
                 yOffs -= baseHeight;
             else
                 yOffs += baseHeight;
-
             xOffs = x;
         }
         else
@@ -333,22 +327,6 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
                 {
                     vyMax = yOffs + charOffs;
                     vyMin = yOffs + charHeight + charOffs;
-                }
-
-                if (doScale)
-                {
-                    vxMin *= scale.x;
-                    vxMax *= scale.x;
-                    vyMin *= scale.y;
-                    vyMax *= scale.y;
-                }
-
-                if (doBias)
-                {
-                    vxMin += bias.x;
-                    vxMax += bias.x;
-                    vyMin += bias.y;
-                    vyMax += bias.y;
                 }
 
                 xOffs += charWidth + ch.xOffs * fntScale;
@@ -476,7 +454,7 @@ void skFont::setF(SKfontOptionEnum opt, skScalar v)
     case SK_FONT_PIXEL_SIZE:
     case SK_FONT_TAB_SIZE:
     {
-        setI(opt, v);
+        setI(opt, (SKint32)v);
         break;
     }
     case SK_FONT_SIZE:

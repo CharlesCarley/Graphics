@@ -259,7 +259,7 @@ enum SKFontOptionEnum
     SK_FONT_FILTER,
     SK_FONT_MIPMAP,
     SK_FONT_SIZE,            // user defined
-    SK_FONT_RELATIVE_SCALE,  // 
+    SK_FONT_RELATIVE_SCALE, 
     SK_FONT_TAB_SIZE,
 };
 typedef SKenum SKfontOptionEnum;
