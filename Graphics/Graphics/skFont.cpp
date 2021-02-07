@@ -48,7 +48,6 @@ const skFont::Char NullChar  = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
 skFont::skFont() :
     skContextObj(),
     m_chars(nullptr),
-    m_pointScale(0),
     m_image(nullptr),
     m_opts()
 {
@@ -107,7 +106,7 @@ void skFont::getCharExtent(const char c, SKint32* w, SKint32* h) const
 
 void skFont::getTextExtent(const char* str, SKint32 len, SKint32* w, SKint32* h) const
 {
-    if (!str || !m_chars || !w && !h)
+    if (!str || !m_chars || (!w && !h))
         return;
 
     if (w)
@@ -154,7 +153,7 @@ void skFont::getTextExtentExt(const char*   str,
                               SKint32*      w,
                               SKint32*      h) const
 {
-    if (!str || !m_chars || !w && !h)
+    if (!str || !m_chars || (!w && !h))
         return;
 
     if (w)

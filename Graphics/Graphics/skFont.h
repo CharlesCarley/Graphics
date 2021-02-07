@@ -56,7 +56,6 @@ public:
 
 private:
     Char*         m_chars;
-    skScalar      m_pointScale;
     skTexture*    m_image;
     SKfontOptions m_opts;
 

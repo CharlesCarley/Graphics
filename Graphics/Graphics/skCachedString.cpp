@@ -47,7 +47,6 @@ void skCachedString::rebuild()
         return;
 
     const skContext& ctx   = ref();
-    const skVector2  scale = ctx.getContextV(SK_CONTEXT_SCALE);
 
     skFont* fnt = ctx.getWorkFont();
     if (!fnt)
@@ -70,7 +69,6 @@ void skCachedString::rebuild()
 void skCachedString::buildString(const char* str)
 {
     const skContext& ctx   = ref();
-    const skVector2  scale = ctx.getContextV(SK_CONTEXT_SCALE);
 
     skFont* fnt = ctx.getWorkFont();
     if (!fnt)
