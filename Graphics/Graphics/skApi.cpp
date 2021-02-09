@@ -559,22 +559,6 @@ SK_API void skGetImage1i(SKimage image, SKimageOptionEnum en, SKint32* v)
     img->getI(en, v);
 }
 
-SK_API void skSetImage1f(SKimage image, SKimageOptionEnum en, SKscalar v)
-{
-    skTexture* img = SKcheckType<skTexture, SKimage, skContext>(image, SK_CURRENT_CTX());
-    SK_CHECK_PARAM(img, SK_RETURN_VOID);
-
-    img->setF(en, v);
-}
-
-SK_API void skGetImage1f(SKimage image, SKimageOptionEnum en, SKscalar* v)
-{
-    skTexture* img = SKcheckType<skTexture, SKimage, skContext>(image, SK_CURRENT_CTX());
-    SK_CHECK_PARAM(img, SK_RETURN_VOID);
-
-    img->getF(en, v);
-}
-
 SK_API SKfont skNewFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
 {
     skContext* ctx = SK_CURRENT_CTX();

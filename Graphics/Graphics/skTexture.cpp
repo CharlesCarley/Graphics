@@ -224,7 +224,7 @@ void skTexture::getI(const SKimageOptionEnum opt, SKint32* v) const
         if (m_image)  // needs unsigned
             *v = (SKint32)m_image->getFormat();
         break;
-    case SK_IMAGE_BYTES:
+    //case SK_IMAGE_BYTES:
     default:
         break;
     }
@@ -239,18 +239,6 @@ void skTexture::setI(SKimageOptionEnum opt, SKint32 v)
     }
     else if (opt == SK_IMAGE_MIPMAP)
         m_opts.mipmap = v;
-}
-
-void skTexture::getF(SKimageOptionEnum opt, skScalar* v) const
-{
-    SKint32 t;
-    getI(opt, &t);
-    *v = (skScalar)t;
-}
-
-void skTexture::setF(SKimageOptionEnum opt, skScalar v)
-{
-    setI(opt, (SKint32)v);
 }
 
 void skTexture::save(const char* file) const

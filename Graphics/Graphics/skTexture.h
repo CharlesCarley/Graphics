@@ -111,8 +111,6 @@ public:
 
     void getI(SKimageOptionEnum opt, SKint32* v) const;
     void setI(SKimageOptionEnum opt, SKint32 v);
-    void getF(SKimageOptionEnum opt, skScalar* v) const;
-    void setF(SKimageOptionEnum opt, skScalar v);
 
 protected:
 

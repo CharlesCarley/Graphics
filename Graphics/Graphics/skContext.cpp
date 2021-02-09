@@ -87,6 +87,7 @@ skContext::~skContext()
     delete m_workPath;
 
     delete m_renderContext;
+
     skImage::finalize();
 }
 
@@ -524,7 +525,6 @@ skColor skContext::getContextC(SKcontextOptionEnum op) const
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
     //case SK_USE_CURRENT_VIEWPORT:
-    //case SK_DEFAULT_FONT:
     //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
@@ -548,7 +548,6 @@ void skContext::setContextC(SKcontextOptionEnum op, const skColor& v)
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
     //case SK_USE_CURRENT_VIEWPORT:
-    //case SK_DEFAULT_FONT:
     //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:
@@ -572,7 +571,6 @@ skVector2 skContext::getContextV(SKcontextOptionEnum op) const
     //case SK_OPACITY:
     //case SK_METRICS_MODE:
     //case SK_USE_CURRENT_VIEWPORT:
-    //case SK_DEFAULT_FONT:
     //case SK_PROJECTION_TYPE:
     //case SK_Y_UP:
     default:

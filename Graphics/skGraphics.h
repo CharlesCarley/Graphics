@@ -258,8 +258,8 @@ enum SKFontOptionEnum
     SK_FONT_PIXEL_SIZE,  // read only
     SK_FONT_FILTER,
     SK_FONT_MIPMAP,
-    SK_FONT_SIZE,            // user defined
-    SK_FONT_RELATIVE_SCALE, 
+    SK_FONT_SIZE,  // user defined
+    SK_FONT_RELATIVE_SCALE,
     SK_FONT_TAB_SIZE,
 };
 typedef SKenum SKfontOptionEnum;
@@ -291,7 +291,7 @@ enum SKImageOptionEnum
     SK_IMAGE_PITCH,
     SK_IMAGE_BPP,
     SK_IMAGE_SIZE_IN_BYTES,
-    SK_IMAGE_BYTES,
+    // SK_IMAGE_BYTES,
     SK_IMAGE_PIXEL_FORMAT,
 };
 typedef SKenum SKimageOptionEnum;
@@ -409,31 +409,39 @@ SK_API void skImageRadialGradientEx(SKimage      ima,
 SK_API void    skImageSave(SKimage ima, const char* path);
 SK_API SKimage skImageLoad(const char* path);
 SK_API void    skSetImageUV(SKscalar x, SKscalar y, SKscalar w, SKscalar h);
-
-SK_API void skSetImage1i(SKimage image, SKimageOptionEnum en, SKint32 v);
-SK_API void skGetImage1i(SKimage image, SKimageOptionEnum en, SKint32* v);
-SK_API void skSetImage1f(SKimage image, SKimageOptionEnum en, SKscalar v);
-SK_API void skGetImage1f(SKimage image, SKimageOptionEnum en, SKscalar* v);
+SK_API void    skSetImage1i(SKimage image, SKimageOptionEnum en, SKint32 v);
+SK_API void    skGetImage1i(SKimage image, SKimageOptionEnum en, SKint32* v);
 
 /**********************************************************
    Fonts (TTF)
 */
 
-SK_API SKfont skNewFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
-SK_API void   skSelectFont(SKfont font);
-SK_API void   skDeleteFont(SKfont font);
-SK_API SKfont skNewFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
+SK_API SKfont  skNewFont(SKbuiltinFont font, SKuint32 size, SKuint32 dpi);
+SK_API void    skSelectFont(SKfont font);
+SK_API void    skDeleteFont(SKfont font);
+SK_API SKfont  skNewFontFromFile(const char* path, SKuint32 size, SKuint32 dpi);
 
 SK_API SKint32 skGetFontAverageWidth(SKfont font);
-SK_API void    skGetFontTextExtentEx(SKfont font, const char* text, SKint32 chidx, SKint32 len, SKint32* w, SKint32* h);
-SK_API void    skGetFontTextExtent(SKfont font, const char* text, SKint32 len, SKint32* w, SKint32* h);
+
+SK_API void    skGetFontTextExtentEx(SKfont      font,
+                                     const char* text,
+                                     SKint32     chidx,
+                                     SKint32     len,
+                                     SKint32*    w,
+                                     SKint32*    h);
+
+SK_API void    skGetFontTextExtent(SKfont      font,
+                                   const char* text,
+                                   SKint32     len,
+                                   SKint32*    w,
+                                   SKint32*    h);
+
 SK_API void    skGetFontCharExtent(SKfont font, char ch, SKint32* w, SKint32* h);
 SK_API void    skGetFontCharExtentEx(SKfont font, char ch, SKtextExtent* te);
-
-SK_API void skSetFont1i(SKfont font, SKfontOptionEnum en, SKint32 v);
-SK_API void skGetFont1i(SKfont font, SKfontOptionEnum en, SKint32* v);
-SK_API void skSetFont1f(SKfont font, SKfontOptionEnum en, SKscalar v);
-SK_API void skGetFont1f(SKfont font, SKfontOptionEnum en, SKscalar* v);
+SK_API void    skSetFont1i(SKfont font, SKfontOptionEnum en, SKint32 v);
+SK_API void    skGetFont1i(SKfont font, SKfontOptionEnum en, SKint32* v);
+SK_API void    skSetFont1f(SKfont font, SKfontOptionEnum en, SKscalar v);
+SK_API void    skGetFont1f(SKfont font, SKfontOptionEnum en, SKscalar* v);
 
 /**********************************************************
    Paths
