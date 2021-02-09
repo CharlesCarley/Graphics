@@ -27,6 +27,7 @@ SKShader(FontFragment,
     uniform sampler2D ima;
     varying vec2      texCo;
 
+
     void main()
     {
         float v2 = texture2D(ima, texCo).a;

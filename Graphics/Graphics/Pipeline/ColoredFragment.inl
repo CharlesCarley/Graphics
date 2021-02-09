@@ -41,7 +41,6 @@ SKShader(ColoredFragment,
         else if (mode == 2)  // SK_BM_ADD
         {
             vec3 v = brush.xyz + surface.xyz;
-
             gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
         }
         else if (mode == 3)  // SK_BM_MODULATE
