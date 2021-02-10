@@ -24,6 +24,10 @@ if (Graphics_ExternalTarget)
     set(TargetFolders ${Graphics_TargetFolders})
     set(TargetName    ${Graphics_TargetName})
     set(TargetGroup   ${Graphics_TargetGroup})
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../CMake/skGraphicsConfig.h.in  
+                   ${CMAKE_BINARY_DIR}/Graphics/skGraphicsConfig.h)
+
 else()
     set(TargetFolders FALSE)
     set(TargetName    Graphics)
@@ -42,7 +46,6 @@ if (Graphics_BUILD_WINDOW AND Graphics_BACKEND_OPENGL)
 endif()
 
 set(Graphics_INC . ${Graphics_INCLUDE})
-
 set(Graphics_LIB
     ${Utils_LIBRARY}
     ${Math_LIBRARY}
@@ -146,7 +149,7 @@ source_group(Resource\\Shaders   FILES ${Shaders})
 source_group(Resource\\Fonts     FILES ${FONTS})
 source_group(Resource\\Generated FILES ${skBuiltinFonts})
 
-include_directories(${Graphics_INC})
+include_directories(${Graphics_INC} ${CMAKE_BINARY_DIR})
 add_library(${TargetName} 
     ${Graphics_SRC}
     ${Graphics_HDR}
