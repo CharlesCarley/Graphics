@@ -593,7 +593,11 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
 
         const SKglyphMetrics& metrics = glyph->getMertics();
         if (i >= CharTotal)
+        {
+        
+            delete glyph;
             continue;
+        }
 
         Char& ch = m_chars[metrics.i];
         ch.x     = (SKscalar)x;
