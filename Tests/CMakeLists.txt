@@ -10,7 +10,12 @@ if(Graphics_BACKEND_OPENGL)
             ${FreeImage_INCLUDE} 
             )
 
-       add_executable(${File}  ${File}.${Ext} ${ARGN})
+       if(Graphics_WINMAIN)
+           add_executable(${File} WIN32 ${File}.${Ext} ${ARGN})
+       else()
+           add_executable(${File}  ${File}.${Ext} ${ARGN})
+       endif()
+
        target_link_libraries(${File} 
             Graphics 
             ${Math_LIBRARY}

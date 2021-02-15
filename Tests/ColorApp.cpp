@@ -29,6 +29,7 @@
 #include "Window/skWindowEnums.h"
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
+#include "Utils/skDisableWarnings.h"
 #include "skGraphics.h"
 
 const SKuint32 COLOR_TABLE[] = {
@@ -262,6 +263,10 @@ public:
     ~Application() override
     {
         delete m_manager;
+
+        skDeleteImage(m_grad);
+        skDeleteFont(m_font);
+        skDeleteContext(skGetCurrentContext());
     }
 
     void initialize(void)

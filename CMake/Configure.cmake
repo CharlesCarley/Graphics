@@ -29,6 +29,7 @@ option(Graphics_EXTRA_BUILTIN_FONTS "Include extra fonts in the build. https://f
 option(Graphics_BACKEND_OPENGL      "Compile the OpenGL back end" ON)
 option(Graphics_BUILD_TESTS         "Build UnitTests" ON)
 option(Graphics_AUTO_RUN_TESTS      "Adds a custom target that runs on build" OFF)
+option(Graphics_WINMAIN             "Call main function through WinMain" OFF)
 
 if(Graphics_AUTO_RUN_TESTS)
     set(Graphics_BUILD_TESTS ON CACHE BOOL "Build Utils tests" FORCE)
@@ -51,6 +52,9 @@ endif()
 if (NOT Graphics_BUILD_WINDOW)
     set(Graphics_USE_SDL OFF CACHE BOOL "Build with SDL" FORCE)
 endif()
+
+
+set(Window_DEFINE_WINMAIN ${Graphics_WINMAIN} CACHE BOOL "Call main function through WinMain" FORCE)
 
 
 macro(DefineExternalTarget NAME GROUP PATH)

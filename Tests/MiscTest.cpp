@@ -227,6 +227,7 @@ public:
 
     ~Application() override
     {
+        skDeleteCachedString(m_cstring);
         skDeleteFont(m_font);
         skDeleteContext(skGetCurrentContext());
         delete m_manager;

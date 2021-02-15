@@ -40,7 +40,10 @@ SK_API SKwindowManager skNewWindowManager(SKuint32 type)
 SK_API void skDelWindowManager(SKwindowManager mgr)
 {
     SK_CHECK_PARAM(mgr, SK_RETURN_VOID);
-    delete SK_GET_WINDOW_MGR(mgr);
+    skWindowManager* wmgr = SK_GET_WINDOW_MGR(mgr);
+    wmgr->deleteAllHandlers();
+
+    delete wmgr;
 }
 
 SK_API void skDispatch(SKwindowManager mgr)
