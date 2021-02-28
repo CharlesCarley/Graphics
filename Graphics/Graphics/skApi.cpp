@@ -262,7 +262,7 @@ SK_API void skClearColor4f(SKscalar r,
     skContext* ctx = SK_CURRENT_CTX();
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
 
-    ctx->setPaintC(SK_CLEAR_COLOR, skColor(r, g, b, a));
+    ctx->setContextC(SK_CLEAR_COLOR, skColor(r, g, b, a));
 }
 
 SK_API void skClearColor1i(SKcolori rgba)
