@@ -116,9 +116,14 @@ void skFont::getTextExtent(const char* str, SKint32 len, SKint32* w, SKint32* h)
         *h = 0;
 
     const skScalar scale = getRelativeScale();
-    skScalar       xOffs = 0.f, yOffs = 0.f;
-    const skScalar bh = getChar('0').h;
-    const skScalar bw = getChar('0').w;
+
+    skScalar xOffs = 0.f, yOffs = 0.f;
+
+    const skScalar baseHeight = m_opts.yMax * scale;
+    const skScalar baseWidth  = m_opts.xMax * scale;
+
+    if (len <= 0)
+        len = (SKint32)strlen(str);
 
     for (SKint32 i = 0; i < len; i++)
     {
@@ -126,16 +131,16 @@ void skFont::getTextExtent(const char* str, SKint32 len, SKint32* w, SKint32* h)
         const Char& fc = getChar(ch);
 
         if (ch == ' ')
-            xOffs += bw * scale;
+            xOffs += baseWidth;
         else if (ch == '\t')
-            xOffs += bw * skScalar(m_opts.tabSize) * scale;
+            xOffs += baseWidth * (skScalar(m_opts.tabSize) * scale);
         else if (ch == '\n')
         {
-            yOffs += bh * scale;
+            yOffs += baseHeight * scale;
             xOffs = 0;
         }
         else
-            xOffs += fc.w * scale;
+            xOffs += fc.w * scale + fc.xOffs * scale;
 
         if (w)
             *w = skMax<SKint32>(*w, (SKint32)xOffs);
@@ -145,7 +150,7 @@ void skFont::getTextExtent(const char* str, SKint32 len, SKint32* w, SKint32* h)
     }
 
     if (h && yOffs == 0.f)
-        *h = (SKint32)(bh * scale);
+        *h = (SKint32)baseHeight;
 }
 
 void skFont::getTextExtentExt(const char*   str,
@@ -164,9 +169,14 @@ void skFont::getTextExtentExt(const char*   str,
         *h = 0;
 
     const skScalar scale = getRelativeScale();
-    skScalar       xOffs = 0.f, yOffs = 0.f;
+
+    skScalar xOffs = 0.f, yOffs = 0.f;
+
     const skScalar bh = getChar('0').h;
     const skScalar bw = getChar('0').w;
+
+    if (len <= 0)
+        len = (SKint32)strlen(str);
 
     for (SKint32 i = 0; i < len && i < idx; i++)
     {
@@ -202,6 +212,7 @@ SKint32 skFont::getAverageWidth(void)
         return m_opts.average;
 
     skScalar av = 0.f;
+
     const skScalar scale = getRelativeScale();
 
     for (SKint32 ch = CharStart; ch < CharEnd; ch++)
@@ -280,8 +291,8 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
     skScalar xOffs = x;
     skScalar yOffs = y;
 
-    const skScalar baseHeight = m_opts.yMax * fntScale;
-    const skScalar baseWidth  = m_opts.xMax * fntScale;
+    const skScalar baseHeight = getChar('0').h * fntScale;
+    const skScalar baseWidth  = getChar('0').w * fntScale;
 
     for (SKuint32 i = 0; i < len; i++)
     {
@@ -290,7 +301,7 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
 
         if (cCh == ' ')
         {
-            xOffs += baseWidth * fntScale;
+            xOffs += baseWidth;
         }
         else if (cCh == '\t')
         {
@@ -594,7 +605,6 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
         const SKglyphMetrics& metrics = glyph->getMertics();
         if (i >= CharTotal)
         {
-        
             delete glyph;
             continue;
         }
