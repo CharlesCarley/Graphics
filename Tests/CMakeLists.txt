@@ -24,7 +24,7 @@ if(Graphics_BACKEND_OPENGL)
             ${Image_LIBRARY}
             ${FreeImage_LIBRARY}
             )
-       set_target_properties(${File} PROPERTIES FOLDER "Tests")
+       set_target_properties(${File} PROPERTIES FOLDER "RenderTests")
 
         file(GLOB Files *.png)
 
