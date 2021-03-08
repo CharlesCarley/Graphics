@@ -1,4 +1,4 @@
-if(Graphics_BACKEND_OPENGL)
+if(Graphics_BACKEND_OPENGL AND Graphics_BUILD_RENDER_TESTS)
 
     macro(AddTestExt File Ext)
        include_directories(. ../Graphics/ 

@@ -42,6 +42,7 @@ endif()
 
 
 if (Graphics_BUILD_TESTS)
+    set(Graphics_BUILD_RENDER_TESTS TRUE)
     set(Graphics_EXTRA_BUILTIN_FONTS ON CACHE BOOL "Include extra fonts in the build. https://fonts.google.com/" FORCE)
 endif()
 
