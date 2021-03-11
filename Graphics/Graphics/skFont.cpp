@@ -23,7 +23,6 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #include FT_ERRORS_H
-#include "Image/skPalette.h"
 #include "Utils/skFileStream.h"
 #include "Utils/skLogger.h"
 #include "Utils/skMemoryUtils.h"
@@ -271,12 +270,12 @@ bool skFont::fromFile(const char* path, SKuint32 size, SKuint32 dpi)
     return res;
 }
 
-void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y)
+void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, skScalar y) const
 {
     SK_CHECK_PARAM(path, SK_RETURN_VOID);
     SK_CHECK_PARAM(str, SK_RETURN_VOID);
-    const skScalar fntScale = getRelativeScale();
 
+    const skScalar fntScale = getRelativeScale();
     if (skIsZero(fntScale))
         return;
 
@@ -360,12 +359,12 @@ void skFont::buildPath(skPath* path, const char* str, SKuint32 len, skScalar x, 
                 skVertex rt(vxMax, vyMin, txMax, tyMin);
                 skVertex lb(vxMin, vyMax, txMin, tyMax);
 
-                path->addVert(lt);
-                path->addVert(rt);
-                path->addVert(rb);
-                path->addVert(rb);
-                path->addVert(lb);
-                path->addVert(lt);
+                path->addVertex(lt);
+                path->addVertex(rt);
+                path->addVertex(rb);
+                path->addVertex(rb);
+                path->addVertex(lb);
+                path->addVertex(lt);
             }
         }
     }
@@ -400,6 +399,8 @@ void skFont::getI(SKfontOptionEnum opt, SKint32* v) const
         break;
     case SK_FONT_TAB_SIZE:
         *v = (SKint32)m_opts.tabSize;
+        break;
+    default: 
         break;
     }
 }
@@ -485,8 +486,8 @@ void skFont::loadGlyphs(struct FT_FaceRec_* face)
     m_opts.yMax    = 0;
     m_opts.average = 0;
 
-    SKint32 i, j = 0;
-    for (i = 0; i < CharTotal; ++i)
+    SKint32 j = 0;
+    for (SKint32 i = 0; i < CharTotal; ++i)
     {
         if (FT_Load_Char(face, i + CharStart, FT_LOAD_COMPUTE_METRICS | FT_LOAD_RENDER))
             continue;
@@ -501,8 +502,8 @@ void skFont::loadGlyphs(struct FT_FaceRec_* face)
         if (!imgBuf)
             continue;
 
-        skGlyph* gylph = new skGlyph(imgBuf, slot->bitmap.width, slot->bitmap.rows);
-        m_glyphs.push_back(gylph);
+        skGlyph* glyph = new skGlyph(imgBuf, slot->bitmap.width, slot->bitmap.rows);
+        m_glyphs.push_back(glyph);
 
         j++;
         metrics.i        = i;
@@ -510,10 +511,10 @@ void skFont::loadGlyphs(struct FT_FaceRec_* face)
         metrics.yBearing = FTINT(slot->metrics.horiBearingY);
         metrics.width    = FTINT(slot->metrics.width);
 
-        gylph->setMetrics(metrics);
+        glyph->setMetrics(metrics);
 
-        const SKint32 cx = gylph->getWidth();
-        const SKint32 cy = gylph->getHeight();
+        const SKint32 cx = glyph->getWidth();
+        const SKint32 cy = glyph->getHeight();
 
         if (m_opts.xMax < cx)
             m_opts.xMax = cx;
@@ -526,14 +527,13 @@ void skFont::loadGlyphs(struct FT_FaceRec_* face)
     if (j > 0)
         m_opts.average /= j;
 
-    skScalar sx, sy, sr;
-    sr = skSqrt(skScalar(j));
+    const skScalar sr = skSqrt(skScalar(j));
 
-    sx = skScalar(m_opts.xMax * j);
+    skScalar sx = skScalar(m_opts.xMax * j);
     sx /= sr;
     sx += skScalar(m_opts.xMax);
 
-    sy = skScalar(m_opts.yMax * j);
+    skScalar sy = skScalar(m_opts.yMax * j);
     sy /= sr;
     sy += skScalar(m_opts.yMax);
 
@@ -595,14 +595,13 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
     SKint32 x = 0,
             y = 0;
 
-    SKuint32 i;
-    for (i = 0; i < m_glyphs.size(); ++i)
+    for (SKuint32 i = 0; i < m_glyphs.size(); ++i)
     {
         skGlyph* glyph = m_glyphs[i];
 
         glyph->merge(ima, x, y);
 
-        const SKglyphMetrics& metrics = glyph->getMertics();
+        const SKglyphMetrics& metrics = glyph->getMetrics();
         if (i >= CharTotal)
         {
             delete glyph;
@@ -617,7 +616,7 @@ bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint
         ch.xOffs = (SKscalar)(metrics.advance - metrics.width);
         ch.yOffs = (SKscalar)(m_opts.yMax - metrics.yBearing);
 
-        SKuint32 nx = glyph->getWidth() + Spacer;
+        const SKuint32 nx = glyph->getWidth() + Spacer;
         if (x + nx + m_opts.xMax >= ima->getWidth())
         {
             x = Spacer;

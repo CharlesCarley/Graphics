@@ -36,7 +36,6 @@
 const SKuint32 WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
 const int      MaxTest     = 5;
 
-
 class Application : public skWindowHandler
 {
 private:
@@ -85,8 +84,6 @@ private:
             break;
         }
     }
-
-
 
     void handleKey()
     {
@@ -168,7 +165,7 @@ private:
         skLoadIdentity();
         skSetContext1f(SK_OPACITY, 1.f);
         skSetContext2f(SK_CONTEXT_SCALE, 1.f, 1.f);
-        skSetContext2f(SK_CONTEXT_BIAS,  0.f, 0.f);
+        skSetContext2f(SK_CONTEXT_BIAS, 0.f, 0.f);
 
         skSetPaint1ui(SK_BRUSH_COLOR, CS_Grey10);
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_REPLACE);
@@ -235,8 +232,7 @@ public:
 
     void drawTest5() const
     {
-        const char* text = "The quick brown fox jumped over the lazy dog";
-
+        const char* text = "The quick brown fox jumps over the lazy dog";
 
         SKuint32 colors[5] = {
             CS_LabelEmphasis1,
@@ -267,14 +263,12 @@ public:
         skLoadIdentity();
     }
 
-
     void drawTest4() const
     {
         skScalar sz[5] = {};
         skGetContext2f(SK_CONTEXT_SIZE, sz);
 
         sz[4] = skMin(sz[0], sz[1]);
-
 
         if (m_projectionMode == 1)
         {
@@ -315,7 +309,6 @@ public:
         skStroke();
     }
 
-
     void drawTest1() const
     {
         const SKscalar size = 75;
@@ -332,7 +325,6 @@ public:
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_ADD);
         skRect(offs, offs, size, size);
         skFill();
-
 
         skSetPaint1ui(SK_BRUSH_COLOR, 0xFFFFFFFF);
         skSetPaint1f(SK_BRUSH_MODE, SK_BM_SUBTRACT);
@@ -379,7 +371,6 @@ public:
         m_window->flush();
     }
 
-
     void setupGraphics()
     {
         skNewContext();
@@ -397,8 +388,8 @@ public:
 
     int run()
     {
-        m_manager = new skWindowManager(WM_CTX_PLATFORM);
-        m_window  = m_manager->create("MiscTest",
+        m_manager  = new skWindowManager(WM_CTX_PLATFORM);
+        m_window   = m_manager->create("MiscTest",
                                      800,
                                      600,
                                      WindowFlags);
@@ -413,7 +404,6 @@ public:
         return 0;
     }
 };
-
 
 int main(int, char**)
 {

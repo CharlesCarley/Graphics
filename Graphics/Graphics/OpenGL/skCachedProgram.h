@@ -37,8 +37,8 @@ protected:
 
 public:
     skCachedProgram();
-    
-    ~skCachedProgram();
+
+    ~skCachedProgram() = default;
 
     void setZOrder(skScalar z);
 

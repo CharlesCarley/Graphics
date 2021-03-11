@@ -128,7 +128,7 @@ public:
 
     const SKcontextOptions& getOptions(void) const;
 
-    skVertexBuffer* createBuffer();
+    skVertexBuffer* createBuffer() const;
 
     SKint32 getId(void) const
     {

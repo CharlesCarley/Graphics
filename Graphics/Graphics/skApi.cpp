@@ -131,8 +131,8 @@ SK_API void skGetContext2i(SKcontextOptionEnum en, SKint32* v)
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
 
-    skVector2 vec;
-    vec  = ctx->getContextV(en);
+    const skVector2 vec = ctx->getContextV(en);
+
     *v++ = (SKint32)vec.x;
     *v   = (SKint32)vec.y;
 }
@@ -143,8 +143,8 @@ SK_API void skGetContext2f(SKcontextOptionEnum en, SKscalar* v)
     SK_CHECK_CTX(ctx, SK_RETURN_VOID);
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
 
-    skVector2 vec;
-    vec  = ctx->getContextV(en);
+    const skVector2 vec = ctx->getContextV(en);
+
     *v++ = vec.x;
     *v   = vec.y;
 }
@@ -968,6 +968,7 @@ SK_API void skGetCachedString2fv(const SKcachedString str, SKstringOptionEnum en
     SK_CHECK_PARAM(v, SK_RETURN_VOID);
 
     const skVector2 vec = SK_CSTRING(str)->getV(en);
-    v[0]                = vec.x;
-    v[1]                = vec.y;
+
+    v[0] = vec.x;
+    v[1] = vec.y;
 }

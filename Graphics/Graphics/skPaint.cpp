@@ -37,9 +37,7 @@ skPaint::skPaint()
     m_autoClear    = 0;
 }
 
-skPaint::~skPaint()
-{
-}
+skPaint::~skPaint() = default;
 
 void skPaint::getI(SKpaintStyle opt, SKint32* v) const
 {

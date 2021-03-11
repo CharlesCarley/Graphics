@@ -44,7 +44,7 @@ public:
     skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h);
     ~skGlyph();
 
-    void merge(skImage* dest, SKuint32 x, SKuint32 y);
+    void merge(skImage* dest, SKuint32 x, SKuint32 y) const;
     void setMetrics(const SKglyphMetrics& metrics);
 
     SKuint32 getWidth() const
@@ -57,7 +57,7 @@ public:
         return m_height;
     }
 
-    const SKglyphMetrics& getMertics() const
+    const SKglyphMetrics& getMetrics() const
     {
         return m_metrics;
     }

@@ -26,10 +26,11 @@
 
 skGlyph::skGlyph(SKuint8* ptr, SKuint32 w, SKuint32 h) :
     m_width(w),
-    m_height(h)
+    m_height(h),
+    m_metrics()
 {
-    SKsize lim = (SKsize)w * (SKsize)h;
-    m_data     = new SKuint8[lim];
+    const SKsize lim = (SKsize)w * (SKsize)h;
+    m_data           = new SKuint8[lim];
 
     skMemcpy(m_data, ptr, lim);
     skMemset(&m_metrics, 0, sizeof(SKglyphMetrics));
@@ -45,21 +46,21 @@ void skGlyph::setMetrics(const SKglyphMetrics& metrics)
     skMemcpy(&m_metrics, &metrics, sizeof(SKglyphMetrics));
 }
 
-void skGlyph::merge(skImage* dest, SKuint32 x, SKuint32 y)
+void skGlyph::merge(skImage* dest, SKuint32 x, SKuint32 y) const
 {
     if (!m_data)
         return;
 
     SKuint8* ptr = m_data;
-    SKuint32 ix, iy;
 
-    for (iy = 0; iy < m_height; ++iy)
+    for (SKuint32 iy = 0; iy < m_height; ++iy)
     {
         const SKint32 ny = y + iy;
-        for (ix = 0; ix < m_width; ix++)
+        for (SKuint32 ix = 0; ix < m_width; ix++)
         {
             const SKint32 nx = x + ix;
             const SKuint8 ch = *ptr++;
+
             dest->setPixel(nx, ny, skPixel(ch, ch, ch, ch));
         }
     }

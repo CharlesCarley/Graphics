@@ -450,6 +450,7 @@ void skContext::setContextI(SKcontextOptionEnum op, SKint32 v)
         default:
             break;
         }
+        break;
     default:
         break;
     }
@@ -513,46 +514,15 @@ void skContext::setContextF(SKcontextOptionEnum op, skScalar v)
 
 skColor skContext::getContextC(SKcontextOptionEnum op) const
 {
-    switch (op)
-    {
-    case SK_CLEAR_COLOR:
+    if (op == SK_CLEAR_COLOR)
         return m_options.clearColor;
-    //case SK_VERTICES_PER_SEGMENT:
-    //case SK_CLEAR_RECT:
-    //case SK_CONTEXT_SIZE:
-    //case SK_CONTEXT_SCALE:
-    //case SK_CONTEXT_BIAS:
-    //case SK_OPACITY:
-    //case SK_METRICS_MODE:
-    //case SK_USE_CURRENT_VIEWPORT:
-    //case SK_PROJECTION_TYPE:
-    //case SK_Y_UP:
-    default:
-        break;
-    }
     return skColor(0, 0, 0, 1);
 }
 
 void skContext::setContextC(SKcontextOptionEnum op, const skColor& v)
 {
-    switch (op)
-    {
-    case SK_CLEAR_COLOR:
+    if (op == SK_CLEAR_COLOR)
         m_options.clearColor = v;
-        break;
-    //case SK_VERTICES_PER_SEGMENT:
-    //case SK_CLEAR_RECT:
-    //case SK_CONTEXT_SIZE:
-    //case SK_CONTEXT_SCALE:
-    //case SK_CONTEXT_BIAS:
-    //case SK_OPACITY:
-    //case SK_METRICS_MODE:
-    //case SK_USE_CURRENT_VIEWPORT:
-    //case SK_PROJECTION_TYPE:
-    //case SK_Y_UP:
-    default:
-        break;
-    }
 }
 
 skVector2 skContext::getContextV(SKcontextOptionEnum op) const
@@ -609,25 +579,8 @@ void skContext::setContextV(SKcontextOptionEnum op, const skVector2& v)
 
 skRectangle skContext::getContextR(SKcontextOptionEnum op) const
 {
-    switch (op)
-    {
-    case SK_CLEAR_RECT:
+    if (op == SK_CLEAR_RECT)
         return m_options.clearRectangle;
-    //case SK_CONTEXT_SIZE:
-    //case SK_CONTEXT_SCALE:
-    //case SK_CONTEXT_BIAS:
-    //case SK_VERTICES_PER_SEGMENT:
-    //case SK_CLEAR_COLOR:
-    //case SK_OPACITY:
-    //case SK_METRICS_MODE:
-    //case SK_USE_CURRENT_VIEWPORT:
-    //case SK_DEFAULT_FONT:
-    //case SK_PROJECTION_TYPE:
-    //case SK_Y_UP:
-    default:
-        break;
-    }
-
     return skRectangle(SK_NO_STATUS, SK_NO_STATUS, SK_NO_STATUS, SK_NO_STATUS);
 }
 
@@ -723,7 +676,7 @@ const SKcontextOptions& skContext::getOptions(void) const
     return m_options;
 }
 
-skVertexBuffer* skContext::createBuffer()
+skVertexBuffer* skContext::createBuffer() const
 {
 #ifdef Graphics_BACKEND_OPENGL
     if (m_backend == SK_BE_OpenGL)
@@ -737,9 +690,9 @@ SKcachedString skContext::newString(void)
     if (!m_renderContext)
         return nullptr;
 
-    skCachedString* cstr = new skCachedString();
-    cstr->setContext(this);
-    cstr->getPath()->setContext(this);
+    skCachedString* cStr = new skCachedString();
+    cStr->setContext(this);
+    cStr->getPath()->setContext(this);
 
-    return (SKcachedString)cstr;
+    return (SKcachedString)cStr;
 }

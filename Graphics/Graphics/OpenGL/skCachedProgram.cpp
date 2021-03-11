@@ -31,9 +31,6 @@ skCachedProgram::skCachedProgram() :
 {
 }
 
-skCachedProgram::~skCachedProgram()
-{
-}
 
 void skCachedProgram::setZOrder(skScalar z)
 {

@@ -75,17 +75,16 @@ void skPath::arcTo(skScalar  x,
 
     const skScalar step = skRadians(skDegrees(angle2) / (skScalar)vertexCount);
 
-    skScalar cx, cy, hw, hh, s, c;
-    hw = w * 0.5f;
-    hh = h * 0.5f;
-    cx = x + hw;
-    cy = y + hw;
+    skScalar       s, c;
+    const skScalar hw = w * 0.5f;
+    const skScalar hh = h * 0.5f;
+    const skScalar cx = x + hw;
+    const skScalar cy = y + hw;
 
     m_reserve = vertexCount;
 
     skScalar a = angle1;
-
-    for (int i = 0; i < vertexCount; i++)
+    for (SKint32 i = 0; i < vertexCount; i++)
     {
         a += step;
         skMath::sinCos(a, s, c);
@@ -106,13 +105,12 @@ void skPath::cubicTo(skScalar fx, skScalar fy, skScalar tx, skScalar ty)
     const skScalar step = skScalar(1.0) / skScalar(vertexCount);
     const skScalar hd   = skVector2(fx, fy).distance(skVector2(tx, ty)) * .5f;
 
-    skScalar  s = 1.f, t = 0.f;
-    skVector2 c0, c1, c2, c3, cr;
+    skScalar s = 1.f, t = 0.f;
 
-    c0 = skVector2(fx, fy);
-    c1 = skVector2(c0.x + hd, c0.y);
-    c3 = skVector2(tx, ty);
-    c2 = skVector2(c3.x - hd, c3.y);
+    const skVector2 c0 = skVector2(fx, fy);
+    const skVector2 c1 = skVector2(c0.x + hd, c0.y);
+    const skVector2 c3 = skVector2(tx, ty);
+    const skVector2 c2 = skVector2(c3.x - hd, c3.y);
 
     moveTo(c0.x, c0.y);
 
@@ -123,9 +121,10 @@ void skPath::cubicTo(skScalar fx, skScalar fy, skScalar tx, skScalar ty)
         const skScalar sst3 = skScalar(3.0) * s * s * t;
         const skScalar tts3 = skScalar(3.0) * t * t * s;
 
-        cr = skVector2(
+        const skVector2 cr = skVector2(
             sss * c0.x + sst3 * c1.x + tts3 * c2.x + ttt * c3.x,
             sss * c0.y + sst3 * c1.y + tts3 * c2.y + ttt * c3.y);
+
         lineTo(cr.x, cr.y);
         t += step;
         s = skScalar(1.0) - t;
@@ -157,7 +156,7 @@ void skPath::moveTo(skScalar x, skScalar y)
     m_mov.y = y;
 
     m_contour->reserve(m_reserve);
-    pushVert(m_cur);
+    pushVertex(m_cur);
 }
 
 void skPath::lineTo(skScalar x, skScalar y)
@@ -167,7 +166,7 @@ void skPath::lineTo(skScalar x, skScalar y)
 
 void skPath::close(void)
 {
-    pushVert(m_mov);
+    pushVertex(m_mov);
 }
 
 void skPath::clear(void)
@@ -197,22 +196,21 @@ void skPath::makeEllipse(skScalar x, skScalar y, skScalar w, skScalar h)
         return;
 
     clear();
-    SKint32 vertexCount = m_ctx->getVerticesPerSegment(), i;
+    SKint32 vertexCount = m_ctx->getVerticesPerSegment();
     if (vertexCount <= 0)
         vertexCount = 8;
 
     const skScalar iStep = skPi2 / skScalar(vertexCount);
 
-    skScalar cx, cy, hw, hh;
-    hw = w * 0.5f;
-    hh = h * 0.5f;
-    cx = x + hw;
-    cy = y + hh;
+    const skScalar hw = w * 0.5f;
+    const skScalar hh = h * 0.5f;
+    const skScalar cx = x + hw;
+    const skScalar cy = y + hh;
 
     m_reserve = vertexCount;
 
     skScalar s, c;
-    for (i = 0; i < vertexCount; i++)
+    for (SKint32 i = 0; i < vertexCount; i++)
     {
         skMath::sinCos(skScalar(i) * iStep, s, c);
         if (i == 0)
@@ -230,9 +228,8 @@ void skPath::rectCurveTo(skScalar x,
                          skScalar angle1,
                          skScalar angle2)
 {
-    SKint32 vertexCount = m_ctx->getVerticesPerSegment();
-
-    const skScalar step = skRadians(skDegrees(angle2) / (skScalar)vertexCount);
+    const SKint32  vertexCount = m_ctx->getVerticesPerSegment();
+    const skScalar step        = skRadians(skDegrees(angle2) / (skScalar)vertexCount);
 
     const skVector2 v0(m_cur.x, m_cur.y);
     const skVector2 v1(x, y);
@@ -248,11 +245,7 @@ void skPath::rectCurveTo(skScalar x,
     {
         a += step;
         skMath::sinCos(a, s, c);
-
-        skScalar nx, ny;
-        nx = cv.x + hw * s;
-        ny = cv.y + hh * -c;
-        pushLine(nx, ny);
+        pushLine(cv.x + hw * s, cv.y + hh * -c);
     }
 }
 
@@ -277,9 +270,8 @@ void skPath::makeRoundRect(skScalar x,
 
     const skScalar xMin = x, xMax = x + w, yMin = y, yMax = y + h;
 
-    skScalar rx, ry;
-    rx = aw * 0.5f;
-    ry = ah * 0.5f;
+    const skScalar rx = aw * 0.5f;
+    const skScalar ry = ah * 0.5f;
 
     clear();
 
@@ -337,21 +329,19 @@ void skPath::makeStar(SKscalar x, SKscalar y, SKscalar w, SKscalar h, SKint32 Q,
 
     const skScalar R = skMin(w, h) * skScalar(0.5);
     const skScalar I = skPi2 / skScalar(Q);
-    skScalar       s, c;
 
     x += R;
     y += R;
 
-    SKint32 i;
-    for (i = 0; i < Q * P; i++)
+    for (SKint32 i = 0; i < Q * P; i++)
     {
         if (i % P == 0)
         {
             // rotate it 90 degrees initially
             // then (2pi/Q)*skip
 
-            c = x + R * skCos(skPiH + I * skScalar(i));
-            s = y - R * skSin(skPiH + I * skScalar(i));
+            const skScalar c = x + R * skCos(skPiH + I * skScalar(i));
+            const skScalar s = y - R * skSin(skPiH + I * skScalar(i));
             if (i == 0)
                 moveTo(c, s);
             else
@@ -375,16 +365,14 @@ void skPath::makePolygon(const skScalar* vertices,
 
     const skScalar* vp = vertices;
 
-    skScalar x, y;
-
     clear();
 
     m_reserve = count;
 
     for (int i = 0; i < count; i += 2)
     {
-        x = *vp++ * scaleX + biasX;
-        y = *vp++ * scaleY + biasY;
+        const skScalar x = *vp++ * scaleX + biasX;
+        const skScalar y = *vp++ * scaleY + biasY;
 
         if (i == 0)
             moveTo(x, y);
@@ -396,7 +384,7 @@ void skPath::makePolygon(const skScalar* vertices,
         this->close();
 }
 
-void skPath::pushVert(const skVertex& v)
+void skPath::pushVertex(const skVertex& v)
 {
     if (!m_ctx)
         return;
@@ -433,9 +421,9 @@ void skPath::pushVert(const skVertex& v)
     }
 }
 
-void skPath::addVert(const skVertex& v)
+void skPath::addVertex(const skVertex& v)
 {
-    pushVert(v);
+    pushVertex(v);
     m_texCoBuilt = true;
 }
 
@@ -449,7 +437,7 @@ void skPath::pushLine(skScalar x, skScalar y)
     else
     {
         const skVertex v(x, y);
-        pushVert(v);
+        pushVertex(v);
         m_cur = v;
     }
 }
@@ -461,11 +449,8 @@ void skPath::makeUV(skScalar x, skScalar y, skScalar w, skScalar h)
 
     m_texCoBuilt = true;
 
-    skScalar dx, dy;
-    skScalar oneOverMaxX, oneOverMaxY;
-
-    oneOverMaxX = 1.f / (x + w - x);
-    oneOverMaxY = 1.f / (y + h - y);
+    const skScalar oneOverMaxX = 1.f / (x + w - x);
+    const skScalar oneOverMaxY = 1.f / (y + h - y);
 
     skContour& cc = *m_contour;
 
@@ -477,8 +462,9 @@ void skPath::makeUV(skScalar x, skScalar y, skScalar w, skScalar h)
     {
         skVertex& v = p[i++];
 
-        dx  = v.x - x;
-        dy  = v.y - y;
+        const skScalar dx = v.x - x;
+        const skScalar dy = v.y - y;
+
         v.u = dx * oneOverMaxX;
         v.v = dy * oneOverMaxY;
         v.v = 1.f - v.v;

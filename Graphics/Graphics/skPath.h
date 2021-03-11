@@ -105,7 +105,7 @@ public:
         return m_buffer;
     }
 
-    void addVert(const skVertex& v);
+    void addVertex(const skVertex& v);
 
     skContour* getContour(void) const
     {
@@ -128,7 +128,7 @@ protected:
 
     void rectCurveTo(skScalar x, skScalar y, skScalar w, skScalar h, skScalar angle1, skScalar angle2);
 
-    void pushVert(const skVertex& v);
+    void pushVertex(const skVertex& v);
 
     void pushLine(skScalar x, skScalar y);
 };

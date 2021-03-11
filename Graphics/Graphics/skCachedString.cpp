@@ -20,13 +20,11 @@
 -------------------------------------------------------------------------------
 */
 #include "skCachedString.h"
-#include "OpenGL/skOpenGLTexture.h"
 #include "Utils/skLogger.h"
 #include "skContext.h"
 #include "skFont.h"
 
-skCachedString::skCachedString() :
-    m_cache()
+skCachedString::skCachedString()
 {
     m_path = new skPath();
     m_size = skVector2::Zero;
@@ -46,7 +44,7 @@ void skCachedString::rebuild()
     if (m_cache.empty())
         return;
 
-    const skContext& ctx   = ref();
+    const skContext& ctx = ref();
 
     skFont* fnt = ctx.getWorkFont();
     if (!fnt)
@@ -68,7 +66,7 @@ void skCachedString::rebuild()
 
 void skCachedString::buildString(const char* str)
 {
-    const skContext& ctx   = ref();
+    const skContext& ctx = ref();
 
     skFont* fnt = ctx.getWorkFont();
     if (!fnt)
@@ -98,6 +96,8 @@ skVector2 skCachedString::getV(SKstringOptionEnum op) const
     case SK_STRING_SIZE:
     case SK_STRING_EXTENT:
         return m_size;
+    default:
+        break;
     }
     return skVector2(SK_NO_STATUS, SK_NO_STATUS);
 }

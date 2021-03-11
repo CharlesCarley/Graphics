@@ -48,9 +48,9 @@ private:
 
 public:
     skPaint();
-    ~skPaint();
+    ~skPaint() override;
 
-    bool autoClear()
+    bool autoClear() const
     {
         return m_autoClear != 0;
     }
