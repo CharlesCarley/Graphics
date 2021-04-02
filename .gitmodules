@@ -22,3 +22,6 @@
 [submodule "Extern/SDL"]
 	path = Extern/SDL
 	url = https://github.com/CharlesCarley/SDL.git
+[submodule "CMake/Modules"]
+	path = CMake/Modules
+	url = https://github.com/CharlesCarley/CMakeModules.git
