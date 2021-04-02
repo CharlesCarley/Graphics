@@ -8,28 +8,7 @@
         body {
             background-color: #333;
         }
-
-        .TextContainer {
-            width: 100%;
-            height: 100px;
-            padding: 5px;
-            color: rgb(133, 132, 132);
-        }
-
-        .TextArea {
-            width: inherit;
-            height: inherit;
-            font-size: 8pt;
-            resize: none;
-            color: inherit;
-            background-color: #444;
-            border: 1px #333 solid;
-        }
-
-        .Console {
-            background-color: #333;
-            border: 1px #1b1b1b solid;
-        }
+        
 
         .Container {
             border: 0;
@@ -45,19 +24,10 @@
             background-color: rgb(24, 25, 27);
             padding: 1px;
             margin: 1px;
+            width: 75%;
         }
 
-
-        .button {
-            background-color: transparent;
-            color: rgb(115, 126, 158);
-            border: #1b1b1b 1px solid;
-            padding: 3px;
-        }
-
-        .ButtonContainer {
-            text-align: end;
-        }
+        
     </style>
 </head>
 
@@ -67,26 +37,9 @@
     <table class="Container" cellspacing="0" cellpadding="0">
         <tr>
             <td class="CanvasContainer">
-                <canvas width="800" height="600 " class="CanvasArea" id="canvas" oncontextmenu="event.preventDefault()"
+                <canvas class="CanvasArea" id="canvas" oncontextmenu="event.preventDefault()"
                     tabindex=-1></canvas>
             </td>
-        </tr>
-        <tr>
-            <!--<td class="TextContainer">
-                <table cellspacing="0" cellpadding="0" class="TextContainer">
-                    <tr>
-                        <td class="TextContainer">
-                            <textarea id="output" class="TextArea"></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="ButtonContainer">
-                            <br />
-                            <button class="button" type="button" onclick="clearLog()">Clear</button>
-                        </td>
-                    </tr>
-                </table>
-            </td>-->
         </tr>
     </table>
 

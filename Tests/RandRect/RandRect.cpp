@@ -21,170 +21,53 @@
 */
 #include <algorithm>
 #include <cmath>
+#include "ColorTable.inl"
 #include "Graphics/skGraphics.h"
 #include "Math/skMath.h"
 #include "Math/skRectangle.h"
 #include "Math/skVector2.h"
 #include "Utils/skDisableWarnings.h"
 #include "Utils/skFixedArray.h"
+#include "Utils/skLogger.h"
 #include "Utils/skRandom.h"
 #include "Window/skMouse.h"
 #include "Window/skWindow.h"
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
 
-typedef struct SortRect
-{
-    skRectangle  m_rect;
-    int          m_used;
-    unsigned int m_color;
-} SortRect;
-
-static const SKuint32 COLORS[] = {
-    CS_Grey00,
-    CS_Grey01,
-    CS_Grey02,
-    CS_Grey03,
-    CS_Grey04,
-    CS_Grey05,
-    CS_Grey06,
-    CS_Grey07,
-    CS_Grey08,
-    CS_Grey09,
-    CS_Grey10,
-    CS_Grey04HL,
-    CS_Color01,
-    CS_Color01HL,
-    CS_Color02,
-    CS_Color02HL,
-    CS_Color03,
-    CS_Color03HL,
-    CS_Color04,
-    CS_Color04HL,
-    CS_Color05,
-    CS_Color05HL,
-    CS_Color06,
-    CS_Color06HL,
-    CS_Color07,
-    CS_Color07HL,
-    CS_Color08,
-    CS_Color08HL,
-    CS_Color09,
-    CS_Color09HL,
-    CS_Color10,
-    CS_Color10HL,
-    CS_Color11,
-    CS_Color11HL,
-    CS_Indicator,
-    CS_Green,
-    CS_BaseRed,
-    CS_BaseGreen,
-    CS_BaseRedHL,
-    CS_BaseGreenHL,
-    CS_Color081,
-    CS_Color082,
-    CS_Color083,
-    CS_Color084,
-    CS_Color085,
-    CS_Macab031,
-    CS_Macab032,
-    CS_Macab033,
-    CS_Macab034,
-    CS_Macab035,
-    CS_Macab051,
-    CS_Macab052,
-    CS_Macab053,
-    CS_Macab054,
-    CS_Macab055,
-    CS_LightBackground,
-    CS_LabelText,
-    CS_LabelAccent,
-    CS_LabelEmphasis3,
-    CS_LabelEmphasis2,
-    CS_LabelEmphasis1,
-    CS_LabelEmphasisA3,
-    CS_LabelEmphasisA2,
-    CS_LabelEmphasisA1,
-    CS_ButtonBackground,
-    CS_ButtonText,
-    CS_Tiny01,
-    CS_Tiny02,
-    CS_Tiny03,
-    CS_Tiny04,
-    CS_Tiny05,
-    CS_Macab01,
-    CS_Macab02,
-    CS_Macab03,
-    CS_Macab04,
-    CS_Macab05,
-    CS_Pismo01,
-    CS_Pismo02,
-    CS_Pismo03,
-    CS_Pismo04,
-    CS_Pismo05,
-    CS_OBContrast01,
-    CS_OBContrast02,
-    CS_OBContrast03,
-    CS_OBContrast04,
-    CS_OBContrast05,
-    CS_OffWhite,
-    CS_OffWhiteM,
-    CS_OffWhiteD0,
-    CS_OffWhiteD1,
-    CS_OffWhiteD2,
-    CS_OffWhiteD3,
-    CS_Transparent,
-    CS_Glass,
-    CS_Macab011,
-    CS_Macab012,
-    CS_Macab013,
-    CS_Macab014,
-    CS_Macab015,
-    CS_Macab021,
-    CS_Macab022,
-    CS_Macab023,
-    CS_Macab024,
-    CS_Macab025,
-    CS_Macab041,
-    CS_Macab042,
-    CS_Macab043,
-    CS_Macab044,
-    CS_Macab045,
-    CS_DarkBackground,
-    CS_LabelText,
-    CS_LabelAccent,
-    CS_LabelEmphasis3,
-    CS_LabelEmphasis2,
-    CS_LabelEmphasis1,
-    CS_LabelEmphasisA3,
-    CS_LabelEmphasisA2,
-    CS_LabelEmphasisA1,
-    CS_ButtonBackground,
-    CS_ButtonText,
-};
-
-SKuint16 ColorSize = sizeof COLORS / sizeof(SKuint32);
-
-typedef skFixedArray<skRectangle, 120> RandArray;
-typedef skFixedArray<SortRect, 120>    SortArray;
-
 #if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
-constexpr int WindowX     = 640;
-constexpr int WindowY     = 480;
-constexpr int WindowFlags = WM_WF_SHOW_CENT_DIA;
+constexpr int WindowX     = 320;
+constexpr int WindowY     = 240;
+constexpr int WindowFlags = WM_WF_SHOW_CENT_DIA | WM_WF_MAXIMIZE;
 #else
 constexpr int WindowX     = 800;
 constexpr int WindowY     = 600;
 constexpr int WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
 #endif
 
-class Application : public skWindowHandler
+struct SortRect
+{
+    SortRect() :
+        rect(0, 0, 0, 0),
+        used(0),
+        color(CS_Transparent)
+    {
+    }
+    skRectangle rect;
+    int         used;
+    SKuint32    color;
+};
+
+typedef skFixedArray<skRectangle, 120> RandArray;
+typedef skFixedArray<SortRect, 120>    SortArray;
+
+class Application final : public skWindowHandler
 {
 private:
     skWindowManager* m_manager;
     skWindow*        m_window;
     skVector2        m_size, m_mouseCo, m_scale;
-    SKuint32         m_lastFill{};
+    SKuint32         m_lastFill;
     bool             m_done;
 
     RandArray m_rand;
@@ -203,20 +86,34 @@ private:
     skVector2 initializeRect();
     skVector2 initializeRectSort();
 
-    void doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigned int color) const;
+    void doFill(skScalar x,
+                skScalar y,
+                skScalar w,
+                skScalar h,
+                SKuint32 color) const;
 
     static skScalar unitRandom();
 };
 
-int main(int argc, char** argv)
+int main(int, char**)
 {
-    Application app;
-    app.run();
+    try
+    {
+        skLogger log;
+        log.setFlags(LF_STDOUT);
+
+        Application app;
+        app.run();
+    }
+    catch (...)
+    {
+    }
 }
 
 Application::Application() :
     m_manager(nullptr),
     m_window(nullptr),
+    m_lastFill(CS_Transparent),
     m_done(false)
 {
 }
@@ -240,60 +137,55 @@ void Application::run()
 
     skNewContext();
     m_manager->dispatchInitialEvents();
-
-    m_lastFill = 0x00000000;
     m_manager->process();
 }
 
 skVector2 Application::initializeRect()
 {
-    skScalar  x, y;
     skVector2 maxRects = skVector2::Zero;
 
     for (SKuint16 i = 0; i < 120; ++i)
     {
-        m_sort[i].m_used = 0;
-        m_sort[i].m_rect = m_rand[i];
+        m_sort[i].used = 0;
+        m_sort[i].rect = m_rand[i];
 
-        x = m_sort[i].m_rect.width;
-        y = m_sort[i].m_rect.height;
+        const skScalar x = m_sort[i].rect.width;
+        const skScalar y = m_sort[i].rect.height;
 
         if (maxRects.x < x)
             maxRects.x = x;
         if (maxRects.y < y)
             maxRects.y = y;
     }
-
     return maxRects;
 }
 
 int CompSortGT(SortRect p1, SortRect p2)
 {
-    if (p1.m_rect.height > p2.m_rect.height)
+    if (p1.rect.height > p2.rect.height)
         return 1;
     return 0;
 }
 
 int CompSortEnd(SortRect p1, SortRect p2)
 {
-    if (p1.m_used > p2.m_used)
+    if (p1.used > p2.used)
         return 1;
     return 0;
 }
 
 skVector2 Application::initializeRectSort()
 {
-    skScalar  x, y;
     skVector2 maxRects = skVector2::Zero;
 
-    for (SKuint16 i = 0; i < ColorSize; ++i)
+    for (SKuint16 i = 0; i < COLOR_SIZE; ++i)
     {
-        m_sort[i].m_used  = 0;
-        m_sort[i].m_rect  = m_rand[i];
-        m_sort[i].m_color = COLORS[i];
+        m_sort[i].used  = 0;
+        m_sort[i].rect  = m_rand[i];
+        m_sort[i].color = COLOR_TABLE[i];
 
-        x = m_sort[i].m_rect.width;
-        y = m_sort[i].m_rect.height;
+        const skScalar x = m_sort[i].rect.width;
+        const skScalar y = m_sort[i].rect.height;
 
         if (maxRects.x < x)
             maxRects.x = x;
@@ -339,8 +231,11 @@ void Application::handle(const skEventType& evt, skWindow* caller)
     }
 }
 
-
-void Application::doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigned int color) const
+void Application::doFill(skScalar       x,
+                         skScalar       y,
+                         skScalar       w,
+                         skScalar       h,
+                         const SKuint32 color) const
 {
     skColor1ui(color);
     skRect(x, y, w, h);
@@ -359,14 +254,13 @@ void Application::draw()
     m_scale.x = m_size.x / 20;
     m_scale.y = m_size.y / 20;
 
-    skScalar yoffs;
     skScalar shelf;
-    SKuint16 i, j;
+    SKuint16 i;
 
     m_rand.resize(0);
     m_sort.resize(0);
 
-    for (i = 0; i < ColorSize; ++i)
+    for (i = 0; i < COLOR_SIZE; ++i)
     {
         m_rand.push_back(skRectangle());
         m_sort.push_back(SortRect());
@@ -377,9 +271,9 @@ void Application::draw()
         if (m_rand[i].x > m_size.x / 2.f)
             m_rand[i].x = 0;
 
-        m_sort[i].m_color = COLORS[i];
-        m_rand[i].width   = unitRandom() * m_scale.x;
-        m_rand[i].height  = unitRandom() * m_scale.y;
+        m_sort[i].color  = COLOR_TABLE[i];
+        m_rand[i].width  = unitRandom() * m_scale.x;
+        m_rand[i].height = unitRandom() * m_scale.y;
 
         if (m_rand[i].width < 10)
             m_rand[i].width = 10;
@@ -396,28 +290,28 @@ void Application::draw()
             m_rand[i].y,
             m_rand[i].width,
             m_rand[i].height,
-            COLORS[i]);
+            COLOR_TABLE[i]);
     }
 
     skVector2 maxRects = initializeRect();
 
     i = 0;
 
-    for (shelf = 0; shelf < m_size.y && i < ColorSize; shelf += (SKuint16)maxRects.y)
+    for (shelf = 0; shelf < m_size.y && i < COLOR_SIZE; shelf += (SKuint16)maxRects.y)
     {
         x = m_size.x / 2;
-        while (i < ColorSize && x + m_sort[i].m_rect.width < m_size.x)
+        while (i < COLOR_SIZE && x + m_sort[i].rect.width < m_size.x)
         {
-            if (m_sort[i].m_used == 0)
+            if (m_sort[i].used == 0)
             {
                 y = shelf;
-                w = m_sort[i].m_rect.width;
-                h = m_sort[i].m_rect.height;
+                w = m_sort[i].rect.width;
+                h = m_sort[i].rect.height;
 
-                m_sort[i].m_used = 1;
+                m_sort[i].used = 1;
 
-                doFill(x, y, w, h, m_sort[i].m_color);
-                x += m_sort[i].m_rect.width;
+                doFill(x, y, w, h, m_sort[i].color);
+                x += m_sort[i].rect.width;
             }
             ++i;
         }
@@ -434,50 +328,49 @@ void Application::draw()
     shelf += 10;
     skScalar mx = 0;
 
-    for (; shelf < m_size.y && i<ColorSize; shelf += (SKuint16)mx> 0 ? maxRects.y : mx)
+    for (; shelf < m_size.y && i<COLOR_SIZE; shelf += (SKuint16)mx> 0 ? maxRects.y : mx)
     {
         x  = m_size.x / 2;
         mx = 0;
-        while (i < ColorSize && x + m_sort[i].m_rect.width < m_size.x)
+        while (i < COLOR_SIZE && x + m_sort[i].rect.width < m_size.x)
         {
-            if (m_sort[i].m_used != 0)
+            if (m_sort[i].used != 0)
             {
                 ++i;
                 continue;
             }
 
             y = shelf;
-            w = m_sort[i].m_rect.width;
-            h = m_sort[i].m_rect.height;
+            w = m_sort[i].rect.width;
+            h = m_sort[i].rect.height;
 
-            m_sort[i].m_used = 1;
+            m_sort[i].used = 1;
 
             if (mx < h)
                 mx = h;
 
-            doFill(x, y, w, h, m_sort[i].m_color);
+            doFill(x, y, w, h, m_sort[i].color);
 
-            yoffs = m_sort[i].m_rect.height;
+            skScalar yOffs = m_sort[i].rect.height;
 
-            for (j = i + 1; j < ColorSize && yoffs < maxRects.y; ++j)
+            for (SKuint16 j = i + 1; j < COLOR_SIZE && yOffs < maxRects.y; ++j)
             {
-                if (m_sort[j].m_used == 0)
+                if (m_sort[j].used == 0)
                 {
-                    h = m_sort[j].m_rect.height;
-                    w = m_sort[j].m_rect.width;
+                    h = m_sort[j].rect.height;
+                    w = m_sort[j].rect.width;
                     if (mx < h)
                         mx = h;
 
-                    if (yoffs + h < maxRects.y && w < m_sort[i].m_rect.width)
+                    if (yOffs + h < maxRects.y && w < m_sort[i].rect.width)
                     {
-                        m_sort[j].m_used = 1;
-                        doFill(x, y + yoffs, w, h, m_sort[j].m_color);
-                        yoffs += h;
+                        m_sort[j].used = 1;
+                        doFill(x, y + yOffs, w, h, m_sort[j].color);
+                        yOffs += h;
                     }
                 }
             }
-            x += m_sort[i].m_rect.width;
-            // rectSubSort();
+            x += m_sort[i].rect.width;
             ++i;
         }
     }

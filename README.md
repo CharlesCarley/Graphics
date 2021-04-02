@@ -42,3 +42,9 @@ Optional defines.
 | Graphics_EXTRA_BUILTIN_FONTS | Include extra [fonts](https://fonts.google.com/) in the binary. | OFF     |
 | Graphics_BACKEND_OPENGL      | Build the main OpenGL backend.                                  | ON      |
 | Graphics_AUTO_RUN_TESTS      | Automatically execute tests after a successful build.           | OFF     |
+
+
+### Emscripten tests
+
++ [Test1](https://CharlesCarley.github.io/Graphics/ColorApp.html)
++ [Test2](https://CharlesCarley.github.io/Graphics/RandRect.html)
