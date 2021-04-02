@@ -31,7 +31,7 @@
 #include "Window/skWindow.h"
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
-#include "skGraphics.h"
+#include "Graphics/skGraphics.h"
 
 typedef struct SortRect
 {

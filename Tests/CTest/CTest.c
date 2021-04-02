@@ -1,8 +1,6 @@
-#include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "skGraphicsWindow.h"
+#include "Graphics/skGraphicsWindow.h"
 
 #ifdef Graphics_BUILD_WINDOW
 
@@ -165,7 +163,7 @@ int main(int argc, char** argv)
                            WM_WF_CENTER | WM_WF_SHOWN,
                            &Events);
 
-    const SKcontext ctx = skNewContext();
+    SKcontext ctx = skNewContext();
     skBroadcast(p.manager, SK_WIN_SIZE);
 
     InitializeContext(ctx, &p);

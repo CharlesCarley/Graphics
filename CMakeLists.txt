@@ -54,10 +54,10 @@ set(Graphics_LIBRARY
 if(Graphics_BACKEND_OPENGL)
 
     list(APPEND Graphics_INCLUDE
-        ${WINDOW_INCLUDE} 
+        ${Window_INCLUDE} 
     )
     list(APPEND Graphics_LIBRARY
-        ${WINDOW_LIBRARY} 
+        ${Window_LIBRARY} 
     )
 
 endif()

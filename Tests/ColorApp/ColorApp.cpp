@@ -30,7 +30,7 @@
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
 #include "Utils/skDisableWarnings.h"
-#include "skGraphics.h"
+#include "Graphics/skGraphics.h"
 
 const SKuint32 COLOR_TABLE[] = {
     CS_Grey00,
