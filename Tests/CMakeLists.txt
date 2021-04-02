@@ -4,4 +4,7 @@ if(Graphics_BACKEND_OPENGL AND Graphics_BUILD_RENDER_TESTS)
     subdirs(CTest)
 endif()
 
-subdirs(Unit)
+
+if (NOT USING_EMSCRIPTEN)
+   subdirs(Unit)
+endif()

@@ -19,6 +19,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
 include(StaticRuntime)
+include(FindVSEmscripten)
 set_static_runtime()
 
 option(Graphics_BUILD_WINDOW        "Compile standalone window system" ON)
@@ -43,7 +44,6 @@ endif()
 
 if (Graphics_BUILD_TESTS)
     set(Graphics_BUILD_RENDER_TESTS TRUE)
-    set(Graphics_EXTRA_BUILTIN_FONTS ON CACHE BOOL "Include extra fonts in the build. https://fonts.google.com/" FORCE)
 endif()
 
 if (NOT Graphics_BACKEND_OPENGL)

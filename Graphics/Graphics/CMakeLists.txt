@@ -17,7 +17,6 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
-include(Data2Array)
 
 
 if (Graphics_ExternalTarget)
@@ -143,7 +142,11 @@ if (Graphics_EXTRA_BUILTIN_FONTS)
     list(APPEND FONTS Builtin/Roboto/Roboto-Light.ttf)
 endif()
 
-add_templates_ex(skBuiltinFonts ${FONTS})
+
+if(NOT USING_EMSCRIPTEN)
+    include(Data2Array)
+    ADD_TEMPLATES_EX_DIR(${CMAKE_CURRENT_SOURCE_DIR}/Builtin skBuiltinFonts ${FONTS})
+endif()
 
 source_group(Resource\\Shaders   FILES ${Shaders})
 source_group(Resource\\Fonts     FILES ${FONTS})

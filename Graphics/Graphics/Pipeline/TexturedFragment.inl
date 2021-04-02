@@ -30,6 +30,8 @@
 // 5, SK_BM_DIVIDE,
 
 SKShader(TexturedFragment,
+    precision highp float;
+
     uniform vec4      surface;
     uniform sampler2D ima;
     uniform int       mode;

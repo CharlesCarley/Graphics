@@ -23,6 +23,7 @@
 #include "Graphics/skGraphicsConfig.h"
 
 SKShader(ColoredVertex,
+    precision highp float;
 
     attribute vec2 position;
     uniform mat4   viewproj;

@@ -421,6 +421,7 @@ TEST_CASE("FontLoadTest")
     AssertFontEqualI(font, SK_FONT_DPI, 72);
     AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
+#ifdef Graphics_EXTRA_BUILTIN_FONTS
 
     font = skNewFont(SK_FONT_SPC1, 24, 72);
     EXPECT_NE(font, nullptr);
@@ -445,6 +446,7 @@ TEST_CASE("FontLoadTest")
     AssertFontEqualI(font, SK_FONT_DPI, 72);
     AssertFontEqualI(font, SK_FONT_PIXEL_SIZE, 24);
     skDeleteFont(font);
+#endif
 
     skDeleteContext(ctx);
 }

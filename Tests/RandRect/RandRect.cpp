@@ -21,6 +21,7 @@
 */
 #include <algorithm>
 #include <cmath>
+#include "Graphics/skGraphics.h"
 #include "Math/skMath.h"
 #include "Math/skRectangle.h"
 #include "Math/skVector2.h"
@@ -31,7 +32,6 @@
 #include "Window/skWindow.h"
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
-#include "Graphics/skGraphics.h"
 
 typedef struct SortRect
 {
@@ -168,6 +168,16 @@ SKuint16 ColorSize = sizeof COLORS / sizeof(SKuint32);
 typedef skFixedArray<skRectangle, 120> RandArray;
 typedef skFixedArray<SortRect, 120>    SortArray;
 
+#if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
+constexpr int WindowX     = 640;
+constexpr int WindowY     = 480;
+constexpr int WindowFlags = WM_WF_SHOW_CENT_DIA;
+#else
+constexpr int WindowX     = 800;
+constexpr int WindowY     = 600;
+constexpr int WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
+#endif
+
 class Application : public skWindowHandler
 {
 private:
@@ -184,33 +194,24 @@ public:
     Application();
     ~Application() override;
 
-    void initialize(void);
-    void update(void) const;
-
-    SK_INLINE bool isDone(void) const
-    {
-        return m_done;
-    }
+    void run();
 
 private:
     void handle(const skEventType& evt, skWindow* caller) override;
-    void draw(void);
+    void draw();
 
-    skVector2 initializeRect(void);
-    skVector2 initializeRectSort(void);
+    skVector2 initializeRect();
+    skVector2 initializeRectSort();
 
     void doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigned int color) const;
 
-    static skScalar unitRandom(void);
+    static skScalar unitRandom();
 };
 
 int main(int argc, char** argv)
 {
     Application app;
-    app.initialize();
-
-    while (!app.isDone())
-        app.update();
+    app.run();
 }
 
 Application::Application() :
@@ -226,25 +227,25 @@ Application::~Application()
     delete m_manager;
 }
 
-skScalar Application::unitRandom(void)
+skScalar Application::unitRandom()
 {
     return (skScalar)skUnitRandom();
 }
 
-void Application::initialize(void)
+void Application::run()
 {
     skRandInit();
-    m_manager = new skWindowManager();
-    m_window  = m_manager->create("", 800, 600, WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN);
-    m_manager->addHandler(this);
+    m_manager = new skWindowManager(WM_CTX_SDL, this);
+    m_window  = m_manager->create("Random Rectangle", WindowX, WindowY, WindowFlags);
 
-    skSetCurrentContext(skNewContext());
-    m_manager->broadcastEvent(SK_WIN_SIZE);
+    skNewContext();
+    m_manager->dispatchInitialEvents();
 
     m_lastFill = 0x00000000;
+    m_manager->process();
 }
 
-skVector2 Application::initializeRect(void)
+skVector2 Application::initializeRect()
 {
     skScalar  x, y;
     skVector2 maxRects = skVector2::Zero;
@@ -280,7 +281,7 @@ int CompSortEnd(SortRect p1, SortRect p2)
     return 0;
 }
 
-skVector2 Application::initializeRectSort(void)
+skVector2 Application::initializeRectSort()
 {
     skScalar  x, y;
     skVector2 maxRects = skVector2::Zero;
@@ -338,10 +339,6 @@ void Application::handle(const skEventType& evt, skWindow* caller)
     }
 }
 
-void Application::update(void) const
-{
-    m_manager->processInteractive(true);
-}
 
 void Application::doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigned int color) const
 {
@@ -352,7 +349,7 @@ void Application::doFill(skScalar x, skScalar y, skScalar w, skScalar h, unsigne
     skStroke();
 }
 
-void Application::draw(void)
+void Application::draw()
 {
     skClearColor1i(CS_Grey02);
     skClearContext();

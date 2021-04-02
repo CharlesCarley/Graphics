@@ -22,6 +22,7 @@
 #include "skOpenGLVertexBuffer.h"
 #include "Window/OpenGL/skOpenGL.h"
 
+
 static SKuint32 skOpenGLGetAttributeSize(SKuint32 type)
 {
     switch (type)

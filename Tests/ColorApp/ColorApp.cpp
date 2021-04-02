@@ -21,16 +21,27 @@
 */
 #include <cmath>
 #include <cstdio>
+
+#include "Graphics/skGraphics.h"
 #include "Math/skMath.h"
 #include "Math/skVector2.h"
+#include "Utils/skDisableWarnings.h"
 #include "Utils/skLogger.h"
 #include "Window/skMouse.h"
 #include "Window/skWindow.h"
 #include "Window/skWindowEnums.h"
 #include "Window/skWindowHandler.h"
 #include "Window/skWindowManager.h"
-#include "Utils/skDisableWarnings.h"
-#include "Graphics/skGraphics.h"
+
+#if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
+constexpr int WindowX     = 640;
+constexpr int WindowY     = 480;
+constexpr int WindowFlags = WM_WF_SHOW_CENT_DIA;
+#else
+constexpr int WindowX     = 800;
+constexpr int WindowY     = 600;
+constexpr int WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
+#endif
 
 const SKuint32 COLOR_TABLE[] = {
     CS_Grey00,
@@ -208,9 +219,8 @@ private:
         skClearContext();
         skProjectRect(0, 0, m_size.x, m_size.y);
 
-        skScalar x, y;
-        x = 20;
-        y = 20;
+        skScalar x = 20;
+        skScalar y = 20;
 
         skSelectImage(nullptr);
         skSetPaint1i(SK_BRUSH_MODE, SK_BM_MODULATE);
@@ -239,7 +249,6 @@ private:
         const skScalar max2 = max - 50;
 
         skRect(25, 50 + y, max2, max2);
-
         skSelectImage(m_grad);
         skColor1ui(m_lastFill);
         skFill();
@@ -269,26 +278,20 @@ public:
         skDeleteContext(skGetCurrentContext());
     }
 
-    void initialize(void)
+    void run(void)
     {
-        m_manager = new skWindowManager(WM_CTX_PLATFORM);
-
-        m_window = m_manager->create("Color Test",
-                                     800,
-                                     600,
-                                     WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN);
+        m_manager = new skWindowManager(WM_CTX_SDL, this);
+        m_window = m_manager->create("Color Test", WindowX, WindowY, WindowFlags);
 
         if (!m_window)
         {
-            m_done = true;
             delete m_manager;
             m_manager = nullptr;
             return;
         }
 
-        m_manager->addHandler(this);
-        skSetCurrentContext(skNewBackEndContext(SK_BE_OpenGL));
-        m_manager->broadcastEvent(SK_WIN_SIZE);
+        skNewContext();
+        m_manager->dispatchInitialEvents();
 
         m_lastFill = 0x00000000;
         m_font     = skNewFont(SK_FONT_DEFAULT, 48, 96);
@@ -303,17 +306,7 @@ public:
                               colorStops,
                               2,
                               SK_SOUTH | SK_EAST);
-    }
-
-    void update(void) const
-    {
-        if (m_manager)
-            m_manager->processInteractive(true);
-    }
-
-    bool isDone() const
-    {
-        return m_done;
+        m_manager->process();
     }
 };
 
@@ -321,18 +314,14 @@ int main(int, char**)
 {
     try
     {
-        skLogger* log = new skLogger();
-        log->setFlags(LF_STDOUT);
+        skLogger log;
+        log.setFlags(LF_STDOUT);
 
         Application app;
-        app.initialize();
-        while (!app.isDone())
-            app.update();
+        app.run();
     }
     catch (...)
     {
-        skLogf(LD_ERROR, "An exception occurred\n");
+        puts("An exception occurred\n");
     }
-
-    delete skLogger::getSingletonPtr();
 }

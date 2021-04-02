@@ -234,8 +234,14 @@ void skOpenGLRenderer::fill(skPath* pth)
         m_fillOp = GL_TRIANGLE_FAN;
     else if (m_curPaint->m_lineType == SK_POINTS)
     {
+
+#if SK_PLATFORM != SK_PLATFORM_EMSCRIPTEN
         glPointSize(m_curPaint->m_penWidth);
         m_fillOp = GL_POINTS;
+#else
+        // Not supported using WebGL
+        m_fillOp = GL_LINES;
+#endif
     }
 
     bool blend = shouldBlend();
@@ -259,8 +265,13 @@ void skOpenGLRenderer::stroke(skPath* pth)
         m_fillOp = GL_LINES;
     else if (m_curPaint->m_lineType == SK_POINTS)
     {
+#if SK_PLATFORM != SK_PLATFORM_EMSCRIPTEN
         glPointSize(m_curPaint->m_penWidth);
         m_fillOp = GL_POINTS;
+#else
+        // Not supported using WebGL
+        m_fillOp = GL_LINES;
+#endif
     }
 
     bool blend = shouldBlend();

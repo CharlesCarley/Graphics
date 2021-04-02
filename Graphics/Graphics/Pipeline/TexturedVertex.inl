@@ -23,6 +23,7 @@
 #include "Graphics/skGraphicsConfig.h"
 
 SKShader(TexturedVertex,
+    precision highp float;
 
     attribute vec2 position;
     attribute vec2 textureCoords;

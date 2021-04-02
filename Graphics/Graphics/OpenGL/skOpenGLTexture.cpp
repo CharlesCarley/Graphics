@@ -38,8 +38,11 @@ void SK_GetFormat(int fmt, GLenum& glfmt)
         glfmt = GL_RGB;
         break;
     case 4:
+#if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
+        glfmt = GL_RGBA;
+#else
         glfmt = GL_BGRA;
-        break;
+#endif
     default:;
     }
 }

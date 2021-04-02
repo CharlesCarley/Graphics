@@ -2,3 +2,6 @@
 /build
 /l64
 /wb
+
+*.wasm
+*.js

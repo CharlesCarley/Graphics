@@ -32,4 +32,6 @@ if(Graphics_BACKEND_OPENGL)
     subdirs(Window/Window)
 endif()
 
-subdirs(Data2Array)
+if(NOT USING_EMSCRIPTEN)
+   subdirs(Data2Array)
+endif()

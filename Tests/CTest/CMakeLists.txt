@@ -7,6 +7,15 @@ else()
     add_executable(${TargetName}  CTest.c)
 endif()
 
+
+if(USING_EMSCRIPTEN)
+    emscripten_full_es2()
+    emscripten_sdl_version(2)
+    enable_emscripten_html_executable(${TargetName})
+    #emscripten_verbose(${TargetName})
+    emscripten_copy_wasm_target(${TargetName} ${CMAKE_CURRENT_SOURCE_DIR}) 
+endif()
+
 target_link_libraries(${TargetName}  ${Graphics_LIBRARY})
 set_target_properties(${TargetName} PROPERTIES FOLDER "RenderTests")
 

@@ -18,9 +18,13 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 # ------------------------------------------------------------------------------
-
 if (MSVC)
+  set(_Add TRUE)
+elseif(USING_EMSCRIPTEN)
+  set(_Add TRUE)
+endif()
 
+if (_Add)
     set(FilePatterns
         CMake:*.cmake
         CMake\\Module:Modules/*.cmake

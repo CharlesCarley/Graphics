@@ -20,6 +20,8 @@
 -------------------------------------------------------------------------------
 */
 #include "skProgram.h"
+
+#include "Math/skMatrix4.h"
 #include "Utils/skLogger.h"
 #include "Window/OpenGL/skOpenGL.h"
 
@@ -169,8 +171,19 @@ void skProgram::setUniform1F(const char* name, skScalar i) const
 
 void skProgram::setUniformMatrix(SKuint32 loc, const skScalar* matrix) const
 {
+#if SK_PLATFORM_EMSCRIPTEN == SK_PLATFORM_EMSCRIPTEN
+    if (m_program && loc != SK_NPOS32)
+    {
+        // Automatic transposition is not supported.
+        // So transpose it here, and pass the new pointer array.
+        const skMatrix4 m(matrix);
+        glUniformMatrix4fv(loc, 1, GL_FALSE, m.transposed().p);
+    }
+#else
+
     if (m_program && loc != SK_NPOS32)
         glUniformMatrix4fv(loc, 1, GL_TRUE, matrix);
+#endif
 }
 
 void skProgram::setUniform4F(SKuint32 loc, const skScalar* p) const
