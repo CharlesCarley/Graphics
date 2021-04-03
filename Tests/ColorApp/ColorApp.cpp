@@ -122,10 +122,10 @@ private:
             skClearPath();
         }
 
-        const skScalar max  = m_size.y - (25 + y);
-        const skScalar max2 = max - 50;
+        const skScalar maxY  = m_size.y - (75 + y);
+        const skScalar maxX = m_size.x - 50;
 
-        skRect(25, 50 + y, max2, max2);
+        skRect(25, y + 50, maxX, maxY);
         skSelectImage(m_grad);
         skColor1ui(m_lastFill);
         skFill();
@@ -182,7 +182,7 @@ public:
         skImageLinearGradient(m_grad,
                               colorStops,
                               2,
-                              SK_SOUTH | SK_EAST);
+                              SK_NORTH | SK_EAST);
         m_manager->process();
     }
 };
