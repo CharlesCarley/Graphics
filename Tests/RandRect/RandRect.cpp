@@ -19,7 +19,6 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include <algorithm>
 #include <cmath>
 #include "ColorTable.inl"
 #include "Graphics/skGraphics.h"
@@ -38,7 +37,7 @@
 #if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
 constexpr int WindowX     = 320;
 constexpr int WindowY     = 240;
-constexpr int WindowFlags = WM_WF_SHOW_CENT_DIA | WM_WF_MAXIMIZE;
+constexpr int WindowFlags = WM_WF_CENTER | WM_WF_SHOWN;
 #else
 constexpr int WindowX     = 800;
 constexpr int WindowY     = 600;
@@ -67,7 +66,6 @@ private:
     skWindowManager* m_manager;
     skWindow*        m_window;
     skVector2        m_size, m_mouseCo, m_scale;
-    SKuint32         m_lastFill;
     bool             m_done;
 
     RandArray m_rand;
@@ -113,7 +111,6 @@ int main(int, char**)
 Application::Application() :
     m_manager(nullptr),
     m_window(nullptr),
-    m_lastFill(CS_Transparent),
     m_done(false)
 {
 }
@@ -136,7 +133,6 @@ void Application::run()
     m_window  = m_manager->create("Random Rectangle", WindowX, WindowY, WindowFlags);
 
     skNewContext();
-    m_manager->dispatchInitialEvents();
     m_manager->process();
 }
 
