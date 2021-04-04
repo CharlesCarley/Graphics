@@ -274,7 +274,7 @@ void skOpenGLRenderer::stroke(skPath* pth)
 #endif
     }
 
-    bool blend = shouldBlend();
+    const bool blend = shouldBlend();
     if (blend)
         glEnable(GL_BLEND);
 

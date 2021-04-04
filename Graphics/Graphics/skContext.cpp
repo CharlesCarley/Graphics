@@ -112,14 +112,13 @@ SKimage skContext::createImage(SKuint32 w, SKuint32 h, SKpixelFormat fmt)
         return SK_IMAGE_HANDLE(tex);
 #endif
     }
-    else if (m_backend == SK_BE_None)
+
+    if (m_backend == SK_BE_None)
     {
         skTexture* tex = new skTexture(w, h, fmt);
-
         tex->setContext(this);
         return SK_IMAGE_HANDLE(tex);
     }
-
     return nullptr;
 }
 
@@ -133,7 +132,8 @@ SKimage skContext::newImage()
         return SK_IMAGE_HANDLE(ima);
 #endif
     }
-    else if (m_backend == SK_BE_None)
+
+    if (m_backend == SK_BE_None)
     {
         skTexture* tex = new skTexture();
 
@@ -165,7 +165,8 @@ skTexture* skContext::createInternalImage(SKuint32 w, SKuint32 h, SKpixelFormat 
         return tex;
 #endif
     }
-    else if (m_backend == SK_BE_None)
+
+    if (m_backend == SK_BE_None)
     {
         skTexture* tex = new skTexture(w, h, fmt);
 

@@ -21,6 +21,7 @@
 */
 #include <cmath>
 #include <cstdio>
+#include "ColorTable.inl"
 #include "Graphics/skGraphics.h"
 #include "Math/skMath.h"
 #include "Math/skVector2.h"
@@ -30,19 +31,16 @@
 #include "Window/skWindow.h"
 #include "Window/skWindowEnums.h"
 #include "Window/skWindowHandler.h"
-#include "Window/skWindowManager.h"
-#include "ColorTable.inl"
 
 #if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
 constexpr int WindowX     = 320;
 constexpr int WindowY     = 240;
-constexpr int WindowFlags = WM_WF_SHOW_CENT_DIA | WM_WF_MAXIMIZE;
+constexpr int WindowFlags = WM_WF_CENTER | WM_WF_SHOWN;
 #else
 constexpr int WindowX     = 800;
 constexpr int WindowY     = 600;
 constexpr int WindowFlags = WM_WF_CENTER | WM_WF_MAXIMIZE | WM_WF_SHOWN;
 #endif
-
 
 class Application : public skWindowHandler
 {
@@ -52,7 +50,6 @@ private:
     skVector2        m_size, m_mouseCo;
     SKuint32         m_lastFill;
     SKimage          m_grad;
-    SKfont           m_font;
     bool             m_done;
 
 private:
@@ -92,7 +89,7 @@ private:
 
     void draw(void)
     {
-        skClearColor1i(CS_Grey02);
+        skClearColor1i(CS_Grey03);
         skClearContext();
         skProjectRect(0, 0, m_size.x, m_size.y);
 
@@ -122,10 +119,16 @@ private:
             skClearPath();
         }
 
-        const skScalar maxY  = m_size.y - (75 + y);
-        const skScalar maxX = m_size.x - 50;
+        y += 25;
 
-        skRect(25, y + 50, maxX, maxY);
+        const skScalar ms = skMin<skScalar>(m_size.x, m_size.y - y) / skScalar(1.125);
+        const skScalar x1 = (m_size.x - ms) / 2;
+        const skScalar y1 = y + (m_size.y - y - ms) / 2;
+        const skScalar w  = ms;
+        const skScalar h  = ms;
+
+        skRect(x1, y1, w, h);
+
         skSelectImage(m_grad);
         skColor1ui(m_lastFill);
         skFill();
@@ -139,9 +142,8 @@ public:
     Application() :
         m_manager(nullptr),
         m_window(nullptr),
-        m_lastFill(0),
+        m_lastFill(CS_Transparent),
         m_grad(nullptr),
-        m_font(nullptr),
         m_done(false)
     {
     }
@@ -151,7 +153,6 @@ public:
         delete m_manager;
 
         skDeleteImage(m_grad);
-        skDeleteFont(m_font);
         skDeleteContext(skGetCurrentContext());
     }
 
@@ -166,14 +167,11 @@ public:
             m_manager = nullptr;
             return;
         }
-
         skNewContext();
-        m_manager->dispatchInitialEvents();
 
-        m_lastFill = 0x00000000;
-        m_font     = skNewFont(SK_FONT_DEFAULT, 48, 96);
-        m_grad     = skCreateImage(512, 512, SK_RGBA);
 
+        m_grad = skCreateImage(8, 8, SK_RGBA);
+        skSetImage1i(m_grad, SK_IMAGE_FILTER, SK_FILTER_BI_LINEAR);
         SKcolorStop colorStops[] = {
             {0, 0x000000FF},
             {1, 0xFFFFFFFF},
