@@ -133,6 +133,7 @@ void Application::run()
     m_window  = m_manager->create("Random Rectangle", WindowX, WindowY, WindowFlags);
 
     skNewContext();
+    m_manager->dispatchInitialEvents();
     m_manager->process();
 }
 

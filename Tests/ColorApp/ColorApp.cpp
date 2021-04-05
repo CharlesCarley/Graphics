@@ -181,6 +181,7 @@ public:
                               colorStops,
                               2,
                               SK_NORTH | SK_EAST);
+        m_manager->dispatchInitialEvents();
         m_manager->process();
     }
 };

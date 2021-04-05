@@ -19,31 +19,33 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#include "skFont.h"
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #include FT_ERRORS_H
+
+#include "skFont.h"
 #include "Utils/skFileStream.h"
 #include "Utils/skLogger.h"
 #include "Utils/skMemoryUtils.h"
 #include "Utils/skPlatformHeaders.h"
-#include "Builtin/skBuiltinFonts.h"
 #include "skContext.h"
 #include "skGlyph.h"
 #include "skPath.h"
 #include "skTexture.h"
+#ifndef Graphics_NO_BUILTIN
+#include "skBuiltinFonts.h"
+#endif
 
 // TODO: clean and check the extent functions.
 //       naming / spacing / alignment could be more precise too.
-
-#define FTINT(x) ((x) >> 6)
-#define FTI64(x) ((x) << 6)
-
 const SKint32      CharStart = 32;
 const SKint32      CharEnd   = 127;
 const SKint32      CharTotal = CharEnd - CharStart;
 const SKint32      Spacer    = 2;
 const skFont::Char NullChar  = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+
+#define FTINT(x) ((x) >> 6)
+#define FTI64(x) ((x) << 6)
 
 skFont::skFont() :
     skContextObj(),
@@ -231,6 +233,7 @@ const skFont::Char& skFont::getChar(char ch) const
 
 bool skFont::fromEnum(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
 {
+#ifndef Graphics_NO_BUILTIN
     switch (font)
     {
 #ifdef Graphics_EXTRA_BUILTIN_FONTS
@@ -251,6 +254,7 @@ bool skFont::fromEnum(SKbuiltinFont font, SKuint32 size, SKuint32 dpi)
     default:
         break;
     }
+#endif
     return false;
 }
 
@@ -400,7 +404,7 @@ void skFont::getI(SKfontOptionEnum opt, SKint32* v) const
     case SK_FONT_TAB_SIZE:
         *v = (SKint32)m_opts.tabSize;
         break;
-    default: 
+    default:
         break;
     }
 }

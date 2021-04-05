@@ -70,7 +70,7 @@ private:
 
 public:
     skFont();
-    ~skFont();
+    virtual ~skFont();
 
     void getCharExtent(char c, SKtextExtent* te) const;
 

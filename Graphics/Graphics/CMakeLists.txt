@@ -130,27 +130,31 @@ set(Shaders
     Pipeline/TexturedVertex.inl
 )
 
-set(FONTS 
-    Builtin/DejaVuMono.ttf  
-    Builtin/DejaVu.ttf
-    )
-
-if (Graphics_EXTRA_BUILTIN_FONTS)
-    list(APPEND FONTS Builtin/Caveat/Caveat-VariableFont_wght.ttf)
-    list(APPEND FONTS Builtin/Rock_Salt/RockSalt-Regular.ttf)
-    list(APPEND FONTS Builtin/Roboto/Roboto-Regular.ttf)
-    list(APPEND FONTS Builtin/Roboto/Roboto-Light.ttf)
-endif()
 
 
 if(NOT USING_EMSCRIPTEN)
+
+    set(FONTS 
+        Builtin/DejaVuMono.ttf  
+        Builtin/DejaVu.ttf
+        )
+
+    if (Graphics_EXTRA_BUILTIN_FONTS)
+        list(APPEND FONTS Builtin/Caveat/Caveat-VariableFont_wght.ttf)
+        list(APPEND FONTS Builtin/Rock_Salt/RockSalt-Regular.ttf)
+        list(APPEND FONTS Builtin/Roboto/Roboto-Regular.ttf)
+        list(APPEND FONTS Builtin/Roboto/Roboto-Light.ttf)
+    endif()
+
     include(Data2Array)
-    ADD_TEMPLATES_EX_DIR(${CMAKE_CURRENT_SOURCE_DIR}/Builtin skBuiltinFonts ${FONTS})
+    add_templates_ex(skBuiltinFonts ${FONTS})
+    source_group(Resource\\Generated FILES ${skBuiltinFonts})
+else()
+    add_definitions(-DGraphics_NO_BUILTIN)
 endif()
 
 source_group(Resource\\Shaders   FILES ${Shaders})
 source_group(Resource\\Fonts     FILES ${FONTS})
-source_group(Resource\\Generated FILES ${skBuiltinFonts})
 
 include_directories(${Graphics_INC} ${CMAKE_BINARY_DIR})
 add_library(${TargetName} 
@@ -160,9 +164,7 @@ add_library(${TargetName}
     ${FONTS}
     ${skBuiltinFonts}
 )
+
 target_link_libraries(${TargetName} ${Graphics_LIB})
-
-
-
 set_target_properties(${TargetName} PROPERTIES FOLDER "${TargetGroup}")
 
