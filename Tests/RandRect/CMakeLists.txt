@@ -3,12 +3,10 @@ include_directories(. ${Graphics_INCLUDE})
 
 if(USING_EMSCRIPTEN)
     add_executable(${TargetName}   ${TargetName}.html ${TargetName}.cpp)
-
     emscripten_full_es2()
     emscripten_sdl_version(2)
     enable_emscripten_html_executable(${TargetName})
     emscripten_copy_wasm_target_wasm_js(${TargetName} ${CMAKE_CURRENT_SOURCE_DIR}) 
-
 elseif(Graphics_WINMAIN)
     add_executable(${TargetName} WIN32 ${TargetName}.cpp)
 else()

@@ -92,6 +92,7 @@ SKuint32 skOpenGLTexture::getImage(void)
     if (m_dirty && m_image)
     {
         m_dirty = false;
+
         GLenum format;
         GLint  min, mag;
 

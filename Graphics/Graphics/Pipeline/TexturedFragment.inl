@@ -19,8 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#pragma once
+#ifndef _TexturedFragment_
+#define _TexturedFragment_
+
 #include "Graphics/skGraphicsConfig.h"
+// clang-format off
 
 
 // 1, SK_BM_REPLACE,
@@ -30,40 +33,43 @@
 // 5, SK_BM_DIVIDE,
 
 SKShader(TexturedFragment,
-    precision highp float;
+precision highp float;
 
-    uniform vec4      surface;
-    uniform sampler2D ima;
-    uniform int       mode;
-    varying vec2      texCo;
+uniform vec4      surface;
+uniform sampler2D ima;
+uniform int       mode;
+varying vec2      texCo;
 
-    void main()
+void main()
+{
+    vec4 img = texture2D(ima, texCo);
+    if (mode == 1)  // SK_BM_REPLACE
     {
-        vec4 img = texture2D(ima, texCo);
-        if (mode == 1)  // SK_BM_REPLACE
-        {
-            gl_FragColor = img;
-        }
-        else if (mode == 2) // SK_BM_ADD
-        {
-            vec3 obj     = img.xyz + surface.xyz;
-            gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
-        }
-        else if (mode == 3)  // SK_BM_MODULATE
-        {
-            vec3 obj     = surface.xyz * img.xyz;
-            gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
-        }
-        else if (mode == 4)  // SK_BM_SUBTRACT
-        {
-            vec3 obj     = surface.xyz - img.xyz;
-            gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
-        }
-        else // SK_BM_DIVIDE
-        {
-            vec3 obj = vec3(1.0) - (surface.xyz * img.xyz);
-            gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
-        }
+        gl_FragColor = img;
     }
+    else if (mode == 2) // SK_BM_ADD
+    {
+        vec3 obj     = img.xyz + surface.xyz;
+        gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
+    }
+    else if (mode == 3)  // SK_BM_MODULATE
+    {
+        vec3 obj     = surface.xyz * img.xyz;
+        gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
+    }
+    else if (mode == 4)  // SK_BM_SUBTRACT
+    {
+        vec3 obj     = surface.xyz - img.xyz;
+        gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
+    }
+    else // SK_BM_DIVIDE
+    {
+        vec3 obj = vec3(1.0) - (surface.xyz * img.xyz);
+        gl_FragColor = vec4(obj.x, obj.y, obj.z, img.a * surface.a);
+    }
+}
 
 );
+
+// clang-format on
+#endif // _TexturedFragment_

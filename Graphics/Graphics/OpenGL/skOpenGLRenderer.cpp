@@ -21,8 +21,8 @@
 */
 #include "OpenGL/skOpenGLRenderer.h"
 #include "OpenGL/skOpenGLTexture.h"
-#include "OpenGL/skProgram.h"
 #include "OpenGL/skOpenGLVertexBuffer.h"
+#include "OpenGL/skProgram.h"
 #include "Pipeline/ColoredFragment.inl"
 #include "Pipeline/ColoredVertex.inl"
 #include "Pipeline/FontFragment.inl"
@@ -128,12 +128,10 @@ void skOpenGLRenderer::clear(const skRectangle& rect)
         return;
     }
 
-    SKint32 x, y, w, h;
-
-    x = (SKint32)rect.x;
-    y = (SKint32)rect.y;
-    w = (SKint32)rect.width;
-    h = (SKint32)rect.height;
+    const SKint32 x = (SKint32)rect.x;
+    const SKint32 y = (SKint32)rect.y;
+    const SKint32 w = (SKint32)rect.width;
+    const SKint32 h = (SKint32)rect.height;
 
     glViewport(x, y, w, h);
     glClearColor(
@@ -234,7 +232,6 @@ void skOpenGLRenderer::fill(skPath* pth)
         m_fillOp = GL_TRIANGLE_FAN;
     else if (m_curPaint->m_lineType == SK_POINTS)
     {
-
 #if SK_PLATFORM != SK_PLATFORM_EMSCRIPTEN
         glPointSize(m_curPaint->m_penWidth);
         m_fillOp = GL_POINTS;
@@ -244,7 +241,7 @@ void skOpenGLRenderer::fill(skPath* pth)
 #endif
     }
 
-    bool blend = shouldBlend();
+    const bool blend = shouldBlend();
     if (blend)
         glEnable(GL_BLEND);
 

@@ -19,28 +19,34 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#pragma once
+#ifndef _FontFragment_
+#define _FontFragment_
+
 #include "Graphics/skGraphicsConfig.h"
+// clang-format off
 
 SKShader(FontFragment,
-    precision highp float;
 
-    uniform vec4      surface;
-    uniform sampler2D ima;
-    varying vec2      texCo;
+precision highp float;
 
+uniform vec4      surface;
+uniform sampler2D ima;
+varying vec2      texCo;
 
-    void main()
+void main()
+{
+    float v2 = texture2D(ima, texCo).a;
+    if (v2 >= 0.375 && v2 <= 0.7) 
     {
-        float v2 = texture2D(ima, texCo).a;
-        if (v2 >= 0.375 && v2 <= 0.7) 
-        {
-            vec3 v = vec3(1.1) * surface.xyz;
-            gl_FragColor = vec4(v.x, v.y, v.z, v2);
-        }
-        else if (v2 > 0.7)
-            gl_FragColor = surface;
-        else
-            gl_FragColor = vec4(0);
+        vec3 v = vec3(1.1) * surface.xyz;
+        gl_FragColor = vec4(v.x, v.y, v.z, v2);
     }
+    else if (v2 > 0.7)
+        gl_FragColor = surface;
+    else
+        gl_FragColor = vec4(0);
+}
 );
+
+// clang-format on
+#endif  //_FontFragment_

@@ -19,22 +19,27 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#pragma once
+#ifndef _TexturedVertex_
+#define _TexturedVertex_
+
 #include "Graphics/skGraphicsConfig.h"
+// clang-format off
 
 SKShader(TexturedVertex,
-    precision highp float;
+precision highp float;
 
-    attribute vec2 position;
-    attribute vec2 textureCoords;
-    uniform mat4   viewproj;
-    uniform float  zorder;
-    varying vec2   texCo;
+attribute vec2 position;
+attribute vec2 textureCoords;
+uniform mat4   viewproj;
+uniform float  zorder;
+varying vec2   texCo;
 
-    void main(void)
-    {
-        gl_Position = viewproj * vec4(position.x, position.y, zorder, 1);
-        texCo       = textureCoords;
-    }
-
+void main(void)
+{
+    gl_Position = viewproj * vec4(position.x, position.y, zorder, 1);
+    texCo       = textureCoords;
+}
 );
+
+// clang-format on
+#endif  //_TexturedVertex_

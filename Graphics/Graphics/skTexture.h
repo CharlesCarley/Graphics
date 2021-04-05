@@ -44,7 +44,7 @@ public:
     explicit skTexture();
     skTexture(SKint32 w, SKint32 h, SKpixelFormat fmt);
 
-    virtual ~skTexture();
+    ~skTexture() override;
 
 
     skImage* getInternalImage() const
@@ -103,7 +103,7 @@ public:
 
     skPixelFormat getFormat(void) const
     {
-        return m_image ? m_image->getFormat() : skPixelFormat::SK_ALPHA;
+        return m_image ? m_image->getFormat() : SK_ALPHA;
     }
 
     void save(const char* file) const;

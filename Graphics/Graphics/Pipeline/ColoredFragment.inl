@@ -19,48 +19,47 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#pragma once
+#ifndef _ColoredFragment__
+#define _ColoredFragment__
 #include "Graphics/skGraphicsConfig.h"
 
-// 1, SK_BM_REPLACE,
-// 2, SK_BM_ADD,
-// 3, SK_BM_MODULATE,
-// 4, SK_BM_SUBTRACT,
-// 5, SK_BM_DIVIDE,
+// clang-format off
 
 SKShader(ColoredFragment,
-    precision highp float;
+precision highp float;
+uniform vec4 surface; // skPaint::m_surfaceColor
+uniform vec4 brush;   // skPaint::m_brushColor
+uniform int  mode;
 
-    uniform vec4 surface; // skPaint::m_surfaceColor
-    uniform vec4 brush;   // skPaint::m_brushColor
-    uniform int  mode;
-
-    void main() 
+void main() 
+{
+    if (mode == 1)
+        gl_FragColor = surface;
+    else if (mode == 2)  // SK_BM_ADD
     {
-        if (mode == 1)
-            gl_FragColor = surface;
-        else if (mode == 2)  // SK_BM_ADD
-        {
-            vec3 v = brush.xyz + surface.xyz;
-            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
-        }
-        else if (mode == 3)  // SK_BM_MODULATE
-        {
-            vec3 v = brush.xyz * surface.xyz;
-
-            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
-        }
-        else if (mode == 4)  // SK_BM_SUBTRACT
-        {
-            vec3 v = surface.xyz - brush.xyz;
-
-            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
-        }
-        else // SK_BM_DIVIDE
-        {
-            vec3 v = vec3(1.0) - (surface.xyz * brush.xyz);
-
-            gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
-        }
+        vec3 v = brush.xyz + surface.xyz;
+        gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
     }
+    else if (mode == 3)  // SK_BM_MODULATE
+    {
+        vec3 v = brush.xyz * surface.xyz;
+
+        gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+    }
+    else if (mode == 4)  // SK_BM_SUBTRACT
+    {
+        vec3 v = surface.xyz - brush.xyz;
+
+        gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+    }
+    else // SK_BM_DIVIDE
+    {
+        vec3 v = vec3(1.0) - (surface.xyz * brush.xyz);
+
+        gl_FragColor = vec4(v.x, v.y, v.z, surface.w);
+    }
+}
 );
+// clang-format on
+
+#endif  //_ColoredFragment__

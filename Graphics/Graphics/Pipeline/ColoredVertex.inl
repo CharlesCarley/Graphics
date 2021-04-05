@@ -19,17 +19,24 @@
   3. This notice may not be removed or altered from any source distribution.
 -------------------------------------------------------------------------------
 */
-#pragma once
+#ifndef _ColoredVertex_
+#define _ColoredVertex_
+
 #include "Graphics/skGraphicsConfig.h"
+// clang-format off
 
 SKShader(ColoredVertex,
-    precision highp float;
+precision highp float;
 
-    attribute vec2 position;
-    uniform mat4   viewproj;
-    uniform float  zorder;
-    void main(void)
-    {
-        gl_Position = viewproj * vec4(position.x, position.y, zorder, 1);
-    }
+attribute vec2 position;
+uniform mat4   viewproj;
+uniform float  zorder;
+void main(void)
+{
+    gl_Position = viewproj * vec4(position.x, position.y, zorder, 1);
+}
 );
+
+// clang-format on
+
+#endif  //_ColoredVertex_

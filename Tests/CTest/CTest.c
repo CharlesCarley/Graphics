@@ -16,7 +16,7 @@ typedef struct Program
     SKscalar        m_lco;
 } Program;
 
-void InitializeContext(SKcontext ctx, Program* program)
+void InitializeContext(Program* program)
 {
     program->texture = skImageLoad("test2.png");
 
@@ -65,20 +65,20 @@ void WindowPaint(SKwindow window, void* user)
 
     SKint32 s[3] = {0, 0, 0};
     skGetContext2i(SK_CONTEXT_SIZE, (SKint32*)&s);
-    SKscalar w, h, x, y, wx, wy, sz;
+    SKscalar sz;
 
-    wx = (SKscalar)(s[0] >> 1);
-    wy = (SKscalar)(s[1] >> 1);
-    w  = (SKscalar)data->texWidth;
-    h  = (SKscalar)data->texHeight;
+    const SKscalar wx = (SKscalar)(s[0] >> 1);
+    const SKscalar wy = (SKscalar)(s[1] >> 1);
+    const SKscalar w  = (SKscalar)data->texWidth;
+    const SKscalar h  = (SKscalar)data->texHeight;
 
     if (w < h)
         sz = w;
     else
         sz = h;
 
-    x = wx - sz / 2.f;
-    y = wy - sz / 2.f;
+    const SKscalar x = wx - sz * .5f;
+    const SKscalar y = wy - sz * .5f;
 
     skSelectImage(data->texture);
     skRect(0, 0, sz, sz);
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
     SKcontext ctx = skNewContext();
     skBroadcast(p.manager, SK_WIN_SIZE);
 
-    InitializeContext(ctx, &p);
+    InitializeContext(&p);
 
     skProcess(p.manager);
 

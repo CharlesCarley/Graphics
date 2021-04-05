@@ -78,9 +78,8 @@ void skTexture::makeLinearGradient(SKcolorStop* stops,
 void skTexture::makeRadialGradient(SKcolorStop* stops,
                                    SKint32      stopCount)
 {
-    SKuint32 hx, hy;
-    hx = m_image->getWidth() >> 1;
-    hy = m_image->getHeight() >> 1;
+    const SKuint32 hx = m_image->getWidth() >> 1;
+    const SKuint32 hy = m_image->getHeight() >> 1;
     makeRadialGradient(hx, hy, hx, hy, 0, skMax(hx, hy), stops, stopCount);
 }
 
@@ -108,15 +107,16 @@ void skTexture::makeRadialGradient(
     makeGradient(fx, fy, tx, ty, rx, ry, stops, stopCount, false);
 }
 
-void skTexture::makeGradient(SKint32      fx,
-                             SKint32      fy,
-                             SKint32      tx,
-                             SKint32      ty,
-                             SKint32      rx,
-                             SKint32      ry,
-                             SKcolorStop* stops,
-                             SKint32      stopCount,
-                             bool         isLinear)
+void skTexture::makeGradient(
+    SKint32      fx,
+    SKint32      fy,
+    SKint32      tx,
+    SKint32      ty,
+    SKint32      rx,
+    SKint32      ry,
+    SKcolorStop* stops,
+    SKint32      stopCount,
+    bool         isLinear)
 {
     if (!stops || stopCount <= 0)
         return;
@@ -254,10 +254,30 @@ bool skTexture::load(const char* file)
 
     skImage* ima = new skImage();
     if (ima->load(file))
+    {
+#if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
+        switch (ima->getFormat())
+        {
+        case SK_RGB:
+        case SK_BGR:
+            m_image = ima->convertToFormat(SK_BGR);
+            delete ima;
+            break;
+        case SK_ARGB:
+        case SK_ABGR:
+        case SK_RGBA:
+        case SK_BGRA:
+            m_image = ima->convertToFormat(SK_BGRA);
+            delete ima;
+            break;
+        default:
+            m_image = ima;
+        }
+#else
         m_image = ima;
+#endif
+    }
     else
         delete ima;
-
     return m_image != nullptr;
 }
-
