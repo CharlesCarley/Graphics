@@ -96,7 +96,7 @@ void WindowPaint(SKwindow window, void* user)
 
 void WindowMotion(SKwindow window, void* user, SKint32 x, SKint32 y)
 {
-    if (skGetMouseState(window, MBT_L) && skGetKeyCodeState(window, KC_CTRL))
+    if (skGetMouseState(window, MBT_L) || skGetKeyCodeState(window, KC_CTRL))
     {
         skGetMouseCo(window, &x, &y);
         UpdateMouseCo(user, x, y);
