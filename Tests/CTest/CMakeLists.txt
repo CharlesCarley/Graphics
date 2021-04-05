@@ -8,6 +8,7 @@ if(USING_EMSCRIPTEN)
     emscripten_sdl_version(2)
     enable_emscripten_html_executable(${TargetName})
     emscripten_copy_wasm_target_wasm_js(${TargetName} ${CMAKE_CURRENT_SOURCE_DIR}) 
+    set_target_properties(${TargetName} PROPERTIES VS_GLOBAL_EmEmbeddedFile "${CMAKE_CURRENT_SOURCE_DIR}/test2.png@/")
 
 elseif(Graphics_WINMAIN)
     add_executable(${TargetName} WIN32 ${TargetName}.c)

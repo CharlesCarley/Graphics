@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+<head>
+    <title>Tests</title>
+    <style type="text/css">
+        body {
+            background-color: #222;
+            margin: 0;
+            padding: 12px;
+        }
+
+        .TextContainer {
+            text-align: center;
+            color: rgb(133, 132, 132);
+        }
+
+        .TextArea {
+            height: inherit;
+            width: inherit;
+            font-size: 8pt;
+            resize: none;
+            color: inherit;
+            background-color: #444;
+            border: 1px #333 solid;
+        }
+
+        .CanvasContainer {
+            text-align: center;
+        }
+
+        .CanvasArea {
+            background-color: #222;
+            padding: 1px;
+            min-width: 320px;
+            min-height: 240px;
+        }
+
+        .ButtonContainer {
+            text-align: end;
+            padding-right: 12px;
+        }
+
+        .ButtonArea {
+            background-color: transparent;
+            color: rgb(115, 126, 158);
+            border: #1b1b1b 1px solid;
+            padding: 3px;
+        }
+    </style>
+</head>
+
+<body onresize="Module.notifySize()">
+
+    <div id="CanvasContainer" class="CanvasContainer">
+        <canvas class="CanvasArea"
+                id="canvas"
+                oncontextmenu="event.preventDefault()"
+                tabindex="-1"></canvas>
+    </div>
+
+    <div id="TextContainer" class="TextContainer">
+        <textarea id="output" class="TextArea"></textarea>
+    </div>
+
+    <div id="ButtonContainer" class="ButtonContainer">
+        <button id="button" class="ButtonArea" type="button" onclick="clearLog()">Clear</button>
+    </div>
+
+    <script type="text/javascript">
+
+        // log message from java script
+        function logMessage(msg) {
+            var ele = document.getElementById("output");
+            var curText = ele.value;
+            curText += "\n" + msg;
+            ele.value = curText;
+        }
+
+        function clearLog() {
+            var ele = document.getElementById("output");
+            if (ele)
+                ele.value = "";
+        }
+
+        function setSize() {
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+
+            var canvas = document.getElementById("canvas");
+            var output = document.getElementById("output");
+
+            if (canvas && output) {
+                if (w < 320)
+                    w = 320;
+                if (h < 240)
+                    h = 240;
+
+
+                canvas.width = w - 48;
+                canvas.height = h / 1.3333;
+                output.width = w - 48;
+                output.height = h - (canvas.height + 64);
+                output.style.width = output.width + "px";
+                output.style.height = output.height + "px";
+
+            }
+        }
+
+        var Module = {
+            preRun: [function () {
+                clearLog();
+            }],
+            postRun: [function () {
+                setSize();
+                window.dispatchEvent(new Event('resize'));
+            }],
+            canvas: (function () {
+                var canvas = document.getElementById("canvas");
+                canvas.addEventListener("webglcontextlost",
+                    function (e) {
+                        alert('WebGL context lost. You will need to reload the page.');
+                        e.preventDefault();
+                    },
+                    false
+                );
+                return canvas;
+            })(),
+            print: (function () {
+                var element = document.getElementById("output");
+                return function (text) {
+
+                    if (arguments.length > 1)
+                        text = Array.prototype.slice.call(arguments).join(' ');
+
+                    console.log(text);
+                    if (element) {
+                        element.value += text + "\n";
+                        element.scrollTop = element.scrollHeight; // focus on bottom
+                    }
+                };
+            })(),
+            notifySize: function () {
+                setSize();
+            }
+        };
+    </script>
+
+<script async type="text/javascript" src="./CTest.js"></script>
+</body>
+</html>
