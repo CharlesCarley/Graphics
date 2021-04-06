@@ -26,9 +26,6 @@
 // clang-format off
 
 SKShader(FontFragment,
-
-precision highp float;
-
 uniform vec4      surface;
 uniform sampler2D ima;
 varying vec2      texCo;

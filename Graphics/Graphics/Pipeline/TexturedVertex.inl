@@ -26,8 +26,6 @@
 // clang-format off
 
 SKShader(TexturedVertex,
-precision highp float;
-
 attribute vec2 position;
 attribute vec2 textureCoords;
 uniform mat4   viewproj;

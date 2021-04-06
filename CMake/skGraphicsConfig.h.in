@@ -22,6 +22,8 @@
 #ifndef _skGraphicsConfig_h_
 #define _skGraphicsConfig_h_
 
+#include "Utils/Config/skConfig.h"
+
 #cmakedefine Graphics_BUILD_WINDOW
 #cmakedefine Graphics_NO_PALETTE 
 #cmakedefine Graphics_OP_CHECKS 
@@ -62,8 +64,16 @@ typedef struct skShaderSource
 
 #define SKStringify(NAME, x) static const char* NAME = #x
 
+#if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
+#define SK_SHADER_HIGH_P "precision highp float;"
+#else
+#define SK_SHADER_HIGH_P ""
+#endif
+
 #define SKShader(NAME, x) static const skShaderSource NAME = { \
-                              #x, __FILE__}
+                              SK_SHADER_HIGH_P #x, \
+                              __FILE__\
+                              }
 
 
 #endif  //_skGraphicsConfig_h_

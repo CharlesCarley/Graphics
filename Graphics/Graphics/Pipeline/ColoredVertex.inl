@@ -26,8 +26,6 @@
 // clang-format off
 
 SKShader(ColoredVertex,
-precision highp float;
-
 attribute vec2 position;
 uniform mat4   viewproj;
 uniform float  zorder;

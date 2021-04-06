@@ -26,7 +26,7 @@
 // clang-format off
 
 SKShader(ColoredFragment,
-precision highp float;
+
 uniform vec4 surface; // skPaint::m_surfaceColor
 uniform vec4 brush;   // skPaint::m_brushColor
 uniform int  mode;
