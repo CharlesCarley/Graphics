@@ -162,7 +162,7 @@ void skOpenGLRenderer::doPolyFill(void) const
 
         skOpenGLTexture* ima = (skOpenGLTexture*)m_curPaint->m_brushPattern;
 
-        glEnable(GL_TEXTURE_2D);
+        glEnableTexture2D();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ima->getImage());
 
@@ -171,7 +171,7 @@ void skOpenGLRenderer::doPolyFill(void) const
 
     if (lines && m_curPaint->m_penWidth > 1)
     {
-        glEnable(GL_LINE_SMOOTH);
+        glEnableLineSmooth();
         glLineWidth(m_curPaint->m_penWidth);
     }
 
@@ -203,11 +203,11 @@ void skOpenGLRenderer::doPolyFill(void) const
     m_curPaint->m_program->enable(false);
 
     if (m_curPaint->m_brushPattern && !lines)
-        glDisable(GL_TEXTURE_2D);
+        glDisableTexture2D();
 
     if (lines && m_curPaint->m_penWidth > 1)
     {
-        glDisable(GL_LINE_SMOOTH);
+        glDisableLineSmooth();
         glLineWidth(1);
     }
 }

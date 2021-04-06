@@ -101,7 +101,7 @@ SKuint32 skOpenGLTexture::getImage(void)
 
         glGenTextures(1, &m_tex);
         glBindTexture(GL_TEXTURE_2D, m_tex);
-        glEnable(GL_TEXTURE_2D);
+        glEnableTexture2D();
 
         glTexImage2D(GL_TEXTURE_2D,
                      0,
@@ -120,7 +120,8 @@ SKuint32 skOpenGLTexture::getImage(void)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-        glDisable(GL_TEXTURE_2D);
+
+        glDisableTexture2D();
     }
     return m_tex;
 }

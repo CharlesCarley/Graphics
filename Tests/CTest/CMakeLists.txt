@@ -2,12 +2,15 @@ set(TargetName CTest)
 include_directories(. ${Graphics_INCLUDE})
 
 if(USING_EMSCRIPTEN)
-    add_executable(${TargetName}   ${TargetName}.html ${TargetName}.c)
+    set(DOC_DIR ${CMAKE_SOURCE_DIR}/docs)
+
+    add_executable(${TargetName}   ${DOC_DIR}/${TargetName}.html ${TargetName}.c)
 
     emscripten_full_es2()
     emscripten_sdl_version(2)
     enable_emscripten_html_executable(${TargetName})
-    emscripten_copy_wasm_target_wasm_js(${TargetName} ${CMAKE_CURRENT_SOURCE_DIR}) 
+    emscripten_copy_wasm_target_wasm_js(${TargetName} ${DOC_DIR}) 
+
     set_target_properties(${TargetName} PROPERTIES VS_GLOBAL_EmEmbeddedFile "${CMAKE_CURRENT_SOURCE_DIR}/test2.png@/")
 
 elseif(Graphics_WINMAIN)
