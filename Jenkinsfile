@@ -13,10 +13,8 @@ pipeline {
     }
 
     stages {
-
-        stage('Update Submodules') {
+       stage('Update Submodules') {
             steps {
-                sh script: 'git submodule init'
                 sh script: 'git submodule update --init --merge'
             }
         }
@@ -24,10 +22,10 @@ pipeline {
 
             steps {
                 sh script: 'cmake .'
+                sh script: 'make clean'
                 sh script: 'make'
             }
         }
-        
         stage('Finalize') {
             steps {
                 deleteDir()

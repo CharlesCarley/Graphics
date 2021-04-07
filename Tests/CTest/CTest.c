@@ -96,7 +96,7 @@ void WindowPaint(SKwindow window, void* user)
 
 void WindowMotion(SKwindow window, void* user, SKint32 x, SKint32 y)
 {
-    if (skGetMouseState(window, MBT_L) || skGetKeyCodeState(window, KC_CTRL))
+    if (skGetMouseState(window, MBT_L))
     {
         skGetMouseCo(window, &x, &y);
         UpdateMouseCo(user, x, y);
@@ -110,7 +110,11 @@ void WindowButtonPressed(SKwindow    window,
                          SKint32     x,
                          SKint32     y)
 {
-    ((Program*)user)->leftDown = skGetMouseState(window, MBT_L);
+    Program* data = user;
+    if (!data)
+        return;
+
+    data->leftDown = skGetMouseState(window, MBT_L);
     skWindowRedraw(window);
 }
 
@@ -120,8 +124,11 @@ void WindowButtonReleased(SKwindow    window,
                           SKint32     x,
                           SKint32     y)
 {
-    ((Program*)user)->leftDown = skGetMouseState(window, MBT_L);
-    skWindowRedraw(window);
+    Program* data = user;
+    if (!data)
+        return;
+    data->leftDown = skGetMouseState(window, MBT_L);
+    data->m_lco    = -1;
 }
 
 void WindowKeyDown(SKwindow window, void* user, skScanCode code)
