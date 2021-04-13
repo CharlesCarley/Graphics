@@ -543,10 +543,18 @@ void skFont::loadGlyphs(struct FT_FaceRec_* face)
 
     delete m_image;
 
+#if SK_PLATFORM == SK_PLATFORM_EMSCRIPTEN
+    m_image = m_ctx->createInternalImage(
+        (SKint32)skMath::pow2((SKint32)sx),
+        (SKint32)skMath::pow2((SKint32)sy),
+        SK_RGBA);
+#else
     m_image = m_ctx->createInternalImage(
         (SKint32)sx,
         (SKint32)sy,
         SK_ALPHA);
+
+#endif
 }
 
 bool skFont::loadTrueTypeFont(const void* mem, SKsize len, SKuint32 size, SKuint32 dpi)
