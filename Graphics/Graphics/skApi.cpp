@@ -30,6 +30,7 @@
 #include "skPaint.h"
 #include "skPath.h"
 #include "skTexture.h"
+#include "Math/skQuaternion.h"
 
 static SKcontext g_currentContext;
 
